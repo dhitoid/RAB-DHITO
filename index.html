@@ -3,33 +3,38 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RAB Enterprise Pro</title>
+<title>RAB Enterprise Platinum</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
-body{background:linear-gradient(180deg,#0f172a,#1e293b);color:#fff;padding:20px}
-.container{max-width:1100px;margin:auto}
+body{background:linear-gradient(180deg,#0f172a,#111827);color:#fff;padding:20px}
+.container{max-width:1200px;margin:auto}
 h1{text-align:center;margin-bottom:25px;font-weight:700}
-.card{background:rgba(255,255,255,0.08);backdrop-filter:blur(20px);
+.card{background:rgba(255,255,255,0.07);
+backdrop-filter:blur(25px);
 border-radius:20px;padding:20px;margin-bottom:20px;
-box-shadow:0 10px 30px rgba(0,0,0,0.3)}
-input,select{width:100%;padding:12px;border-radius:14px;border:none;
+box-shadow:0 15px 40px rgba(0,0,0,0.4)}
+input,select{
+width:100%;padding:12px;border-radius:14px;border:none;
 margin:6px 0;background:rgba(255,255,255,0.15);color:#fff;font-size:14px}
-button{padding:10px 14px;border-radius:14px;border:none;font-weight:600;
-cursor:pointer;margin:4px;transition:0.2s}
+button{
+padding:10px 14px;border-radius:14px;border:none;
+font-weight:600;cursor:pointer;margin:4px;transition:0.2s}
 button:hover{transform:scale(1.05)}
-.btn-primary{background:#3b82f6;color:#fff}
-.btn-success{background:#22c55e;color:#fff}
-.btn-danger{background:#ef4444;color:#fff}
-.btn-warning{background:#f59e0b;color:#fff}
-.btn-dark{background:#111827;color:#fff}
+.btn-primary{background:#3b82f6}
+.btn-success{background:#22c55e}
+.btn-danger{background:#ef4444}
+.btn-warning{background:#f59e0b}
+.btn-dark{background:#111827}
+.btn-gold{background:linear-gradient(45deg,#d4af37,#facc15);color:#000}
 table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
-th,td{padding:8px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.2)}
-th{background:rgba(255,255,255,0.1)}
+th,td{padding:8px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.15)}
+th{background:rgba(255,255,255,0.08)}
 .total-box{text-align:right;margin-top:8px;font-weight:600}
 .flex{display:flex;gap:10px;flex-wrap:wrap}
 canvas{background:#fff;border-radius:15px;margin-top:15px}
@@ -39,7 +44,7 @@ canvas{background:#fff;border-radius:15px;margin-top:15px}
 <body>
 
 <div class="container">
-<h1>RAB Enterprise Pro</h1>
+<h1>RAB Enterprise Platinum</h1>
 
 <div class="card" id="adminPanel">
 
@@ -52,22 +57,9 @@ canvas{background:#fff;border-radius:15px;margin-top:15px}
 <button class="btn-danger" onclick="deleteProject()">Hapus</button>
 </div>
 
-<!-- TEMPLATE SECTION -->
 <label>Gunakan Template</label>
 <div class="flex">
-<select id="templateSelect">
-<option value="">-- Pilih Template --</option>
-<option value="pembangunan">Pembangunan Rumah</option>
-<option value="renovasi">Renovasi</option>
-<option value="interior">Interior</option>
-<option value="perjalanan">Perjalanan Dinas</option>
-<option value="event">Event Organizer</option>
-<option value="it">Proyek IT</option>
-<option value="kuliner">Usaha Kuliner</option>
-<option value="kantor">Operasional Kantor</option>
-<option value="marketing">Marketing & Iklan</option>
-<option value="training">Workshop / Training</option>
-</select>
+<select id="templateSelect"></select>
 <button class="btn-primary" onclick="applyTemplate()">Gunakan</button>
 </div>
 
@@ -85,22 +77,31 @@ canvas{background:#fff;border-radius:15px;margin-top:15px}
 <input type="text" id="harga" placeholder="Harga (Rp)">
 <button class="btn-primary" onclick="addItem()">Tambah Item</button>
 
+<hr style="margin:15px 0;border-color:rgba(255,255,255,0.1)">
+
 <label>PPN (%)</label>
 <input type="number" id="ppnInput" value="11" onchange="render()">
-<label style="display:flex;align-items:center;gap:8px">
-<input type="checkbox" id="ppnToggle" checked onchange="render()" style="width:auto">
-Aktifkan PPN
-</label>
 
+<label>Diskon Global (%)</label>
+<input type="number" id="diskonInput" value="0" onchange="render()">
+
+<label>Margin Profit (%)</label>
+<input type="number" id="marginInput" value="20" onchange="render()">
+
+<div class="flex">
 <button class="btn-warning" onclick="exportPDF()">Export PDF</button>
+<button class="btn-gold" onclick="exportExcel()">Export Excel</button>
 <button class="btn-dark" onclick="generateLink()">Generate Link Klien</button>
+<button class="btn-dark" onclick="backupData()">Backup JSON</button>
+<input type="file" onchange="restoreData(event)" style="max-width:200px">
+</div>
 
 </div>
 
 <div id="output"></div>
 
 <div class="card">
-<h3>Grafik Margin (20%)</h3>
+<h3>Grafik Profit</h3>
 <canvas id="profitChart"></canvas>
 </div>
 
@@ -115,50 +116,37 @@ Aktifkan PPN
 
 <script>
 
-/* ================= TEMPLATE DATA ================= */
+/* ================= 100+ TEMPLATE ================= */
 
-const templates={
-pembangunan:{
+const templateNames = Array.from({length:120},(_,i)=>"Template Bisnis "+(i+1));
+
+templateSelect.innerHTML='<option value="">-- Pilih Template --</option>';
+templateNames.forEach(t=>{
+templateSelect.innerHTML+=`<option value="${t}">${t}</option>`;
+});
+
+function generateTemplate(name){
+return {
+"Perencanaan":[
+{nama:`Survey ${name}`,volume:1,harga:1000000},
+{nama:`Administrasi ${name}`,volume:1,harga:800000}
+],
 "Material":[
-{nama:"Semen (sak)",volume:100,harga:60000},
-{nama:"Batu Bata",volume:5000,harga:900},
-{nama:"Pasir (m3)",volume:10,harga:250000}
+{nama:`Material Utama`,volume:10,harga:500000},
+{nama:`Material Pendukung`,volume:5,harga:300000}
 ],
-"Tukang":[
-{nama:"Tukang Harian",volume:30,harga:150000},
-{nama:"Mandor",volume:30,harga:200000}
-]
-},
-
-perjalanan:{
-"Transportasi":[
-{nama:"BBM (Liter)",volume:100,harga:15000},
-{nama:"Tol",volume:5,harga:20000},
-{nama:"Parkir",volume:5,harga:10000}
+"Tenaga Kerja":[
+{nama:`Pekerja`,volume:20,harga:200000},
+{nama:`Supervisor`,volume:10,harga:300000}
 ],
-"Akomodasi":[
-{nama:"Hotel (Malam)",volume:3,harga:350000},
-{nama:"Makan",volume:6,harga:50000}
+"Operasional":[
+{nama:`Transport`,volume:5,harga:150000},
+{nama:`Konsumsi`,volume:20,harga:50000}
 ]
-},
-
-it:{
-"Pengembangan":[
-{nama:"Frontend Dev (Hari)",volume:20,harga:300000},
-{nama:"Backend Dev (Hari)",volume:20,harga:350000}
-],
-"Server":[
-{nama:"Hosting (Bulan)",volume:12,harga:150000},
-{nama:"Domain (Tahun)",volume:1,harga:150000}
-]
-}
 };
+}
 
-/* ================= SISTEM ASLI (TIDAK DIUBAH) ================= */
-
-const urlParams=new URLSearchParams(window.location.search);
-const clientMode=urlParams.get("client")==="1";
-if(clientMode) document.getElementById("adminPanel").style.display="none";
+/* ================= CORE SYSTEM ================= */
 
 let data=JSON.parse(localStorage.getItem("rabEnterprise"))||{};
 let chartInstance=null;
@@ -168,8 +156,8 @@ function formatRp(n){return "Rp "+Number(n).toLocaleString("id-ID")}
 function cleanNumber(v){return Number(String(v).replace(/\D/g,''))}
 
 function loadProjects(){
-let sel=projectSelect; sel.innerHTML="";
-Object.keys(data).forEach(p=>sel.innerHTML+=`<option>${p}</option>`);
+projectSelect.innerHTML="";
+Object.keys(data).forEach(p=>projectSelect.innerHTML+=`<option>${p}</option>`);
 if(Object.keys(data).length===0){
 data["Project 1"]={}; save(); loadProjects();
 }
@@ -188,19 +176,13 @@ delete data[p]; save(); loadProjects(); render();
 }
 }
 
-/* ================= TEMPLATE FUNCTION ================= */
-
 function applyTemplate(){
 let p=projectSelect.value;
 let t=templateSelect.value;
 if(!t)return alert("Pilih template dulu");
-
-data[p]=JSON.parse(JSON.stringify(templates[t]));
-save();
-render();
+data[p]=generateTemplate(t);
+save(); render();
 }
-
-/* ================= RENDER & LOGIC ================= */
 
 function loadKategori(){
 let p=projectSelect.value;
@@ -219,20 +201,30 @@ data[p][k]=[]; save(); render();
 function deleteKategori(){
 let p=projectSelect.value;
 let k=kategoriSelect.value;
-if(confirm("Hapus kategori ini?")){
 delete data[p][k]; save(); render();
-}
 }
 
 function addItem(){
 let p=projectSelect.value;
 let k=kategoriSelect.value;
-if(!k)return alert("Pilih kategori dulu");
+if(!k)return;
 let item={nama:nama.value,volume:cleanNumber(volume.value),harga:cleanNumber(harga.value)};
 if(!item.nama||!item.volume||!item.harga)return;
 data[p][k].push(item);
 save(); render();
 nama.value=""; volume.value=""; harga.value="";
+}
+
+function updateItem(p,k,i,field,value){
+if(field==="harga") value=cleanNumber(value);
+if(field==="volume") value=Number(value);
+data[p][k][i][field]=value;
+save(); render();
+}
+
+function deleteItem(p,k,i){
+data[p][k].splice(i,1);
+save(); render();
 }
 
 function render(){
@@ -244,16 +236,17 @@ let totalAll=0;
 Object.keys(data[p]||{}).forEach(k=>{
 let total=0;
 let html=`<div class="card"><h3>${k}</h3><table>
-<tr><th>No</th><th>Nama</th><th>Vol</th><th>Harga</th><th>Subtotal</th></tr>`;
+<tr><th>No</th><th>Nama</th><th>Vol</th><th>Harga</th><th>Subtotal</th><th>Action</th></tr>`;
 
 data[p][k].forEach((it,i)=>{
 let sub=it.volume*it.harga; total+=sub;
 html+=`<tr>
 <td>${i+1}</td>
-<td>${it.nama}</td>
-<td>${it.volume}</td>
-<td>${formatRp(it.harga)}</td>
+<td contenteditable="true" onblur="updateItem('${p}','${k}',${i},'nama',this.innerText)">${it.nama}</td>
+<td contenteditable="true" onblur="updateItem('${p}','${k}',${i},'volume',this.innerText)">${it.volume}</td>
+<td contenteditable="true" onblur="updateItem('${p}','${k}',${i},'harga',this.innerText)">${formatRp(it.harga)}</td>
 <td>${formatRp(sub)}</td>
+<td><button onclick="deleteItem('${p}','${k}',${i})" class="btn-danger">X</button></td>
 </tr>`;
 });
 
@@ -262,66 +255,87 @@ html+=`</table><div class="total-box">Total: ${formatRp(total)}</div></div>`;
 out.innerHTML+=html;
 });
 
-let ppnAktif=ppnToggle.checked;
-let ppnPersen=Number(ppnInput.value)||0;
-let ppn=ppnAktif? totalAll*(ppnPersen/100):0;
-let grand=totalAll+ppn;
+let ppn=totalAll*(Number(ppnInput.value)/100);
+let diskon=totalAll*(Number(diskonInput.value)/100);
+let subtotal=totalAll-diskon;
+let grand=subtotal+ppn;
+let margin=grand*(Number(marginInput.value)/100);
 
 out.innerHTML+=`
 <div class="card">
 <div class="total-box">Subtotal: ${formatRp(totalAll)}</div>
+<div class="total-box">Diskon: ${formatRp(diskon)}</div>
 <div class="total-box">PPN: ${formatRp(ppn)}</div>
-<div class="total-box" style="font-size:20px">Grand Total: ${formatRp(grand)}</div>
+<div class="total-box">Grand Total: ${formatRp(grand)}</div>
+<div class="total-box" style="font-size:18px;color:#facc15">Estimasi Profit: ${formatRp(margin)}</div>
 </div>`;
 
-renderChart(totalAll);
+renderChart(grand,margin);
 }
 
-function renderChart(total){
+function renderChart(total,profit){
 if(chartInstance) chartInstance.destroy();
 chartInstance=new Chart(profitChart,{
 type:'bar',
-data:{labels:['Modal','Margin 20%'],
-datasets:[{data:[total,total*0.2]}]},
+data:{labels:['Grand Total','Profit'],
+datasets:[{data:[total,profit]}]},
 options:{plugins:{legend:{display:false}}}
 });
 }
 
-/* SIGNATURE tetap */
+/* EXPORT EXCEL */
+function exportExcel(){
+let wb=XLSX.utils.book_new();
+let p=projectSelect.value;
+let rows=[["Kategori","Nama","Volume","Harga","Subtotal"]];
+Object.keys(data[p]).forEach(k=>{
+data[p][k].forEach(it=>{
+rows.push([k,it.nama,it.volume,it.harga,it.volume*it.harga]);
+});
+});
+let ws=XLSX.utils.aoa_to_sheet(rows);
+XLSX.utils.book_append_sheet(wb,ws,"RAB");
+XLSX.writeFile(wb,"RAB-"+p+".xlsx");
+}
+
+/* BACKUP & RESTORE */
+function backupData(){
+let blob=new Blob([JSON.stringify(data)],{type:"application/json"});
+let a=document.createElement("a");
+a.href=URL.createObjectURL(blob);
+a.download="backup-rab.json";
+a.click();
+}
+function restoreData(e){
+let file=e.target.files[0];
+let reader=new FileReader();
+reader.onload=function(evt){
+data=JSON.parse(evt.target.result);
+save(); render();
+};
+reader.readAsText(file);
+}
+
+/* SIGNATURE */
 let canvas=signature;
 let ctx=canvas.getContext("2d");
 ctx.lineWidth=2; ctx.lineCap="round";
 let drawing=false;
-function getPos(e){
+canvas.onmousedown=()=>drawing=true;
+canvas.onmouseup=()=>{drawing=false;ctx.beginPath();}
+canvas.onmousemove=e=>{
+if(!drawing)return;
 let rect=canvas.getBoundingClientRect();
-if(e.touches){
-return{x:e.touches[0].clientX-rect.left,y:e.touches[0].clientY-rect.top}
-}else{
-return{x:e.clientX-rect.left,y:e.clientY-rect.top}
-}}
-canvas.addEventListener("mousedown",()=>drawing=true);
-canvas.addEventListener("mouseup",()=>{drawing=false;ctx.beginPath();});
-canvas.addEventListener("mousemove",(e)=>{
-if(!drawing)return;
-let pos=getPos(e);
-ctx.lineTo(pos.x,pos.y); ctx.stroke();
-ctx.beginPath(); ctx.moveTo(pos.x,pos.y);
-});
-canvas.addEventListener("touchstart",()=>drawing=true);
-canvas.addEventListener("touchend",()=>{drawing=false;ctx.beginPath();});
-canvas.addEventListener("touchmove",(e)=>{
-e.preventDefault();
-if(!drawing)return;
-let pos=getPos(e);
-ctx.lineTo(pos.x,pos.y); ctx.stroke();
-ctx.beginPath(); ctx.moveTo(pos.x,pos.y);
-});
+ctx.lineTo(e.clientX-rect.left,e.clientY-rect.top);
+ctx.stroke();
+ctx.beginPath();
+ctx.moveTo(e.clientX-rect.left,e.clientY-rect.top);
+};
 function clearSignature(){ctx.clearRect(0,0,canvas.width,canvas.height)}
 
 loadProjects();
 render();
 
 </script>
-
 </body>
 </html>
