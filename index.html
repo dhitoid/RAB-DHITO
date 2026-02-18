@@ -190,26 +190,26 @@ word-break:break-all;
 </div>
 
 <script>
-let data={}
-let chartInstance=null
+let data = {}
+let chartInstance = null
 
 /* ================= STORAGE ================= */
 
 function saveData(){
-localStorage.setItem("rab_platinum_data",JSON.stringify(data))
+localStorage.setItem("rab_platinum_data", JSON.stringify(data))
 }
 
 function loadData(){
-let saved=localStorage.getItem("rab_platinum_data")
+let saved = localStorage.getItem("rab_platinum_data")
 if(saved){
-data=JSON.parse(saved)
+data = JSON.parse(saved)
 }
 }
 
 /* ================= HELPERS ================= */
 
 function formatRp(n){
-return "Rp "+Number(n||0).toLocaleString("id-ID")
+return "Rp " + Number(n||0).toLocaleString("id-ID")
 }
 
 function formatNumber(n){
@@ -217,58 +217,58 @@ return Number(n||0).toLocaleString("id-ID")
 }
 
 function cleanNumber(str){
-return Number(String(str).replace(/\D/g,''))||0
+return Number(String(str).replace(/\D/g,'')) || 0
 }
 
 function safeId(t){
 return t.replace(/\s+/g,'_').replace(/[^\w]/g,'')
 }
 
-/* ================= PROJECT ================= */
-
-function deleteProject(){
-if(confirm("Hapus project?")){
-data={}
-saveData()
-render()
-}
-}
-
 /* ================= TEMPLATE ================= */
 
 function applyTemplate(){
-let t=document.getElementById("templateSelect").value
 
-const templates={
+const templateSelect = document.getElementById("templateSelect")
+let t = templateSelect.value
+
+const templates = {
+
 travel_liburan:{
 Transportasi:[{nama:"Tiket Pesawat",volume:1,harga:7500000}],
 Hotel:[{nama:"Hotel 5 Malam",volume:5,harga:1200000}],
 Konsumsi:[{nama:"Makan Harian",volume:5,harga:250000}]
 },
+
 travel_dinas:{
 Transportasi:[{nama:"Tiket Pesawat",volume:1,harga:3500000}],
 Hotel:[{nama:"Hotel 3 Malam",volume:3,harga:900000}]
 },
+
 travel_umroh:{
 Paket:[{nama:"Paket 9 Hari",volume:1,harga:35000000}]
 },
+
 travel_corporate:{
 Transportasi:[{nama:"Bus Pariwisata",volume:1,harga:12000000}],
 Hotel:[{nama:"Hotel 2 Malam",volume:2,harga:15000000}]
 }
+
 }
 
-data=templates[t]?JSON.parse(JSON.stringify(templates[t])):{}
+if(templates[t]){
+data = JSON.parse(JSON.stringify(templates[t]))
 saveData()
 render()
+}
+
 }
 
 /* ================= KATEGORI ================= */
 
 function addKategori(){
-let k=document.getElementById("kategoriInput").value.trim()
-if(!k)return
-if(!data[k])data[k]=[]
+let k = document.getElementById("kategoriInput").value.trim()
+if(!k) return
+if(!data[k]) data[k] = []
 document.getElementById("kategoriInput").value=""
 saveData()
 render()
@@ -277,14 +277,17 @@ render()
 /* ================= ITEM ================= */
 
 function addItem(k){
-let id=safeId(k)
-let nama=document.getElementById("nama_"+id).value
-let volume=cleanNumber(document.getElementById("vol_"+id).value)
-let harga=cleanNumber(document.getElementById("harga_"+id).value)
 
-if(!nama||!volume||!harga)return
+let id = safeId(k)
+
+let nama = document.getElementById("nama_"+id).value
+let volume = cleanNumber(document.getElementById("vol_"+id).value)
+let harga = cleanNumber(document.getElementById("harga_"+id).value)
+
+if(!nama || !volume || !harga) return
 
 data[k].push({nama,volume,harga})
+
 saveData()
 render()
 }
@@ -315,43 +318,46 @@ saveData()
 render()
 }
 
-/* ================= AUTO FORMAT INPUT ================= */
+/* ================= FORMAT INPUT ================= */
 
 function formatInputRibuan(el){
-let value=cleanNumber(el.value)
-el.value=formatNumber(value)
+let value = cleanNumber(el.value)
+el.value = formatNumber(value)
 }
 
 /* ================= RENDER ================= */
 
 function render(){
 
-let container=document.getElementById("kategoriContainer")
+let container = document.getElementById("kategoriContainer")
 container.innerHTML=""
-let totalAll=0
+let totalAll = 0
 
 Object.keys(data).forEach(k=>{
 
-let id=safeId(k)
-let total=0
+let id = safeId(k)
+let total = 0
 
-let html=`<div class="card">
+let html = `
+<div class="card">
 <h3>${k}</h3>
 
 <div class="flex">
 <input id="nama_${id}" placeholder="Nama">
-<input id="vol_${id}" placeholder="Volume">
+<input id="vol_${id}" placeholder="Volume" oninput="formatInputRibuan(this)">
 <input id="harga_${id}" placeholder="Harga" oninput="formatInputRibuan(this)">
 <button class="btn-primary" onclick="addItem('${k}')">Tambah</button>
 </div>
 
-<table>`
+<table>
+`
 
 data[k].forEach((it,i)=>{
-let sub=it.volume*it.harga
-total+=sub
 
-html+=`
+let sub = it.volume * it.harga
+total += sub
+
+html += `
 <tr>
 <td>
 <input class="edit-input"
@@ -383,37 +389,41 @@ onclick="deleteItem('${k}',${i})">X</button>
 `
 })
 
-totalAll+=total
+totalAll += total
 
-html+=`</table>
+html += `
+</table>
 <div style="margin-top:10px;font-weight:600">
 Total: ${formatRp(total)}
 </div>
-</div>`
+</div>
+`
 
-container.innerHTML+=html
+container.innerHTML += html
 
 })
 
-let diskon=totalAll*(Number(document.getElementById("diskonInput").value)/100)
-let grand=totalAll-diskon
-let profit=grand*(Number(document.getElementById("marginInput").value)/100)
+let diskon = totalAll*(Number(document.getElementById("diskonInput").value)/100)
+let grand = totalAll-diskon
+let profit = grand*(Number(document.getElementById("marginInput").value)/100)
 
-document.getElementById("summary").innerHTML=
+document.getElementById("summary").innerHTML =
 `Subtotal: ${formatRp(totalAll)}<br>
 Diskon: ${formatRp(diskon)}<br>
 <strong>Grand Total: ${formatRp(grand)}</strong><br>
 Profit: ${formatRp(profit)}`
 
 renderChart(grand,profit)
+
 }
 
 /* ================= CHART ================= */
 
 function renderChart(total,profit){
-if(chartInstance)chartInstance.destroy()
 
-chartInstance=new Chart(document.getElementById("chart"),{
+if(chartInstance) chartInstance.destroy()
+
+chartInstance = new Chart(document.getElementById("chart"),{
 type:"bar",
 data:{
 labels:["Grand Total","Profit"],
@@ -424,47 +434,13 @@ plugins:{legend:{display:false}},
 responsive:true
 }
 })
-}
 
-/* ================= EXPORT ================= */
-
-function exportPDF(){
-html2pdf().from(document.body).save("RAB.pdf")
-}
-
-function exportExcel(){
-let wb=XLSX.utils.book_new()
-let rows=[["Kategori","Nama","Volume","Harga","Subtotal"]]
-
-Object.keys(data).forEach(k=>{
-data[k].forEach(it=>{
-rows.push([k,it.nama,it.volume,it.harga,it.volume*it.harga])
-})
-})
-
-let ws=XLSX.utils.aoa_to_sheet(rows)
-XLSX.utils.book_append_sheet(wb,ws,"RAB")
-XLSX.writeFile(wb,"RAB.xlsx")
-}
-
-/* ================= LINK ================= */
-
-function generateLink(){
-let encoded=btoa(JSON.stringify(data))
-let url=location.origin+location.pathname+"?data="+encoded
-document.getElementById("generatedLink").innerHTML=
-`<div class="link-box">${url}</div>`
 }
 
 /* ================= LOAD ================= */
 
 window.onload=()=>{
 loadData()
-let p=new URLSearchParams(location.search)
-if(p.get("data")){
-data=JSON.parse(atob(p.get("data")))
-saveData()
-}
 render()
 }
 </script>
