@@ -320,257 +320,287 @@ margin-top:10px;
 
 <script>
 
-let data={}
-let chartInstance=null
-let diskonAktif=true
-let profitAktif=true
+let data = {};
+let chartInstance = null;
+let diskonAktif = true;
+let profitAktif = true;
 
-function formatRp(n){return "Rp "+Number(n||0).toLocaleString("id-ID")}
-function clean(n){return Number(String(n).replace(/\D/g,''))}
+/* ================= HELPERS ================= */
+
+function formatRp(n){
+  return "Rp " + Number(n || 0).toLocaleString("id-ID");
+}
+
+function clean(n){
+  return Number(String(n).replace(/\D/g,'')) || 0;
+}
+
+function safeId(text){
+  return text.replace(/\s+/g,'_').replace(/[^\w]/g,'');
+}
 
 /* ================= DELETE PROJECT ================= */
 
 function deleteProject(){
-if(confirm("Yakin hapus seluruh project?")){
-data={}
-document.getElementById("projectName").value=""
-render()
-}
+  if(confirm("Yakin hapus seluruh project?")){
+    data = {};
+    document.getElementById("projectName").value = "";
+    render();
+  }
 }
 
 /* ================= TEMPLATE ================= */
 
 function applyTemplate(){
-let t=templateSelect.value
 
-const templates = {
-travel_liburan:{
-"Transportasi":[{nama:"Tiket Pesawat PP",volume:1,harga:7500000}],
-"Akomodasi":[{nama:"Hotel 5 Malam",volume:5,harga:1200000}],
-"Konsumsi":[{nama:"Makan Harian",volume:5,harga:250000}],
-"Tour & Tiket Wisata":[{nama:"Disneyland Ticket",volume:1,harga:1500000}]
-},
-travel_dinas:{
-"Transportasi":[{nama:"Tiket Pesawat",volume:1,harga:3500000}],
-"Hotel":[{nama:"Hotel 3 Malam",volume:3,harga:900000}],
-"Uang Harian":[{nama:"Uang Harian",volume:3,harga:400000}]
-},
-travel_umroh:{
-"Paket Umroh":[{nama:"Paket 9 Hari",volume:1,harga:35000000}],
-"Perlengkapan":[{nama:"Perlengkapan Umroh",volume:1,harga:2000000}]
-},
-travel_corporate:{
-"Transportasi":[{nama:"Bus Pariwisata",volume:1,harga:12000000}],
-"Hotel":[{nama:"Hotel 2 Malam",volume:2,harga:15000000}],
-"Team Building":[{nama:"Outbound Program",volume:1,harga:25000000}]
-}
-}
+  const templateSelect = document.getElementById("templateSelect");
+  let t = templateSelect.value;
 
-data = templates[t] || {}
-render()
+  const templates = {
+
+    travel_liburan:{
+      "Transportasi":[{nama:"Tiket Pesawat PP",volume:1,harga:7500000}],
+      "Akomodasi":[{nama:"Hotel 5 Malam",volume:5,harga:1200000}],
+      "Konsumsi":[{nama:"Makan Harian",volume:5,harga:250000}],
+      "Tour & Tiket Wisata":[{nama:"Disneyland Ticket",volume:1,harga:1500000}]
+    },
+
+    travel_dinas:{
+      "Transportasi":[{nama:"Tiket Pesawat",volume:1,harga:3500000}],
+      "Hotel":[{nama:"Hotel 3 Malam",volume:3,harga:900000}],
+      "Uang Harian":[{nama:"Uang Harian",volume:3,harga:400000}]
+    },
+
+    travel_umroh:{
+      "Paket Umroh":[{nama:"Paket 9 Hari",volume:1,harga:35000000}],
+      "Perlengkapan":[{nama:"Perlengkapan Umroh",volume:1,harga:2000000}]
+    },
+
+    travel_corporate:{
+      "Transportasi":[{nama:"Bus Pariwisata",volume:1,harga:12000000}],
+      "Hotel":[{nama:"Hotel 2 Malam",volume:2,harga:15000000}],
+      "Team Building":[{nama:"Outbound Program",volume:1,harga:25000000}]
+    }
+
+  };
+
+  data = templates[t] ? JSON.parse(JSON.stringify(templates[t])) : {};
+  render();
 }
 
 /* ================= KATEGORI ================= */
 
 function addKategori(){
-let k=kategoriInput.value.trim()
-if(!k)return
-if(!data[k])data[k]=[]
-kategoriInput.value=""
-render()
+  const input = document.getElementById("kategoriInput");
+  let k = input.value.trim();
+  if(!k) return;
+
+  if(!data[k]) data[k] = [];
+  input.value = "";
+  render();
 }
 
 function deleteKategori(k){
-if(confirm("Hapus kategori ini?")){
-delete data[k]
-render()
-}
+  if(confirm("Hapus kategori ini?")){
+    delete data[k];
+    render();
+  }
 }
 
 /* ================= ITEM ================= */
 
 function addItem(k){
-let nama=document.getElementById("nama_"+k).value
-let volume=clean(document.getElementById("vol_"+k).value)
-let harga=clean(document.getElementById("harga_"+k).value)
-if(!nama||!volume||!harga)return
-data[k].push({nama,volume,harga})
-render()
+  const id = safeId(k);
+
+  let nama = document.getElementById("nama_"+id).value;
+  let volume = clean(document.getElementById("vol_"+id).value);
+  let harga = clean(document.getElementById("harga_"+id).value);
+
+  if(!nama || !volume || !harga) return;
+
+  data[k].push({nama,volume,harga});
+  render();
 }
 
 function deleteItem(k,i){
-data[k].splice(i,1)
-render()
+  data[k].splice(i,1);
+  render();
 }
 
 function editItem(k,i,field,value){
-if(field==="nama") data[k][i].nama=value
-if(field==="volume") data[k][i].volume=clean(value)
-if(field==="harga") data[k][i].harga=clean(value)
-render()
+  if(field==="nama") data[k][i].nama=value;
+  if(field==="volume") data[k][i].volume=clean(value);
+  if(field==="harga") data[k][i].harga=clean(value);
+  render();
 }
 
 /* ================= RENDER ================= */
 
 function render(){
-let container=document.getElementById("kategoriContainer")
-container.innerHTML=""
-let totalAll=0
 
-Object.keys(data).forEach(k=>{
+  const container = document.getElementById("kategoriContainer");
+  const diskonInput = document.getElementById("diskonInput");
+  const marginInput = document.getElementById("marginInput");
+  const ppnToggle = document.getElementById("ppnToggle");
+  const summary = document.getElementById("summary");
 
-let html=`
-<div class="card">
-<button class="btn-delete-kategori" onclick="deleteKategori('${k}')">Delete</button>
-<h3>${k}</h3>
+  container.innerHTML="";
+  let totalAll=0;
 
-<div class="flex">
-<input id="nama_${k}" placeholder="Nama Item">
-<input id="vol_${k}" placeholder="Volume">
-<input id="harga_${k}" placeholder="Harga">
-<button class="btn-primary" onclick="addItem('${k}')">Tambah</button>
-</div>
+  Object.keys(data).forEach(k=>{
 
-<table>
-<tr>
-<th>Nama</th>
-<th>Vol</th>
-<th>Harga</th>
-<th>Subtotal</th>
-<th></th>
-</tr>
-`
+    const id = safeId(k);
 
-let total=0
+    let html=`
+    <div class="card">
+    <button class="btn-delete-kategori" onclick="deleteKategori('${k}')">Delete</button>
+    <h3>${k}</h3>
 
-data[k].forEach((it,i)=>{
-let sub=it.volume*it.harga
-total+=sub
+    <div class="flex">
+      <input id="nama_${id}" placeholder="Nama Item">
+      <input id="vol_${id}" placeholder="Volume">
+      <input id="harga_${id}" placeholder="Harga">
+      <button class="btn-primary" onclick="addItem('${k}')">Tambah</button>
+    </div>
 
-html+=`
-<tr>
-<td data-label="Nama">
-<input class="edit-input"
-value="${it.nama}"
-onchange="editItem('${k}',${i},'nama',this.value)">
-</td>
+    <table>
+    `;
 
-<td data-label="Volume">
-<input class="edit-input"
-value="${it.volume}"
-onchange="editItem('${k}',${i},'volume',this.value)">
-</td>
+    let total=0;
 
-<td data-label="Harga">
-<input class="edit-input"
-value="${it.harga}"
-onchange="editItem('${k}',${i},'harga',this.value)">
-</td>
+    data[k].forEach((it,i)=>{
+      let sub = it.volume * it.harga;
+      total += sub;
 
-<td data-label="Subtotal">
-${formatRp(sub)}
-</td>
+      html+=`
+      <tr>
+        <td data-label="Nama">
+          <input class="edit-input"
+          value="${it.nama}"
+          onchange="editItem('${k}',${i},'nama',this.value)">
+        </td>
 
-<td data-label="Aksi">
-<button onclick="deleteItem('${k}',${i})"
-class="btn-danger">Hapus</button>
-</td>
-</tr>
-`
-})
+        <td data-label="Volume">
+          <input class="edit-input"
+          value="${it.volume}"
+          onchange="editItem('${k}',${i},'volume',this.value)">
+        </td>
 
-totalAll+=total
+        <td data-label="Harga">
+          <input class="edit-input"
+          value="${it.harga}"
+          onchange="editItem('${k}',${i},'harga',this.value)">
+        </td>
 
-html+=`
-</table>
-<div class="total-box">Total ${k}: ${formatRp(total)}</div>
-</div>
-`
+        <td data-label="Subtotal">
+          ${formatRp(sub)}
+        </td>
 
-container.innerHTML+=html
+        <td data-label="Aksi">
+          <button onclick="deleteItem('${k}',${i})"
+          class="btn-danger">Hapus</button>
+        </td>
+      </tr>
+      `;
+    });
 
-})
+    totalAll += total;
 
-let diskon=diskonAktif?totalAll*(Number(diskonInput.value)/100):0
-let subtotal=totalAll-diskon
-let ppn=ppnToggle.checked?subtotal*0.11:0
-let grand=subtotal+ppn
-let profit=profitAktif?grand*(Number(marginInput.value)/100):0
+    html+=`
+    </table>
+    <div style="margin-top:10px;font-weight:600">
+      Total ${k}: ${formatRp(total)}
+    </div>
+    </div>
+    `;
 
-summary.innerHTML=`
-<div>
+    container.innerHTML += html;
 
-<div class="toggle">
-<span>Aktifkan Diskon</span>
-<input type="checkbox"
-${diskonAktif?"checked":""}
-onchange="diskonAktif=this.checked;render()">
-</div>
+  });
 
-<div class="toggle">
-<span>Aktifkan Profit</span>
-<input type="checkbox"
-${profitAktif?"checked":""}
-onchange="profitAktif=this.checked;render()">
-</div>
+  /* ================= PERHITUNGAN ================= */
 
-<div style="margin-top:14px">
-<div>Subtotal: ${formatRp(totalAll)}</div>
-<div>Diskon: ${formatRp(diskon)}</div>
-<div>PPN: ${formatRp(ppn)}</div>
-<div><strong>Grand Total: ${formatRp(grand)}</strong></div>
-<div style="color:#ffd60a;margin-top:6px">
-Estimasi Profit: ${formatRp(profit)}
-</div>
-</div>
+  let diskon = diskonAktif ? totalAll*(Number(diskonInput.value)/100) : 0;
+  let subtotal = totalAll - diskon;
+  let ppn = ppnToggle.checked ? subtotal*0.11 : 0;
+  let grand = subtotal + ppn;
+  let profit = profitAktif ? grand*(Number(marginInput.value)/100) : 0;
 
-</div>
-`
+  summary.innerHTML=`
+  <div>
+    <div>Subtotal: ${formatRp(totalAll)}</div>
+    <div>Diskon: ${formatRp(diskon)}</div>
+    <div>PPN: ${formatRp(ppn)}</div>
+    <div><strong>Grand Total: ${formatRp(grand)}</strong></div>
+    <div style="color:#ffd60a;margin-top:6px">
+      Estimasi Profit: ${formatRp(profit)}
+    </div>
+  </div>
+  `;
 
-renderChart(grand,profit)
+  renderChart(grand,profit);
 }
 
 /* ================= CHART ================= */
 
 function renderChart(total,profit){
-if(chartInstance)chartInstance.destroy()
-chartInstance=new Chart(chart,{
-type:"bar",
-data:{labels:["Grand Total","Profit"],
-datasets:[{data:[total,profit]}]},
-options:{plugins:{legend:{display:false}}}
-})
+
+  const ctx = document.getElementById("chart");
+
+  if(chartInstance) chartInstance.destroy();
+
+  chartInstance = new Chart(ctx,{
+    type:"bar",
+    data:{
+      labels:["Grand Total","Profit"],
+      datasets:[{
+        data:[total,profit]
+      }]
+    },
+    options:{
+      plugins:{legend:{display:false}},
+      responsive:true
+    }
+  });
 }
 
 /* ================= EXPORT ================= */
 
-function exportPDF(){html2pdf().from(document.body).save("RAB.pdf")}
+function exportPDF(){
+  html2pdf().from(document.body).save("RAB.pdf");
+}
+
 function exportExcel(){
-let wb=XLSX.utils.book_new()
-let rows=[["Kategori","Nama","Volume","Harga","Subtotal"]]
-Object.keys(data).forEach(k=>{
-data[k].forEach(it=>{
-rows.push([k,it.nama,it.volume,it.harga,it.volume*it.harga])
-})
-})
-let ws=XLSX.utils.aoa_to_sheet(rows)
-XLSX.utils.book_append_sheet(wb,ws,"RAB")
-XLSX.writeFile(wb,"RAB.xlsx")
+  let wb=XLSX.utils.book_new();
+  let rows=[["Kategori","Nama","Volume","Harga","Subtotal"]];
+
+  Object.keys(data).forEach(k=>{
+    data[k].forEach(it=>{
+      rows.push([k,it.nama,it.volume,it.harga,it.volume*it.harga]);
+    });
+  });
+
+  let ws=XLSX.utils.aoa_to_sheet(rows);
+  XLSX.utils.book_append_sheet(wb,ws,"RAB");
+  XLSX.writeFile(wb,"RAB.xlsx");
 }
 
 function generateLink(){
-let encoded=btoa(JSON.stringify(data))
-let url=location.origin+location.pathname+"?data="+encoded
-generatedLink.innerHTML=`<div class="link-box">${url}</div>`
+  let encoded=btoa(JSON.stringify(data));
+  let url=location.origin+location.pathname+"?data="+encoded;
+  document.getElementById("generatedLink").innerHTML=
+    `<div class="link-box">${url}</div>`;
 }
 
+/* ================= LOAD ================= */
+
 window.onload=function(){
-let params=new URLSearchParams(window.location.search)
-if(params.get("data")){
-data=JSON.parse(atob(params.get("data")))
-}
-render()
-}
+  let params=new URLSearchParams(window.location.search);
+  if(params.get("data")){
+    data=JSON.parse(atob(params.get("data")));
+  }
+  render();
+};
 
 </script>
 </body>
