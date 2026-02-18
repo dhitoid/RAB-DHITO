@@ -193,16 +193,48 @@ word-break:break-all;
 let data={}
 let chartInstance=null
 
-function formatRp(n){return "Rp "+Number(n||0).toLocaleString("id-ID")}
-function clean(n){return Number(String(n).replace(/\D/g,''))||0}
-function safeId(t){return t.replace(/\s+/g,'_').replace(/[^\w]/g,'')}
+/* ================= STORAGE ================= */
+
+function saveData(){
+localStorage.setItem("rab_platinum_data",JSON.stringify(data))
+}
+
+function loadData(){
+let saved=localStorage.getItem("rab_platinum_data")
+if(saved){
+data=JSON.parse(saved)
+}
+}
+
+/* ================= HELPERS ================= */
+
+function formatRp(n){
+return "Rp "+Number(n||0).toLocaleString("id-ID")
+}
+
+function formatNumber(n){
+return Number(n||0).toLocaleString("id-ID")
+}
+
+function cleanNumber(str){
+return Number(String(str).replace(/\D/g,''))||0
+}
+
+function safeId(t){
+return t.replace(/\s+/g,'_').replace(/[^\w]/g,'')
+}
+
+/* ================= PROJECT ================= */
 
 function deleteProject(){
 if(confirm("Hapus project?")){
 data={}
+saveData()
 render()
 }
 }
+
+/* ================= TEMPLATE ================= */
 
 function applyTemplate(){
 let t=document.getElementById("templateSelect").value
@@ -227,31 +259,70 @@ Hotel:[{nama:"Hotel 2 Malam",volume:2,harga:15000000}]
 }
 
 data=templates[t]?JSON.parse(JSON.stringify(templates[t])):{}
+saveData()
 render()
 }
+
+/* ================= KATEGORI ================= */
 
 function addKategori(){
 let k=document.getElementById("kategoriInput").value.trim()
 if(!k)return
 if(!data[k])data[k]=[]
 document.getElementById("kategoriInput").value=""
+saveData()
 render()
 }
+
+/* ================= ITEM ================= */
 
 function addItem(k){
 let id=safeId(k)
 let nama=document.getElementById("nama_"+id).value
-let volume=clean(document.getElementById("vol_"+id).value)
-let harga=clean(document.getElementById("harga_"+id).value)
+let volume=cleanNumber(document.getElementById("vol_"+id).value)
+let harga=cleanNumber(document.getElementById("harga_"+id).value)
+
 if(!nama||!volume||!harga)return
+
 data[k].push({nama,volume,harga})
+saveData()
 render()
 }
 
 function deleteItem(k,i){
 data[k].splice(i,1)
+saveData()
 render()
 }
+
+/* ================= EDIT INLINE ================= */
+
+function editItem(k,i,field,value){
+
+if(field==="nama"){
+data[k][i].nama=value
+}
+
+if(field==="volume"){
+data[k][i].volume=cleanNumber(value)
+}
+
+if(field==="harga"){
+data[k][i].harga=cleanNumber(value)
+}
+
+saveData()
+render()
+}
+
+/* ================= AUTO FORMAT INPUT ================= */
+
+function formatInputRibuan(el){
+let value=cleanNumber(el.value)
+el.value=formatNumber(value)
+}
+
+/* ================= RENDER ================= */
 
 function render(){
 
@@ -260,32 +331,68 @@ container.innerHTML=""
 let totalAll=0
 
 Object.keys(data).forEach(k=>{
+
 let id=safeId(k)
 let total=0
-let html=`<div class="card"><h3>${k}</h3>
+
+let html=`<div class="card">
+<h3>${k}</h3>
+
 <div class="flex">
 <input id="nama_${id}" placeholder="Nama">
 <input id="vol_${id}" placeholder="Volume">
-<input id="harga_${id}" placeholder="Harga">
+<input id="harga_${id}" placeholder="Harga" oninput="formatInputRibuan(this)">
 <button class="btn-primary" onclick="addItem('${k}')">Tambah</button>
 </div>
+
 <table>`
 
 data[k].forEach((it,i)=>{
 let sub=it.volume*it.harga
 total+=sub
-html+=`<tr>
-<td>${it.nama}</td>
-<td>${it.volume}</td>
-<td>${formatRp(it.harga)}</td>
+
+html+=`
+<tr>
+<td>
+<input class="edit-input"
+value="${it.nama}"
+onchange="editItem('${k}',${i},'nama',this.value)">
+</td>
+
+<td>
+<input class="edit-input"
+value="${formatNumber(it.volume)}"
+oninput="formatInputRibuan(this)"
+onchange="editItem('${k}',${i},'volume',this.value)">
+</td>
+
+<td>
+<input class="edit-input"
+value="${formatNumber(it.harga)}"
+oninput="formatInputRibuan(this)"
+onchange="editItem('${k}',${i},'harga',this.value)">
+</td>
+
 <td>${formatRp(sub)}</td>
-<td><button class="btn-danger" onclick="deleteItem('${k}',${i})">X</button></td>
-</tr>`
+
+<td>
+<button class="btn-danger"
+onclick="deleteItem('${k}',${i})">X</button>
+</td>
+</tr>
+`
 })
 
 totalAll+=total
-html+=`</table><div style="margin-top:10px;font-weight:600">Total: ${formatRp(total)}</div></div>`
+
+html+=`</table>
+<div style="margin-top:10px;font-weight:600">
+Total: ${formatRp(total)}
+</div>
+</div>`
+
 container.innerHTML+=html
+
 })
 
 let diskon=totalAll*(Number(document.getElementById("diskonInput").value)/100)
@@ -301,41 +408,65 @@ Profit: ${formatRp(profit)}`
 renderChart(grand,profit)
 }
 
+/* ================= CHART ================= */
+
 function renderChart(total,profit){
 if(chartInstance)chartInstance.destroy()
+
 chartInstance=new Chart(document.getElementById("chart"),{
 type:"bar",
-data:{labels:["Grand Total","Profit"],datasets:[{data:[total,profit]}]},
-options:{plugins:{legend:{display:false}},responsive:true}
+data:{
+labels:["Grand Total","Profit"],
+datasets:[{data:[total,profit]}]
+},
+options:{
+plugins:{legend:{display:false}},
+responsive:true
+}
 })
 }
 
-function exportPDF(){html2pdf().from(document.body).save("RAB.pdf")}
+/* ================= EXPORT ================= */
+
+function exportPDF(){
+html2pdf().from(document.body).save("RAB.pdf")
+}
+
 function exportExcel(){
 let wb=XLSX.utils.book_new()
 let rows=[["Kategori","Nama","Volume","Harga","Subtotal"]]
+
 Object.keys(data).forEach(k=>{
 data[k].forEach(it=>{
 rows.push([k,it.nama,it.volume,it.harga,it.volume*it.harga])
 })
 })
+
 let ws=XLSX.utils.aoa_to_sheet(rows)
 XLSX.utils.book_append_sheet(wb,ws,"RAB")
 XLSX.writeFile(wb,"RAB.xlsx")
 }
 
+/* ================= LINK ================= */
+
 function generateLink(){
 let encoded=btoa(JSON.stringify(data))
 let url=location.origin+location.pathname+"?data="+encoded
-document.getElementById("generatedLink").innerHTML=`<div class="link-box">${url}</div>`
+document.getElementById("generatedLink").innerHTML=
+`<div class="link-box">${url}</div>`
 }
 
+/* ================= LOAD ================= */
+
 window.onload=()=>{
+loadData()
 let p=new URLSearchParams(location.search)
-if(p.get("data"))data=JSON.parse(atob(p.get("data")))
+if(p.get("data")){
+data=JSON.parse(atob(p.get("data")))
+saveData()
+}
 render()
 }
 </script>
-
 </body>
 </html>
