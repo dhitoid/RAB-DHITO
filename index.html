@@ -11,79 +11,156 @@
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
-body{background:#000;color:#f5f5f7;padding:25px 14px;}
-.container{max-width:480px;margin:auto;}
-h1{text-align:center;margin-bottom:25px;font-size:26px;}
 
-.card{
-background:#1c1c1e;
-border-radius:20px;
-padding:18px;
-margin-bottom:18px;
+/* ================= RESET ================= */
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+-webkit-font-smoothing:antialiased;
 }
 
-label{font-size:12px;opacity:.6;margin-top:14px;display:block;margin-bottom:6px;}
+body{
+background:#000;
+color:#f5f5f7;
+padding:30px 14px;
+min-height:100vh;
+}
 
+/* ================= CONTAINER ================= */
+.container{
+max-width:480px;
+margin:auto;
+}
+
+/* ================= TITLE ================= */
+h1{
+text-align:center;
+font-size:28px;
+font-weight:700;
+margin-bottom:30px;
+letter-spacing:-0.4px;
+}
+
+/* ================= CARD ================= */
+.card{
+background:#1c1c1e;
+border-radius:22px;
+padding:22px 18px;
+margin-bottom:22px;
+border:1px solid rgba(255,255,255,0.05);
+}
+
+/* ================= SECTION DIVIDER ================= */
+hr{
+border:none;
+height:1px;
+background:rgba(255,255,255,0.08);
+margin:20px 0;
+}
+
+/* ================= LABEL ================= */
+label{
+display:block;
+font-size:13px;
+opacity:.6;
+margin-bottom:6px;
+margin-top:18px;
+}
+
+/* ================= INPUT ================= */
 input,select{
 width:100%;
-padding:12px;
-border-radius:12px;
+padding:14px;
+border-radius:14px;
 border:none;
 background:#2c2c2e;
 color:#fff;
 font-size:14px;
+outline:none;
 }
 
+input:focus,select:focus{
+background:#3a3a3c;
+}
+
+/* ================= BUTTON ================= */
 button{
 width:100%;
-padding:12px;
-border-radius:12px;
+padding:14px;
+border-radius:14px;
 border:none;
-margin-top:10px;
 font-weight:600;
+font-size:14px;
+margin-top:12px;
 cursor:pointer;
+transition:.2s;
 }
 
+button:active{
+transform:scale(.97);
+}
+
+/* BUTTON COLORS */
 .btn-primary{background:#0a84ff;color:#fff;}
 .btn-success{background:#30d158;color:#000;}
 .btn-warning{background:#ff9f0a;color:#000;}
 .btn-dark{background:#3a3a3c;color:#fff;}
 .btn-gold{background:#ffd60a;color:#000;}
+.btn-delete-project{background:#ff453a;color:#fff;margin-top:10px;}
 .btn-danger{background:#2c2c2e;color:#ff453a;}
-.btn-delete-project{background:#ff453a;color:#fff;}
 
-.flex{display:flex;flex-direction:column;gap:8px;}
+/* ================= FLEX BUTTON GROUP ================= */
+.flex{
+display:flex;
+flex-direction:column;
+gap:10px;
+margin-top:14px;
+}
 
+/* ================= KATEGORI CARD ================= */
 .kategori-card{
 background:#2c2c2e;
-border-radius:16px;
-padding:14px;
-margin-top:14px;
+border-radius:18px;
+padding:16px;
+margin-top:16px;
 position:relative;
 }
 
 .btn-delete-kategori{
 position:absolute;
-top:10px;
-right:10px;
+right:12px;
+top:12px;
 background:#3a3a3c;
 color:#ff453a;
-padding:4px 10px;
+padding:6px 12px;
 border-radius:20px;
-font-size:11px;
+font-size:12px;
 }
 
-table{width:100%;border-spacing:0 6px;margin-top:10px;}
-th{display:none;}
+/* ================= IOS LIST STYLE (GANTI TABLE FEEL) ================= */
+table{
+width:100%;
+border-collapse:separate;
+border-spacing:0 8px;
+margin-top:12px;
+}
+
+th{
+display:none; /* sembunyikan header biar iOS feel */
+}
+
 td{
 display:block;
 background:#1c1c1e;
-padding:10px;
-border-radius:12px;
-margin-bottom:5px;
+padding:12px;
+border-radius:14px;
+margin-bottom:6px;
+text-align:left;
 font-size:13px;
 }
+
 td:before{
 content:attr(data-label);
 display:block;
@@ -92,66 +169,127 @@ opacity:.5;
 margin-bottom:4px;
 }
 
+/* ================= EDIT INPUT ================= */
 .edit-input{
 width:100%;
 background:#2c2c2e;
 border:none;
-border-radius:8px;
-padding:6px;
+border-radius:10px;
+padding:8px;
 color:#fff;
+font-size:13px;
 }
 
-.summary-card{
-background:#2c2c2e;
-padding:14px;
-border-radius:16px;
-margin-top:16px;
-}
-
-.toggle-modern{
+/* ================= TOGGLE IOS ================= */
+.toggle{
 display:flex;
 justify-content:space-between;
 align-items:center;
-background:#1c1c1e;
-padding:10px;
-border-radius:10px;
+margin-top:18px;
+background:#2c2c2e;
+padding:14px;
+border-radius:14px;
+}
+
+input[type="checkbox"]{
+width:40px;
+height:22px;
+appearance:none;
+background:#3a3a3c;
+border-radius:20px;
+position:relative;
+cursor:pointer;
+transition:.3s;
+}
+
+input[type="checkbox"]:checked{
+background:#0a84ff;
+}
+
+input[type="checkbox"]::before{
+content:"";
+position:absolute;
+width:18px;
+height:18px;
+background:#fff;
+border-radius:50%;
+top:2px;
+left:2px;
+transition:.3s;
+}
+
+input[type="checkbox"]:checked::before{
+left:20px;
+}
+
+/* ================= SUMMARY ================= */
+#summary{
+background:#2c2c2e;
+padding:16px;
+border-radius:18px;
+margin-top:20px;
+font-size:14px;
+}
+
+/* ================= LINK BOX ================= */
+.link-box{
+background:#2c2c2e;
+padding:14px;
+border-radius:14px;
+font-size:12px;
+margin-top:14px;
+word-break:break-all;
+}
+
+/* ================= CHART CARD ================= */
+canvas{
 margin-top:10px;
 }
 
-.total-box{margin-top:6px;font-size:13px;}
-
-canvas{margin-top:10px;}
 </style>
 </head>
 <body>
 
 <div class="container">
+
 <h1>RAB Platinum 2026</h1>
 
 <div class="card">
+
 <label>Nama Project</label>
-<input type="text" id="projectName">
+<input type="text" id="projectName" placeholder="Contoh: Trip Jepang 2026">
 <button class="btn-delete-project" onclick="deleteProject()">Delete Project</button>
 
 <label>Pilih Template</label>
 <select id="templateSelect">
-<option value="travel_liburan">Travel Liburan</option>
-<option value="travel_dinas">Travel Dinas</option>
-<option value="travel_umroh">Travel Umroh</option>
-<option value="travel_corporate">Corporate Trip</option>
-<option value="custom">Custom</option>
+<option value="rumah">Properti - Rumah</option>
+<option value="gedung">Konstruksi - Gedung</option>
+<option value="kuliner">Usaha - Restoran</option>
+<option value="startup">Startup Digital</option>
+<option value="wedding">Event Wedding</option>
+
+<option value="travel_liburan">Perjalanan - Liburan</option>
+<option value="travel_dinas">Perjalanan - Dinas</option>
+<option value="travel_umroh">Perjalanan - Umroh</option>
+<option value="travel_corporate">Perjalanan - Corporate Trip</option>
+
+<option value="custom">Custom (Kosong)</option>
 </select>
 
 <button class="btn-primary" onclick="applyTemplate()">Gunakan Template</button>
 
+<hr style="margin:18px 0;border-color:rgba(255,255,255,0.08)">
+
 <label>Tambah Kategori</label>
-<input type="text" id="kategoriInput">
+<input type="text" id="kategoriInput" placeholder="Contoh: Transportasi">
 <button class="btn-success" onclick="addKategori()">Tambah</button>
 
 <div id="kategoriContainer"></div>
 
-<div class="toggle-modern">
-<span>PPN 11%</span>
+<hr style="margin:18px 0;border-color:rgba(255,255,255,0.08)">
+
+<div class="toggle">
+<label>PPN 11%</label>
 <input type="checkbox" id="ppnToggle" checked onchange="render()">
 </div>
 
@@ -170,6 +308,7 @@ canvas{margin-top:10px;}
 </div>
 
 <div id="generatedLink"></div>
+
 </div>
 
 <div class="card">
@@ -188,36 +327,50 @@ let profitAktif=true
 
 function formatRp(n){return "Rp "+Number(n||0).toLocaleString("id-ID")}
 function clean(n){return Number(String(n).replace(/\D/g,''))}
-function safeKey(k){return k.replace(/\s+/g,'_').replace(/[^\w]/g,'')}
+
+/* ================= DELETE PROJECT ================= */
 
 function deleteProject(){
-if(confirm("Hapus seluruh project?")){
+if(confirm("Yakin hapus seluruh project?")){
 data={}
-projectName.value=""
+document.getElementById("projectName").value=""
 render()
 }
 }
+
+/* ================= TEMPLATE ================= */
 
 function applyTemplate(){
 let t=templateSelect.value
-const templates={
+
+const templates = {
 travel_liburan:{
 "Transportasi":[{nama:"Tiket Pesawat PP",volume:1,harga:7500000}],
-"Akomodasi":[{nama:"Hotel 5 Malam",volume:5,harga:1200000}]
+"Akomodasi":[{nama:"Hotel 5 Malam",volume:5,harga:1200000}],
+"Konsumsi":[{nama:"Makan Harian",volume:5,harga:250000}],
+"Tour & Tiket Wisata":[{nama:"Disneyland Ticket",volume:1,harga:1500000}]
 },
 travel_dinas:{
-"Transportasi":[{nama:"Tiket Pesawat",volume:1,harga:3500000}]
+"Transportasi":[{nama:"Tiket Pesawat",volume:1,harga:3500000}],
+"Hotel":[{nama:"Hotel 3 Malam",volume:3,harga:900000}],
+"Uang Harian":[{nama:"Uang Harian",volume:3,harga:400000}]
 },
 travel_umroh:{
-"Paket Umroh":[{nama:"Paket 9 Hari",volume:1,harga:35000000}]
+"Paket Umroh":[{nama:"Paket 9 Hari",volume:1,harga:35000000}],
+"Perlengkapan":[{nama:"Perlengkapan Umroh",volume:1,harga:2000000}]
 },
 travel_corporate:{
-"Transportasi":[{nama:"Bus Pariwisata",volume:1,harga:12000000}]
+"Transportasi":[{nama:"Bus Pariwisata",volume:1,harga:12000000}],
+"Hotel":[{nama:"Hotel 2 Malam",volume:2,harga:15000000}],
+"Team Building":[{nama:"Outbound Program",volume:1,harga:25000000}]
 }
 }
-data=templates[t]||{}
+
+data = templates[t] || {}
 render()
 }
+
+/* ================= KATEGORI ================= */
 
 function addKategori(){
 let k=kategoriInput.value.trim()
@@ -228,15 +381,18 @@ render()
 }
 
 function deleteKategori(k){
+if(confirm("Hapus kategori ini?")){
 delete data[k]
 render()
 }
+}
+
+/* ================= ITEM ================= */
 
 function addItem(k){
-let key=safeKey(k)
-let nama=document.getElementById("nama_"+key).value
-let volume=clean(document.getElementById("vol_"+key).value)
-let harga=clean(document.getElementById("harga_"+key).value)
+let nama=document.getElementById("nama_"+k).value
+let volume=clean(document.getElementById("vol_"+k).value)
+let harga=clean(document.getElementById("harga_"+k).value)
 if(!nama||!volume||!harga)return
 data[k].push({nama,volume,harga})
 render()
@@ -247,91 +403,146 @@ data[k].splice(i,1)
 render()
 }
 
-function editItem(k,i,f,v){
-if(f==="nama")data[k][i].nama=v
-if(f==="volume")data[k][i].volume=clean(v)
-if(f==="harga")data[k][i].harga=clean(v)
+function editItem(k,i,field,value){
+if(field==="nama") data[k][i].nama=value
+if(field==="volume") data[k][i].volume=clean(value)
+if(field==="harga") data[k][i].harga=clean(value)
 render()
 }
 
+/* ================= RENDER ================= */
+
 function render(){
-let container=kategoriContainer
+let container=document.getElementById("kategoriContainer")
 container.innerHTML=""
 let totalAll=0
 
 Object.keys(data).forEach(k=>{
-let key=safeKey(k)
-let total=0
 
-let html=`<div class="kategori-card">
+let html=`
+<div class="card">
 <button class="btn-delete-kategori" onclick="deleteKategori('${k}')">Delete</button>
 <h3>${k}</h3>
 
 <div class="flex">
-<input id="nama_${key}" placeholder="Nama Item">
-<input id="vol_${key}" placeholder="Volume">
-<input id="harga_${key}" placeholder="Harga">
+<input id="nama_${k}" placeholder="Nama Item">
+<input id="vol_${k}" placeholder="Volume">
+<input id="harga_${k}" placeholder="Harga">
 <button class="btn-primary" onclick="addItem('${k}')">Tambah</button>
 </div>
 
-<table>`
+<table>
+<tr>
+<th>Nama</th>
+<th>Vol</th>
+<th>Harga</th>
+<th>Subtotal</th>
+<th></th>
+</tr>
+`
+
+let total=0
 
 data[k].forEach((it,i)=>{
 let sub=it.volume*it.harga
 total+=sub
+
 html+=`
 <tr>
-<td data-label="Nama"><input class="edit-input" value="${it.nama}" onchange="editItem('${k}',${i},'nama',this.value)"></td>
-<td data-label="Volume"><input class="edit-input" value="${it.volume}" onchange="editItem('${k}',${i},'volume',this.value)"></td>
-<td data-label="Harga"><input class="edit-input" value="${it.harga}" onchange="editItem('${k}',${i},'harga',this.value)"></td>
-<td data-label="Subtotal">${formatRp(sub)}</td>
-<td data-label="Aksi"><button class="btn-danger" onclick="deleteItem('${k}',${i})">Hapus</button></td>
-</tr>`
+<td data-label="Nama">
+<input class="edit-input"
+value="${it.nama}"
+onchange="editItem('${k}',${i},'nama',this.value)">
+</td>
+
+<td data-label="Volume">
+<input class="edit-input"
+value="${it.volume}"
+onchange="editItem('${k}',${i},'volume',this.value)">
+</td>
+
+<td data-label="Harga">
+<input class="edit-input"
+value="${it.harga}"
+onchange="editItem('${k}',${i},'harga',this.value)">
+</td>
+
+<td data-label="Subtotal">
+${formatRp(sub)}
+</td>
+
+<td data-label="Aksi">
+<button onclick="deleteItem('${k}',${i})"
+class="btn-danger">Hapus</button>
+</td>
+</tr>
+`
 })
 
 totalAll+=total
-html+=`</table>
+
+html+=`
+</table>
 <div class="total-box">Total ${k}: ${formatRp(total)}</div>
-</div>`
+</div>
+`
 
 container.innerHTML+=html
+
 })
 
-let diskon=diskonAktif?totalAll*(diskonInput.value/100):0
+let diskon=diskonAktif?totalAll*(Number(diskonInput.value)/100):0
 let subtotal=totalAll-diskon
 let ppn=ppnToggle.checked?subtotal*0.11:0
 let grand=subtotal+ppn
-let profit=profitAktif?grand*(marginInput.value/100):0
+let profit=profitAktif?grand*(Number(marginInput.value)/100):0
 
 summary.innerHTML=`
-<div class="summary-card">
-<div class="toggle-modern">
-<span>Diskon</span>
-<input type="checkbox" ${diskonAktif?"checked":""} onchange="diskonAktif=this.checked;render()">
+<div>
+
+<div class="toggle">
+<span>Aktifkan Diskon</span>
+<input type="checkbox"
+${diskonAktif?"checked":""}
+onchange="diskonAktif=this.checked;render()">
 </div>
-<div class="toggle-modern">
-<span>Profit</span>
-<input type="checkbox" ${profitAktif?"checked":""} onchange="profitAktif=this.checked;render()">
+
+<div class="toggle">
+<span>Aktifkan Profit</span>
+<input type="checkbox"
+${profitAktif?"checked":""}
+onchange="profitAktif=this.checked;render()">
 </div>
-<div class="total-box">Subtotal: ${formatRp(totalAll)}</div>
-<div class="total-box">Diskon: ${formatRp(diskon)}</div>
-<div class="total-box">PPN: ${formatRp(ppn)}</div>
-<div class="total-box">Grand Total: ${formatRp(grand)}</div>
-<div class="total-box">Profit: ${formatRp(profit)}</div>
-</div>`
+
+<div style="margin-top:14px">
+<div>Subtotal: ${formatRp(totalAll)}</div>
+<div>Diskon: ${formatRp(diskon)}</div>
+<div>PPN: ${formatRp(ppn)}</div>
+<div><strong>Grand Total: ${formatRp(grand)}</strong></div>
+<div style="color:#ffd60a;margin-top:6px">
+Estimasi Profit: ${formatRp(profit)}
+</div>
+</div>
+
+</div>
+`
 
 renderChart(grand,profit)
 }
 
+/* ================= CHART ================= */
+
 function renderChart(total,profit){
 if(chartInstance)chartInstance.destroy()
-chartInstance=new Chart(document.getElementById("chart"),{
+chartInstance=new Chart(chart,{
 type:"bar",
 data:{labels:["Grand Total","Profit"],
 datasets:[{data:[total,profit]}]},
 options:{plugins:{legend:{display:false}}}
 })
 }
+
+/* ================= EXPORT ================= */
 
 function exportPDF(){html2pdf().from(document.body).save("RAB.pdf")}
 function exportExcel(){
@@ -349,7 +560,8 @@ XLSX.writeFile(wb,"RAB.xlsx")
 
 function generateLink(){
 let encoded=btoa(JSON.stringify(data))
-generatedLink.innerHTML=`<div class="link-box">${location.origin+location.pathname+"?data="+encoded}</div>`
+let url=location.origin+location.pathname+"?data="+encoded
+generatedLink.innerHTML=`<div class="link-box">${url}</div>`
 }
 
 window.onload=function(){
