@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RAB Enterprise Platinum</title>
+<title>RAB Platinum 2026</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -12,329 +12,409 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
-body{background:linear-gradient(180deg,#0f172a,#111827);color:#fff;padding:20px}
-.container{max-width:1200px;margin:auto}
-h1{text-align:center;margin-bottom:25px;font-weight:700}
-.card{background:rgba(255,255,255,0.07);
-backdrop-filter:blur(25px);
-border-radius:20px;padding:20px;margin-bottom:20px;
-box-shadow:0 15px 40px rgba(0,0,0,0.4)}
+body{
+background:linear-gradient(180deg,#0f172a,#111827);
+color:#fff;padding:20px;
+}
+.container{max-width:1100px;margin:auto}
+h1{text-align:center;margin-bottom:25px;font-weight:700;font-size:26px}
+
+.card{
+background:rgba(255,255,255,0.07);
+backdrop-filter:blur(30px);
+border-radius:24px;
+padding:20px;margin-bottom:20px;
+box-shadow:0 20px 50px rgba(0,0,0,0.5)
+}
+
 input,select{
-width:100%;padding:12px;border-radius:14px;border:none;
-margin:6px 0;background:rgba(255,255,255,0.15);color:#fff;font-size:14px}
+width:100%;padding:12px;border-radius:14px;
+border:none;margin:6px 0;
+background:rgba(255,255,255,0.15);
+color:#fff;font-size:14px
+}
+
 button{
-padding:10px 14px;border-radius:14px;border:none;
-font-weight:600;cursor:pointer;margin:4px;transition:0.2s}
+padding:10px 16px;border-radius:14px;border:none;
+font-weight:600;cursor:pointer;margin:4px;
+transition:0.2s
+}
 button:hover{transform:scale(1.05)}
+
 .btn-primary{background:#3b82f6}
 .btn-success{background:#22c55e}
 .btn-danger{background:#ef4444}
 .btn-warning{background:#f59e0b}
-.btn-dark{background:#111827}
+.btn-dark{background:#1f2937}
 .btn-gold{background:linear-gradient(45deg,#d4af37,#facc15);color:#000}
+
+.flex{display:flex;gap:10px;flex-wrap:wrap}
+@media(max-width:700px){.flex{flex-direction:column}}
+
 table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
 th,td{padding:8px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.15)}
 th{background:rgba(255,255,255,0.08)}
+
 .total-box{text-align:right;margin-top:8px;font-weight:600}
-.flex{display:flex;gap:10px;flex-wrap:wrap}
-canvas{background:#fff;border-radius:15px;margin-top:15px}
-@media(max-width:700px){.flex{flex-direction:column}}
+.toggle{
+display:flex;align-items:center;gap:10px;margin-top:10px
+}
+.toggle input{width:auto}
+
+.link-box{
+background:#000;padding:10px;border-radius:12px;
+word-break:break-all;font-size:12px;margin-top:10px
+}
 </style>
 </head>
 <body>
 
 <div class="container">
-<h1>RAB Enterprise Platinum</h1>
 
-<div class="card" id="adminPanel">
+<h1>RAB Platinum 2026</h1>
 
-<label>Project</label>
-<select id="projectSelect" onchange="render()"></select>
+<div class="card">
 
-<div class="flex">
-<input type="text" id="newProject" placeholder="Project baru">
-<button class="btn-success" onclick="addProject()">Tambah</button>
-<button class="btn-danger" onclick="deleteProject()">Hapus</button>
-</div>
+<label>Nama Project</label>
+<input type="text" id="projectName" placeholder="Contoh: Pembangunan Rumah A">
 
-<label>Gunakan Template</label>
-<div class="flex">
-<select id="templateSelect"></select>
-<button class="btn-primary" onclick="applyTemplate()">Gunakan</button>
-</div>
+<label>Pilih Template</label>
+<select id="templateSelect">
+<option value="rumah">Properti - Rumah Tinggal</option>
+<option value="villa">Properti - Villa</option>
+<option value="apartemen">Properti - Apartemen</option>
+<option value="perumahan">Developer Perumahan</option>
+<option value="ruko">Properti - Ruko</option>
 
-<label>Kategori</label>
-<select id="kategoriSelect"></select>
+<option value="gedung">Konstruksi - Gedung</option>
+<option value="jalan">Konstruksi - Jalan</option>
+<option value="jembatan">Konstruksi - Jembatan</option>
+<option value="drainase">Konstruksi - Drainase</option>
 
-<div class="flex">
-<input type="text" id="newKategori" placeholder="Kategori baru">
-<button class="btn-success" onclick="addKategori()">Tambah</button>
-<button class="btn-danger" onclick="deleteKategori()">Hapus</button>
-</div>
+<option value="kuliner">Usaha - Restoran / Cafe</option>
+<option value="retail">Usaha - Retail / Toko</option>
+<option value="kantor">Usaha - Kantor</option>
+<option value="laundry">Usaha - Laundry</option>
+<option value="klinik">Usaha - Klinik</option>
 
-<input type="text" id="nama" placeholder="Nama Item">
-<input type="text" id="volume" placeholder="Volume">
-<input type="text" id="harga" placeholder="Harga (Rp)">
-<button class="btn-primary" onclick="addItem()">Tambah Item</button>
+<option value="startup">Startup Digital</option>
+<option value="agency">Digital Agency</option>
+<option value="saas">SaaS Platform</option>
+
+<option value="wedding">Event - Wedding</option>
+<option value="corporate_event">Event - Corporate</option>
+<option value="festival">Event - Festival</option>
+
+<option value="manufaktur">Manufaktur</option>
+<option value="pemerintah">Proyek Pemerintah</option>
+
+<option value="custom">Custom (Kosong)</option>
+</select>
+<button class="btn-primary" onclick="applyTemplate()">Gunakan Template</button>
 
 <hr style="margin:15px 0;border-color:rgba(255,255,255,0.1)">
 
-<label>PPN (%)</label>
-<input type="number" id="ppnInput" value="11" onchange="render()">
+<label>Kategori</label>
+<input type="text" id="kategoriInput" placeholder="Contoh: Pondasi">
+<button class="btn-success" onclick="addKategori()">Tambah Kategori</button>
 
-<label>Diskon Global (%)</label>
+<div id="kategoriContainer"></div>
+
+<hr style="margin:15px 0;border-color:rgba(255,255,255,0.1)">
+
+<div class="toggle">
+<label>Aktifkan PPN 11%</label>
+<input type="checkbox" id="ppnToggle" checked onchange="render()">
+</div>
+
+<label>Diskon (%)</label>
 <input type="number" id="diskonInput" value="0" onchange="render()">
 
 <label>Margin Profit (%)</label>
 <input type="number" id="marginInput" value="20" onchange="render()">
 
+<div id="summary"></div>
+
 <div class="flex">
 <button class="btn-warning" onclick="exportPDF()">Export PDF</button>
 <button class="btn-gold" onclick="exportExcel()">Export Excel</button>
-<button class="btn-dark" onclick="generateLink()">Generate Link Klien</button>
-<button class="btn-dark" onclick="backupData()">Backup JSON</button>
-<input type="file" onchange="restoreData(event)" style="max-width:200px">
+<button class="btn-dark" onclick="generateLink()">Generate Link</button>
 </div>
 
-</div>
+<div id="generatedLink"></div>
 
-<div id="output"></div>
-
-<div class="card">
-<h3>Grafik Profit</h3>
-<canvas id="profitChart"></canvas>
 </div>
 
 <div class="card">
-<h3>Tanda Tangan Digital</h3>
-<input type="text" id="ttdNama" placeholder="Disetujui oleh">
-<canvas id="signature" width="400" height="200"></canvas><br>
-<button class="btn-danger" onclick="clearSignature()">Clear</button>
+<h3>Grafik</h3>
+<canvas id="chart"></canvas>
 </div>
 
 </div>
 
 <script>
 
-/* ================= 100+ TEMPLATE ================= */
+let data={}
+let chartInstance=null
 
-const templateNames = Array.from({length:120},(_,i)=>"Template Bisnis "+(i+1));
+function formatRp(n){return "Rp "+Number(n||0).toLocaleString("id-ID")}
+function clean(n){return Number(String(n).replace(/\D/g,''))}
 
-templateSelect.innerHTML='<option value="">-- Pilih Template --</option>';
-templateNames.forEach(t=>{
-templateSelect.innerHTML+=`<option value="${t}">${t}</option>`;
-});
-
-function generateTemplate(name){
-return {
-"Perencanaan":[
-{nama:`Survey ${name}`,volume:1,harga:1000000},
-{nama:`Administrasi ${name}`,volume:1,harga:800000}
-],
-"Material":[
-{nama:`Material Utama`,volume:10,harga:500000},
-{nama:`Material Pendukung`,volume:5,harga:300000}
-],
-"Tenaga Kerja":[
-{nama:`Pekerja`,volume:20,harga:200000},
-{nama:`Supervisor`,volume:10,harga:300000}
-],
-"Operasional":[
-{nama:`Transport`,volume:5,harga:150000},
-{nama:`Konsumsi`,volume:20,harga:50000}
-]
-};
-}
-
-/* ================= CORE SYSTEM ================= */
-
-let data=JSON.parse(localStorage.getItem("rabEnterprise"))||{};
-let chartInstance=null;
-
-function save(){localStorage.setItem("rabEnterprise",JSON.stringify(data))}
-function formatRp(n){return "Rp "+Number(n).toLocaleString("id-ID")}
-function cleanNumber(v){return Number(String(v).replace(/\D/g,''))}
-
-function loadProjects(){
-projectSelect.innerHTML="";
-Object.keys(data).forEach(p=>projectSelect.innerHTML+=`<option>${p}</option>`);
-if(Object.keys(data).length===0){
-data["Project 1"]={}; save(); loadProjects();
-}
-}
-
-function addProject(){
-let n=newProject.value.trim();
-if(!n)return;
-data[n]={}; save(); loadProjects(); render();
-}
-
-function deleteProject(){
-let p=projectSelect.value;
-if(confirm("Hapus project ini?")){
-delete data[p]; save(); loadProjects(); render();
-}
-}
+/* ================= TEMPLATE ================= */
 
 function applyTemplate(){
-let p=projectSelect.value;
-let t=templateSelect.value;
-if(!t)return alert("Pilih template dulu");
-data[p]=generateTemplate(t);
-save(); render();
+let t=templateSelect.value
+data={}
+
+const templates = {
+
+rumah:{
+"Persiapan":[{nama:"Pembersihan Lahan",volume:1,harga:3000000}],
+"Pondasi":[{nama:"Galian & Urugan",volume:20,harga:200000}],
+"Struktur":[{nama:"Kolom & Balok Beton",volume:15,harga:500000}],
+"Finishing":[{nama:"Cat & Keramik",volume:1,harga:15000000}]
+},
+
+villa:{
+"Struktur":[{nama:"Beton Bertulang",volume:1,harga:120000000}],
+"Kolam Renang":[{nama:"Pembuatan Kolam",volume:1,harga:85000000}],
+"Interior":[{nama:"Furniture Custom",volume:1,harga:95000000}]
+},
+
+apartemen:{
+"Struktur Gedung":[{nama:"Struktur Utama",volume:1,harga:850000000}],
+"Lift":[{nama:"Instalasi Lift",volume:2,harga:300000000}],
+"MEP":[{nama:"Sistem Listrik & Plumbing",volume:1,harga:200000000}]
+},
+
+perumahan:{
+"Pembebasan Lahan":[{nama:"Pembelian Tanah",volume:1,harga:2000000000}],
+"Infrastruktur":[{nama:"Jalan Kompleks",volume:1,harga:500000000}],
+"Unit Rumah":[{nama:"Pembangunan 10 Unit",volume:10,harga:150000000}]
+},
+
+ruko:{
+"Struktur Baja":[{nama:"Struktur Baja",volume:1,harga:50000000}],
+"Instalasi":[{nama:"Listrik & Air",volume:1,harga:20000000}]
+},
+
+gedung:{
+"Pondasi":[{nama:"Borepile",volume:10,harga:4000000}],
+"Struktur":[{nama:"Struktur Gedung",volume:1,harga:1200000000}]
+},
+
+jalan:{
+"Perkerasan":[{nama:"Aspal Hotmix",volume:1000,harga:150000}],
+"Drainase":[{nama:"Saluran Air",volume:200,harga:250000}]
+},
+
+jembatan:{
+"Struktur Baja":[{nama:"Rangka Baja",volume:1,harga:2500000000}],
+"Fondasi":[{nama:"Tiang Pancang",volume:20,harga:15000000}]
+},
+
+drainase:{
+"Galian":[{nama:"Galian Tanah",volume:300,harga:100000}],
+"Beton":[{nama:"U-Ditch",volume:200,harga:300000}]
+},
+
+kuliner:{
+"Renovasi":[{nama:"Interior Cafe",volume:1,harga:20000000}],
+"Peralatan":[{nama:"Peralatan Dapur",volume:1,harga:30000000}],
+"Marketing":[{nama:"Soft Opening",volume:1,harga:5000000}]
+},
+
+retail:{
+"Stok Awal":[{nama:"Barang Dagangan",volume:1,harga:100000000}],
+"Rak & Display":[{nama:"Rak Toko",volume:10,harga:1500000}]
+},
+
+kantor:{
+"Interior":[{nama:"Partisi & Meja",volume:1,harga:50000000}],
+"IT":[{nama:"Server & PC",volume:1,harga:150000000}]
+},
+
+laundry:{
+"Mesin Cuci":[{nama:"Mesin Industri",volume:3,harga:15000000}],
+"Renovasi":[{nama:"Renovasi Tempat",volume:1,harga:25000000}]
+},
+
+klinik:{
+"Perizinan":[{nama:"Izin Operasional",volume:1,harga:25000000}],
+"Alat Medis":[{nama:"Peralatan Medis",volume:1,harga:300000000}]
+},
+
+startup:{
+"Development":[{nama:"App Development",volume:1,harga:60000000}],
+"Marketing":[{nama:"Digital Ads",volume:1,harga:30000000}]
+},
+
+agency:{
+"Tim Kreatif":[{nama:"Gaji 3 Bulan",volume:1,harga:90000000}],
+"Operasional":[{nama:"Sewa Kantor",volume:1,harga:45000000}]
+},
+
+saas:{
+"Server":[{nama:"Cloud Server 1 Tahun",volume:1,harga:120000000}],
+"Development":[{nama:"SaaS Platform Dev",volume:1,harga:80000000}]
+},
+
+wedding:{
+"Venue":[{nama:"Sewa Gedung",volume:1,harga:50000000}],
+"Catering":[{nama:"Catering 300 Pax",volume:300,harga:120000}]
+},
+
+corporate_event:{
+"Stage":[{nama:"Stage & Sound",volume:1,harga:75000000}],
+"Branding":[{nama:"Backdrop & LED",volume:1,harga:60000000}]
+},
+
+festival:{
+"Produksi":[{nama:"Sound System Besar",volume:1,harga:150000000}],
+"Talent":[{nama:"Guest Star",volume:1,harga:500000000}]
+},
+
+manufaktur:{
+"Mesin Produksi":[{nama:"Mesin Industri",volume:1,harga:2000000000}],
+"Gudang":[{nama:"Bangun Gudang",volume:1,harga:800000000}]
+},
+
+pemerintah:{
+"Perencanaan":[{nama:"DED & Konsultan",volume:1,harga:100000000}],
+"Konstruksi":[{nama:"Pekerjaan Utama",volume:1,harga:5000000000}]
 }
 
-function loadKategori(){
-let p=projectSelect.value;
-kategoriSelect.innerHTML="";
-Object.keys(data[p]||{}).forEach(k=>kategoriSelect.innerHTML+=`<option>${k}</option>`);
 }
+
+data = templates[t] || {}
+render()
+}
+
+/* ================= KATEGORI ================= */
 
 function addKategori(){
-let p=projectSelect.value;
-let k=newKategori.value.trim();
-if(!k)return;
-if(!data[p])data[p]={};
-data[p][k]=[]; save(); render();
+let k=kategoriInput.value.trim()
+if(!k)return
+if(!data[k])data[k]=[]
+kategoriInput.value=""
+render()
 }
 
-function deleteKategori(){
-let p=projectSelect.value;
-let k=kategoriSelect.value;
-delete data[p][k]; save(); render();
+/* ================= ITEM ================= */
+
+function addItem(k){
+let nama=document.getElementById("nama_"+k).value
+let volume=clean(document.getElementById("vol_"+k).value)
+let harga=clean(document.getElementById("harga_"+k).value)
+if(!nama||!volume||!harga)return
+data[k].push({nama,volume,harga})
+render()
 }
 
-function addItem(){
-let p=projectSelect.value;
-let k=kategoriSelect.value;
-if(!k)return;
-let item={nama:nama.value,volume:cleanNumber(volume.value),harga:cleanNumber(harga.value)};
-if(!item.nama||!item.volume||!item.harga)return;
-data[p][k].push(item);
-save(); render();
-nama.value=""; volume.value=""; harga.value="";
+function deleteItem(k,i){
+data[k].splice(i,1)
+render()
 }
 
-function updateItem(p,k,i,field,value){
-if(field==="harga") value=cleanNumber(value);
-if(field==="volume") value=Number(value);
-data[p][k][i][field]=value;
-save(); render();
-}
-
-function deleteItem(p,k,i){
-data[p][k].splice(i,1);
-save(); render();
-}
+/* ================= RENDER ================= */
 
 function render(){
-loadKategori();
-let p=projectSelect.value;
-let out=output; out.innerHTML="";
-let totalAll=0;
+let container=document.getElementById("kategoriContainer")
+container.innerHTML=""
+let totalAll=0
 
-Object.keys(data[p]||{}).forEach(k=>{
-let total=0;
-let html=`<div class="card"><h3>${k}</h3><table>
-<tr><th>No</th><th>Nama</th><th>Vol</th><th>Harga</th><th>Subtotal</th><th>Action</th></tr>`;
-
-data[p][k].forEach((it,i)=>{
-let sub=it.volume*it.harga; total+=sub;
+Object.keys(data).forEach(k=>{
+let html=`<div class="card"><h3>${k}</h3>
+<input id="nama_${k}" placeholder="Nama Item">
+<input id="vol_${k}" placeholder="Volume">
+<input id="harga_${k}" placeholder="Harga">
+<button class="btn-primary" onclick="addItem('${k}')">Tambah</button>
+<table>
+<tr><th>Nama</th><th>Vol</th><th>Harga</th><th>Subtotal</th><th></th></tr>`
+let total=0
+data[k].forEach((it,i)=>{
+let sub=it.volume*it.harga
+total+=sub
 html+=`<tr>
-<td>${i+1}</td>
-<td contenteditable="true" onblur="updateItem('${p}','${k}',${i},'nama',this.innerText)">${it.nama}</td>
-<td contenteditable="true" onblur="updateItem('${p}','${k}',${i},'volume',this.innerText)">${it.volume}</td>
-<td contenteditable="true" onblur="updateItem('${p}','${k}',${i},'harga',this.innerText)">${formatRp(it.harga)}</td>
+<td>${it.nama}</td>
+<td>${it.volume}</td>
+<td>${formatRp(it.harga)}</td>
 <td>${formatRp(sub)}</td>
-<td><button onclick="deleteItem('${p}','${k}',${i})" class="btn-danger">X</button></td>
-</tr>`;
-});
+<td><button onclick="deleteItem('${k}',${i})" class="btn-danger">X</button></td>
+</tr>`
+})
+totalAll+=total
+html+=`</table>
+<div class="total-box">Total ${k}: ${formatRp(total)}</div>
+</div>`
+container.innerHTML+=html
+})
 
-totalAll+=total;
-html+=`</table><div class="total-box">Total: ${formatRp(total)}</div></div>`;
-out.innerHTML+=html;
-});
+let diskon=totalAll*(Number(diskonInput.value)/100)
+let subtotal=totalAll-diskon
+let ppn=ppnToggle.checked?subtotal*0.11:0
+let grand=subtotal+ppn
+let profit=grand*(Number(marginInput.value)/100)
 
-let ppn=totalAll*(Number(ppnInput.value)/100);
-let diskon=totalAll*(Number(diskonInput.value)/100);
-let subtotal=totalAll-diskon;
-let grand=subtotal+ppn;
-let margin=grand*(Number(marginInput.value)/100);
-
-out.innerHTML+=`
+summary.innerHTML=`
 <div class="card">
 <div class="total-box">Subtotal: ${formatRp(totalAll)}</div>
 <div class="total-box">Diskon: ${formatRp(diskon)}</div>
 <div class="total-box">PPN: ${formatRp(ppn)}</div>
 <div class="total-box">Grand Total: ${formatRp(grand)}</div>
-<div class="total-box" style="font-size:18px;color:#facc15">Estimasi Profit: ${formatRp(margin)}</div>
-</div>`;
+<div class="total-box" style="color:#facc15;font-size:18px">Estimasi Profit: ${formatRp(profit)}</div>
+</div>`
 
-renderChart(grand,margin);
+renderChart(grand,profit)
 }
+
+/* ================= CHART ================= */
 
 function renderChart(total,profit){
-if(chartInstance) chartInstance.destroy();
-chartInstance=new Chart(profitChart,{
-type:'bar',
-data:{labels:['Grand Total','Profit'],
+if(chartInstance)chartInstance.destroy()
+chartInstance=new Chart(chart,{
+type:"bar",
+data:{labels:["Grand Total","Profit"],
 datasets:[{data:[total,profit]}]},
 options:{plugins:{legend:{display:false}}}
-});
+})
 }
 
-/* EXPORT EXCEL */
+/* ================= EXPORT ================= */
+
+function exportPDF(){
+html2pdf().from(document.body).save("RAB.pdf")
+}
+
 function exportExcel(){
-let wb=XLSX.utils.book_new();
-let p=projectSelect.value;
-let rows=[["Kategori","Nama","Volume","Harga","Subtotal"]];
-Object.keys(data[p]).forEach(k=>{
-data[p][k].forEach(it=>{
-rows.push([k,it.nama,it.volume,it.harga,it.volume*it.harga]);
-});
-});
-let ws=XLSX.utils.aoa_to_sheet(rows);
-XLSX.utils.book_append_sheet(wb,ws,"RAB");
-XLSX.writeFile(wb,"RAB-"+p+".xlsx");
+let wb=XLSX.utils.book_new()
+let rows=[["Kategori","Nama","Volume","Harga","Subtotal"]]
+Object.keys(data).forEach(k=>{
+data[k].forEach(it=>{
+rows.push([k,it.nama,it.volume,it.harga,it.volume*it.harga])
+})
+})
+let ws=XLSX.utils.aoa_to_sheet(rows)
+XLSX.utils.book_append_sheet(wb,ws,"RAB")
+XLSX.writeFile(wb,"RAB.xlsx")
 }
 
-/* BACKUP & RESTORE */
-function backupData(){
-let blob=new Blob([JSON.stringify(data)],{type:"application/json"});
-let a=document.createElement("a");
-a.href=URL.createObjectURL(blob);
-a.download="backup-rab.json";
-a.click();
-}
-function restoreData(e){
-let file=e.target.files[0];
-let reader=new FileReader();
-reader.onload=function(evt){
-data=JSON.parse(evt.target.result);
-save(); render();
-};
-reader.readAsText(file);
+/* ================= LINK ================= */
+
+function generateLink(){
+let encoded=btoa(JSON.stringify(data))
+let url=location.origin+location.pathname+"?data="+encoded
+generatedLink.innerHTML=`<div class="link-box">${url}</div>`
 }
 
-/* SIGNATURE */
-let canvas=signature;
-let ctx=canvas.getContext("2d");
-ctx.lineWidth=2; ctx.lineCap="round";
-let drawing=false;
-canvas.onmousedown=()=>drawing=true;
-canvas.onmouseup=()=>{drawing=false;ctx.beginPath();}
-canvas.onmousemove=e=>{
-if(!drawing)return;
-let rect=canvas.getBoundingClientRect();
-ctx.lineTo(e.clientX-rect.left,e.clientY-rect.top);
-ctx.stroke();
-ctx.beginPath();
-ctx.moveTo(e.clientX-rect.left,e.clientY-rect.top);
-};
-function clearSignature(){ctx.clearRect(0,0,canvas.width,canvas.height)}
-
-loadProjects();
-render();
+/* LOAD LINK */
+window.onload=function(){
+let params=new URLSearchParams(window.location.search)
+if(params.get("data")){
+data=JSON.parse(atob(params.get("data")))
+render()
+}
+}
 
 </script>
 </body>
