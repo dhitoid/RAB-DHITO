@@ -3,17 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RAB PRO System</title>
+<title>RAB PRO++</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+
 body{
 background:linear-gradient(135deg,#0f172a,#1e293b);
 color:#fff;
 padding:20px;
 }
+
 .container{max-width:1200px;margin:auto;}
 h1{text-align:center;margin-bottom:20px;font-weight:600;}
+
 .card{
 background:rgba(255,255,255,0.08);
 backdrop-filter:blur(15px);
@@ -21,6 +24,7 @@ padding:20px;
 border-radius:15px;
 margin-bottom:20px;
 }
+
 input,select{
 width:100%;
 padding:10px;
@@ -28,6 +32,7 @@ margin:8px 0;
 border-radius:8px;
 border:none;
 }
+
 button{
 padding:10px;
 border:none;
@@ -35,38 +40,53 @@ border-radius:8px;
 cursor:pointer;
 font-weight:600;
 }
+
 .btn-primary{background:#3b82f6;color:#fff;width:100%;}
 .btn-success{background:#22c55e;color:#fff;}
 .btn-danger{background:#ef4444;color:#fff;}
 .btn-warning{background:#f59e0b;color:#fff;width:100%;margin-top:10px;}
+.btn-dark{background:#111827;color:#fff;width:100%;margin-top:10px;}
+
 table{
 width:100%;
 border-collapse:collapse;
 margin-top:10px;
 font-size:14px;
 }
+
 th,td{
 padding:8px;
 text-align:center;
 border-bottom:1px solid rgba(255,255,255,0.2);
 }
+
 th{background:rgba(255,255,255,0.1);}
+
 .total-box{
 text-align:right;
 font-weight:600;
 margin-top:10px;
 }
+
 .flex{display:flex;gap:10px;}
+
 @media(max-width:700px){
 table{font-size:11px;}
 .flex{flex-direction:column;}
+}
+
+/* PRINT STYLE */
+@media print{
+body{background:#fff;color:#000;}
+.card{background:#fff;box-shadow:none;}
+button,input,select{display:none;}
 }
 </style>
 </head>
 <body>
 
 <div class="container">
-<h1>RAB PRO System</h1>
+<h1>RAB PRO++</h1>
 
 <div class="card">
 <label>Pilih Project</label>
@@ -82,8 +102,11 @@ table{font-size:11px;}
 <label>Kategori</label>
 <select id="kategoriSelect"></select>
 
+<div class="flex">
 <input type="text" id="newKategori" placeholder="Tambah kategori baru">
-<button class="btn-success" onclick="addKategori()">Tambah Kategori</button>
+<button class="btn-success" onclick="addKategori()">Tambah</button>
+<button class="btn-danger" onclick="deleteKategori()">Hapus</button>
+</div>
 
 <label>Nama Item</label>
 <input type="text" id="nama">
@@ -100,7 +123,8 @@ table{font-size:11px;}
 <input type="checkbox" id="ppnCheck" onchange="render()"> Aktifkan PPN 11%
 </label>
 
-<button class="btn-warning" onclick="exportCSV()">Export CSV</button>
+<button class="btn-warning" onclick="exportPDF()">Export PDF</button>
+<button class="btn-dark" onclick="generateLink()">Generate Link Klien</button>
 </div>
 
 <div id="output"></div>
@@ -112,7 +136,9 @@ let data = JSON.parse(localStorage.getItem("rabPro")) || {};
 
 function save(){localStorage.setItem("rabPro",JSON.stringify(data));}
 
-function formatRp(n){return n.toLocaleString("id-ID");}
+function formatRp(n){
+return "Rp " + n.toLocaleString("id-ID");
+}
 
 function loadProjects(){
 let select=document.getElementById("projectSelect");
@@ -131,7 +157,6 @@ function addProject(){
 let name=document.getElementById("newProject").value.trim();
 if(!name) return alert("Isi nama project");
 if(data[name]) return alert("Sudah ada");
-
 data[name]={};
 save();
 loadProjects();
@@ -151,13 +176,22 @@ function addKategori(){
 let p=document.getElementById("projectSelect").value;
 let name=document.getElementById("newKategori").value.trim();
 if(!name) return alert("Isi kategori");
-if(!data[p]) data[p]={};
 if(data[p][name]) return alert("Sudah ada");
-
 data[p][name]=[];
 save();
-document.getElementById("newKategori").value="";
 render();
+document.getElementById("newKategori").value="";
+}
+
+function deleteKategori(){
+let p=document.getElementById("projectSelect").value;
+let k=document.getElementById("kategoriSelect").value;
+if(!k) return;
+if(confirm("Hapus kategori?")){
+delete data[p][k];
+save();
+render();
+}
 }
 
 function addItem(){
@@ -166,13 +200,10 @@ let k=document.getElementById("kategoriSelect").value;
 let nama=document.getElementById("nama").value;
 let volume=parseFloat(document.getElementById("volume").value);
 let harga=parseFloat(document.getElementById("harga").value);
-
 if(!nama||!volume||!harga) return alert("Lengkapi data");
-
 data[p][k].push({nama,volume,harga});
 save();
 render();
-
 document.getElementById("nama").value="";
 document.getElementById("volume").value="";
 document.getElementById("harga").value="";
@@ -212,7 +243,7 @@ html+=`<tr>
 
 grandTotal+=total;
 html+=`</table>
-<div class="total-box">Total ${k}: Rp ${formatRp(total)}</div></div>`;
+<div class="total-box">Total ${k}: ${formatRp(total)}</div></div>`;
 out.innerHTML+=html;
 });
 
@@ -223,30 +254,22 @@ ppn=grandTotal*0.11;
 
 out.innerHTML+=`
 <div class="card">
-<div class="total-box">Subtotal: Rp ${formatRp(grandTotal)}</div>
-<div class="total-box">PPN 11%: Rp ${formatRp(ppn)}</div>
-<div class="total-box" style="font-size:20px;">Grand Total: Rp ${formatRp(grandTotal+ppn)}</div>
+<div class="total-box">Subtotal: ${formatRp(grandTotal)}</div>
+<div class="total-box">PPN 11%: ${formatRp(ppn)}</div>
+<div class="total-box" style="font-size:20px;">Grand Total: ${formatRp(grandTotal+ppn)}</div>
 </div>
 `;
 }
 
-function exportCSV(){
+function exportPDF(){
+window.print();
+}
+
+function generateLink(){
 let p=document.getElementById("projectSelect").value;
-let csv="Kategori,Nama,Volume,Harga,Subtotal\n";
-
-Object.keys(data[p]).forEach(k=>{
-data[p][k].forEach(item=>{
-let sub=item.volume*item.harga;
-csv+=`${k},${item.nama},${item.volume},${item.harga},${sub}\n`;
-});
-});
-
-let blob=new Blob([csv],{type:"text/csv"});
-let url=URL.createObjectURL(blob);
-let a=document.createElement("a");
-a.href=url;
-a.download=p+"_RAB.csv";
-a.click();
+let encoded=btoa(JSON.stringify(data[p]));
+let url=window.location.origin+window.location.pathname+"?data="+encoded;
+prompt("Copy link ini dan kirim ke klien:",url);
 }
 
 loadProjects();
