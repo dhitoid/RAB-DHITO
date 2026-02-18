@@ -3,45 +3,84 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RAB ENTERPRISE</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<title>RAB Enterprise Pro</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-body{background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff;padding:20px;}
-.container{max-width:1200px;margin:auto;}
-h1{text-align:center;margin-bottom:20px;}
-.card{background:rgba(255,255,255,0.08);backdrop-filter:blur(15px);padding:20px;border-radius:15px;margin-bottom:20px;}
-input,select{width:100%;padding:10px;margin:8px 0;border-radius:8px;border:none;}
-button{padding:8px 12px;border:none;border-radius:8px;cursor:pointer;font-weight:600;margin:2px;}
-.btn-primary{background:#3b82f6;color:#fff;}
-.btn-success{background:#22c55e;color:#fff;}
-.btn-danger{background:#ef4444;color:#fff;}
-.btn-warning{background:#f59e0b;color:#fff;}
-.btn-dark{background:#111827;color:#fff;}
-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px;}
-th,td{padding:6px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.2);}
-th{background:rgba(255,255,255,0.1);}
-.total-box{text-align:right;font-weight:600;margin-top:10px;}
-.flex{display:flex;gap:10px;}
-canvas{background:#fff;border-radius:10px;margin-top:15px;}
-#signature{background:#fff;border-radius:10px;}
-@media(max-width:700px){.flex{flex-direction:column;}table{font-size:11px;}}
-@media print{button,input,select{display:none;}body{background:#fff;color:#000;}}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+body{
+background:linear-gradient(180deg,#0f172a,#1e293b);
+color:#fff;padding:20px;
+}
+.container{max-width:1100px;margin:auto}
+h1{text-align:center;margin-bottom:25px;font-weight:700}
+
+.card{
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(20px);
+border-radius:20px;
+padding:20px;
+margin-bottom:20px;
+box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
+
+input,select{
+width:100%;padding:12px;
+border-radius:14px;border:none;
+margin:6px 0;
+background:rgba(255,255,255,0.15);
+color:#fff;font-size:14px;
+}
+
+button{
+padding:10px 14px;
+border-radius:14px;
+border:none;
+font-weight:600;
+cursor:pointer;
+margin:4px;
+transition:0.2s;
+}
+
+button:hover{transform:scale(1.05)}
+
+.btn-primary{background:#3b82f6;color:#fff}
+.btn-success{background:#22c55e;color:#fff}
+.btn-danger{background:#ef4444;color:#fff}
+.btn-warning{background:#f59e0b;color:#fff}
+.btn-dark{background:#111827;color:#fff}
+
+table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
+th,td{padding:8px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.2)}
+th{background:rgba(255,255,255,0.1)}
+
+.total-box{text-align:right;margin-top:8px;font-weight:600}
+.flex{display:flex;gap:10px;flex-wrap:wrap}
+
+canvas{background:#fff;border-radius:15px;margin-top:15px}
+
+@media(max-width:700px){
+.flex{flex-direction:column}
+}
 </style>
 </head>
 <body>
 
 <div class="container">
-<h1>RAB ENTERPRISE</h1>
+<h1>RAB Enterprise Pro</h1>
 
 <div class="card" id="adminPanel">
+
 <label>Project</label>
 <select id="projectSelect" onchange="render()"></select>
 
 <div class="flex">
 <input type="text" id="newProject" placeholder="Project baru">
 <button class="btn-success" onclick="addProject()">Tambah</button>
+<button class="btn-danger" onclick="deleteProject()">Hapus</button>
 </div>
 
 <label>Kategori</label>
@@ -62,14 +101,15 @@ canvas{background:#fff;border-radius:10px;margin-top:15px;}
 <label>PPN (%)</label>
 <input type="number" id="ppnInput" value="11" onchange="render()">
 
-<button class="btn-warning" onclick="window.print()">Export PDF</button>
+<button class="btn-warning" onclick="exportPDF()">Export PDF</button>
 <button class="btn-dark" onclick="generateLink()">Generate Link Klien</button>
+
 </div>
 
 <div id="output"></div>
 
 <div class="card">
-<h3>Grafik Keuntungan (Margin 20%)</h3>
+<h3>Grafik Margin (20%)</h3>
 <canvas id="profitChart"></canvas>
 </div>
 
@@ -87,70 +127,86 @@ const clientMode=urlParams.get("client")==="1";
 if(clientMode) document.getElementById("adminPanel").style.display="none";
 
 let data=JSON.parse(localStorage.getItem("rabEnterprise"))||{};
+let chartInstance=null;
+
 function save(){localStorage.setItem("rabEnterprise",JSON.stringify(data));}
 function formatRp(n){return "Rp "+Number(n).toLocaleString("id-ID");}
-function cleanNumber(v){return Number(v.replace(/\./g,''));}
-function formatInput(el){
-let num=cleanNumber(el.value);
-if(!isNaN(num)) el.value=num.toLocaleString("id-ID");
-}
-
-document.getElementById("harga").addEventListener("keyup",e=>formatInput(e.target));
-document.getElementById("volume").addEventListener("keyup",e=>formatInput(e.target));
+function cleanNumber(v){return Number(String(v).replace(/\./g,''));}
 
 function loadProjects(){
-let sel=document.getElementById("projectSelect");sel.innerHTML="";
+let sel=document.getElementById("projectSelect");
+sel.innerHTML="";
 Object.keys(data).forEach(p=>sel.innerHTML+=`<option>${p}</option>`);
-if(Object.keys(data).length===0){data["Project 1"]={};save();loadProjects();}
+if(Object.keys(data).length===0){
+data["Project 1"]={};save();loadProjects();
 }
+}
+
 function addProject(){
-let n=document.getElementById("newProject").value.trim();
-if(!n)return;data[n]={};save();loadProjects();
+let n=newProject.value.trim();
+if(!n)return;
+data[n]={};save();loadProjects();render();
 }
+
+function deleteProject(){
+let p=projectSelect.value;
+if(confirm("Hapus project ini?")){
+delete data[p];save();loadProjects();render();
+}
+}
+
 function loadKategori(){
-let p=projectSelect.value;let sel=kategoriSelect;sel.innerHTML="";
+let p=projectSelect.value;
+let sel=kategoriSelect;
+sel.innerHTML="";
 Object.keys(data[p]||{}).forEach(k=>sel.innerHTML+=`<option>${k}</option>`);
 }
+
 function addKategori(){
-let p=projectSelect.value;let k=newKategori.value.trim();
-if(!k)return;if(!data[p])data[p]={};
+let p=projectSelect.value;
+let k=newKategori.value.trim();
+if(!k)return;
+if(!data[p])data[p]={};
 data[p][k]=[];save();render();
 }
+
 function deleteKategori(){
-let p=projectSelect.value;let k=kategoriSelect.value;
+let p=projectSelect.value;
+let k=kategoriSelect.value;
+if(confirm("Hapus kategori ini?")){
 delete data[p][k];save();render();
 }
+}
+
 function addItem(){
-let p=projectSelect.value;let k=kategoriSelect.value;
-let namaVal=nama.value;
-let vol=cleanNumber(volume.value);
-let har=cleanNumber(harga.value);
-if(!namaVal||!vol||!har)return;
-data[p][k].push({nama:namaVal,volume:vol,harga:har});
+let p=projectSelect.value;
+let k=kategoriSelect.value;
+if(!k)return alert("Pilih kategori dulu");
+
+let item={
+nama:nama.value,
+volume:cleanNumber(volume.value),
+harga:cleanNumber(harga.value)
+};
+
+if(!item.nama||!item.volume||!item.harga)return;
+data[p][k].push(item);
 save();render();
 nama.value="";volume.value="";harga.value="";
 }
-function editItem(p,k,i){
-let item=data[p][k][i];
-let n=prompt("Nama",item.nama);
-let v=prompt("Volume",item.volume);
-let h=prompt("Harga",item.harga);
-if(n&&v&&h){
-data[p][k][i]={nama:n,volume:Number(v),harga:Number(h)};
-save();render();
-}
-}
-function deleteItem(p,k,i){data[p][k].splice(i,1);save();render();}
 
 function render(){
 loadKategori();
 let p=projectSelect.value;
-let out=document.getElementById("output");out.innerHTML="";
+let out=document.getElementById("output");
+out.innerHTML="";
 let totalAll=0;
+
 Object.keys(data[p]||{}).forEach(k=>{
 let total=0;
 let html=`<div class="card"><h3>${k}</h3><table>
-<tr><th>No</th><th>Nama</th><th>Vol</th><th>Harga</th><th>Subtotal</th>${clientMode?"":"<th>Action</th>"}</tr>`;
+<tr><th>No</th><th>Nama</th><th>Vol</th><th>Harga</th><th>Subtotal</th></tr>`;
+
 data[p][k].forEach((it,i)=>{
 let sub=it.volume*it.harga;total+=sub;
 html+=`<tr>
@@ -159,35 +215,39 @@ html+=`<tr>
 <td>${it.volume}</td>
 <td>${formatRp(it.harga)}</td>
 <td>${formatRp(sub)}</td>
-${clientMode?"":`<td>
-<button onclick="editItem('${p}','${k}',${i})">Edit</button>
-<button onclick="deleteItem('${p}','${k}',${i})">X</button>
-</td>`}
 </tr>`;
 });
 totalAll+=total;
 html+=`</table><div class="total-box">Total: ${formatRp(total)}</div></div>`;
 out.innerHTML+=html;
 });
-let ppnPersen=Number(document.getElementById("ppnInput").value)||0;
-let ppn=totalAll*(ppnPersen/100);
+
+let ppn=totalAll*(ppnInput.value/100);
 let grand=totalAll+ppn;
-out.innerHTML+=`<div class="card">
+
+out.innerHTML+=`
+<div class="card">
 <div class="total-box">Subtotal: ${formatRp(totalAll)}</div>
-<div class="total-box">PPN (${ppnPersen}%): ${formatRp(ppn)}</div>
-<div class="total-box" style="font-size:20px;">Grand Total: ${formatRp(grand)}</div>
+<div class="total-box">PPN: ${formatRp(ppn)}</div>
+<div class="total-box" style="font-size:20px">Grand Total: ${formatRp(grand)}</div>
 </div>`;
+
 renderChart(totalAll);
 }
 
 function renderChart(total){
+if(chartInstance) chartInstance.destroy();
 let ctx=document.getElementById("profitChart");
-let profit=total*0.2;
-new Chart(ctx,{type:'bar',
-data:{labels:['Modal','Keuntungan (20%)'],
-datasets:[{data:[total,profit]}]},
+chartInstance=new Chart(ctx,{
+type:'bar',
+data:{labels:['Modal','Margin 20%'],
+datasets:[{data:[total,total*0.2]}]},
 options:{plugins:{legend:{display:false}}}
 });
+}
+
+function exportPDF(){
+html2pdf().from(document.body).save("RAB.pdf");
 }
 
 function generateLink(){
@@ -197,18 +257,55 @@ let url=location.origin+location.pathname+"?client=1&data="+encoded;
 prompt("Copy link:",url);
 }
 
-/* SIGNATURE */
+/* SIGNATURE FIX (Touch + Mouse) */
 let canvas=document.getElementById("signature");
 let ctx=canvas.getContext("2d");
+ctx.lineWidth=2;
+ctx.lineCap="round";
+
 let drawing=false;
-canvas.onmousedown=()=>drawing=true;
-canvas.onmouseup=()=>drawing=false;
-canvas.onmousemove=e=>{
+
+function getPos(e){
+let rect=canvas.getBoundingClientRect();
+if(e.touches){
+return{
+x:e.touches[0].clientX-rect.left,
+y:e.touches[0].clientY-rect.top
+}
+}else{
+return{
+x:e.clientX-rect.left,
+y:e.clientY-rect.top
+}
+}
+}
+
+canvas.addEventListener("mousedown",()=>drawing=true);
+canvas.addEventListener("mouseup",()=>{drawing=false;ctx.beginPath();});
+canvas.addEventListener("mousemove",(e)=>{
 if(!drawing)return;
-ctx.lineWidth=2;ctx.lineCap="round";
-ctx.lineTo(e.offsetX,e.offsetY);ctx.stroke();
-};
-function clearSignature(){ctx.clearRect(0,0,canvas.width,canvas.height);}
+let pos=getPos(e);
+ctx.lineTo(pos.x,pos.y);
+ctx.stroke();
+ctx.beginPath();
+ctx.moveTo(pos.x,pos.y);
+});
+
+canvas.addEventListener("touchstart",()=>drawing=true);
+canvas.addEventListener("touchend",()=>{drawing=false;ctx.beginPath();});
+canvas.addEventListener("touchmove",(e)=>{
+e.preventDefault();
+if(!drawing)return;
+let pos=getPos(e);
+ctx.lineTo(pos.x,pos.y);
+ctx.stroke();
+ctx.beginPath();
+ctx.moveTo(pos.x,pos.y);
+});
+
+function clearSignature(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+}
 
 loadProjects();
 render();
