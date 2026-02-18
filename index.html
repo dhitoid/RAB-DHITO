@@ -5,47 +5,53 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RAB Platinum 2026</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+
 body{
-background:radial-gradient(circle at top left,#1e293b,#0f172a 60%);
+background:linear-gradient(160deg,#0f172a,#111827,#1e293b);
 color:#fff;
-padding:25px;
+padding:20px;
 }
-.container{max-width:1200px;margin:auto}
+
+.container{max-width:1150px;margin:auto}
+
 h1{
 text-align:center;
-margin-bottom:35px;
-font-size:32px;
-font-weight:800;
+margin-bottom:30px;
+font-size:28px;
+font-weight:700;
 background:linear-gradient(90deg,#3b82f6,#facc15);
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
 }
+
 .card{
 background:rgba(255,255,255,0.06);
-backdrop-filter:blur(30px);
-border-radius:28px;
-padding:25px;
-margin-bottom:25px;
-box-shadow:0 30px 80px rgba(0,0,0,0.6);
-border:1px solid rgba(255,255,255,0.07);
-transition:0.3s;
+backdrop-filter:blur(35px);
+border-radius:26px;
+padding:22px;
+margin-bottom:22px;
+box-shadow:0 25px 60px rgba(0,0,0,0.6);
+border:1px solid rgba(255,255,255,0.08);
 }
-.card:hover{
-transform:translateY(-4px);
-box-shadow:0 40px 90px rgba(0,0,0,0.8);
+
+label{
+font-size:13px;
+opacity:0.7;
+margin-top:8px;
+display:block;
 }
-label{font-size:13px;opacity:0.7;margin-top:10px;display:block}
+
 input,select{
 width:100%;
 padding:12px;
-border-radius:16px;
+border-radius:14px;
 border:1px solid rgba(255,255,255,0.08);
 margin-top:6px;
 background:rgba(255,255,255,0.1);
@@ -53,100 +59,184 @@ color:#fff;
 font-size:14px;
 outline:none;
 }
-input:focus,select:focus{border-color:#3b82f6}
+
+input:focus,select:focus{
+border-color:#3b82f6;
+}
+
 button{
 padding:10px 16px;
-border-radius:16px;
+border-radius:14px;
 border:none;
 font-weight:600;
 cursor:pointer;
 margin-top:8px;
 transition:0.2s;
 }
+
 button:hover{transform:translateY(-2px)}
+
 .btn-primary{background:#3b82f6}
 .btn-success{background:#22c55e}
 .btn-danger{background:#ef4444}
 .btn-warning{background:#f59e0b}
 .btn-dark{background:#1f2937}
 .btn-gold{background:linear-gradient(45deg,#d4af37,#facc15);color:#000}
+
 .flex{display:flex;gap:12px;flex-wrap:wrap}
 @media(max-width:700px){.flex{flex-direction:column}}
+
 table{
 width:100%;
 border-collapse:collapse;
-margin-top:15px;
+margin-top:12px;
 font-size:13px;
 }
+
 th,td{
-padding:10px;
+padding:8px;
 text-align:center;
 border-bottom:1px solid rgba(255,255,255,0.1);
 }
-th{background:rgba(255,255,255,0.05)}
-.total-box{text-align:right;margin-top:10px;font-weight:600}
+
+th{
+background:rgba(255,255,255,0.05);
+}
+
+.total-box{
+text-align:right;
+margin-top:10px;
+font-weight:600;
+}
+
 .summary-card{
-background:linear-gradient(145deg,rgba(59,130,246,0.2),rgba(250,204,21,0.15));
-border-radius:20px;
-padding:18px;
-margin-top:18px;
+background:rgba(59,130,246,0.15);
+border-radius:18px;
+padding:16px;
+margin-top:15px;
 }
+
+.link-box{
+background:#000;
+padding:10px;
+border-radius:12px;
+word-break:break-all;
+font-size:12px;
+margin-top:10px;
+}
+
+.toggle{
+display:flex;
+align-items:center;
+gap:10px;
+margin-top:10px;
+}
+
+/* ===== UI UPGRADE 2026 ===== */
+
+.card{
+position:relative;
+transition:all .3s ease;
+}
+
+.card:hover{
+transform:translateY(-6px);
+box-shadow:0 35px 90px rgba(0,0,0,0.7);
+}
+
+h3{
+margin-bottom:14px;
+font-weight:600;
+letter-spacing:.5px;
+}
+
+.btn-delete-project{
+background:linear-gradient(45deg,#7c3aed,#a855f7);
+margin-top:10px;
+}
+
+.btn-delete-kategori{
+position:absolute;
+right:18px;
+top:18px;
+background:#ef4444;
+font-size:12px;
+padding:6px 10px;
+border-radius:10px;
+}
+
 .edit-input{
-background:transparent;
-border:none;
+background:rgba(255,255,255,0.15);
+border:1px solid rgba(255,255,255,0.1);
+border-radius:10px;
+padding:6px;
 color:#fff;
-width:100%;
-text-align:center;
+font-size:12px;
+width:90px;
 }
+
+.toggle-modern{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:12px;
+margin-top:12px;
+border-radius:14px;
+background:rgba(255,255,255,0.05);
+}
+
+input[type="checkbox"]{
+width:18px;
+height:18px;
+accent-color:#3b82f6;
+cursor:pointer;
+}
+
 </style>
 </head>
 <body>
 
 <div class="container">
+
 <h1>RAB Platinum 2026</h1>
 
 <div class="card">
 
 <label>Nama Project</label>
-<input type="text" id="projectName">
-
-<div class="flex">
-<button class="btn-danger" onclick="deleteProject()">Delete Project</button>
-</div>
-
-<hr style="margin:20px 0;border-color:rgba(255,255,255,0.1)">
+<input type="text" id="projectName" placeholder="Contoh: Trip Jepang 2026">
+<button class="btn-delete-project" onclick="deleteProject()">Delete Project</button>
 
 <label>Pilih Template</label>
 <select id="templateSelect">
-<option value="">-- Pilih Template --</option>
 <option value="rumah">Properti - Rumah</option>
-<option value="resto">Usaha - Restoran</option>
-<option value="travel">Perjalanan - Liburan</option>
+<option value="gedung">Konstruksi - Gedung</option>
+<option value="kuliner">Usaha - Restoran</option>
 <option value="startup">Startup Digital</option>
 <option value="wedding">Event Wedding</option>
-<option value="custom">Custom Kosong</option>
+
+<option value="travel_liburan">Perjalanan - Liburan</option>
+<option value="travel_dinas">Perjalanan - Dinas</option>
+<option value="travel_umroh">Perjalanan - Umroh</option>
+<option value="travel_corporate">Perjalanan - Corporate Trip</option>
+
+<option value="custom">Custom (Kosong)</option>
 </select>
+
 <button class="btn-primary" onclick="applyTemplate()">Gunakan Template</button>
 
-<hr style="margin:20px 0;border-color:rgba(255,255,255,0.1)">
+<hr style="margin:18px 0;border-color:rgba(255,255,255,0.08)">
 
 <label>Tambah Kategori</label>
-<input type="text" id="kategoriInput">
+<input type="text" id="kategoriInput" placeholder="Contoh: Transportasi">
 <button class="btn-success" onclick="addKategori()">Tambah</button>
 
 <div id="kategoriContainer"></div>
 
-<hr style="margin:20px 0;border-color:rgba(255,255,255,0.1)">
+<hr style="margin:18px 0;border-color:rgba(255,255,255,0.08)">
 
-<div class="flex">
+<div class="toggle">
 <label>PPN 11%</label>
 <input type="checkbox" id="ppnToggle" checked onchange="render()">
-
-<label>Aktif Diskon</label>
-<input type="checkbox" id="diskonToggle" checked onchange="render()">
-
-<label>Aktif Profit</label>
-<input type="checkbox" id="profitToggle" checked onchange="render()">
 </div>
 
 <label>Diskon (%)</label>
@@ -156,6 +246,14 @@ text-align:center;
 <input type="number" id="marginInput" value="20" onchange="render()">
 
 <div id="summary"></div>
+
+<div class="flex">
+<button class="btn-warning" onclick="exportPDF()">Export PDF</button>
+<button class="btn-gold" onclick="exportExcel()">Export Excel</button>
+<button class="btn-dark" onclick="generateLink()">Generate Link</button>
+</div>
+
+<div id="generatedLink"></div>
 
 </div>
 
@@ -167,61 +265,58 @@ text-align:center;
 </div>
 
 <script>
+
 let data={}
 let chartInstance=null
+let diskonAktif=true
+let profitAktif=true
 
 function formatRp(n){return "Rp "+Number(n||0).toLocaleString("id-ID")}
 function clean(n){return Number(String(n).replace(/\D/g,''))}
 
+/* ================= DELETE PROJECT ================= */
+
+function deleteProject(){
+if(confirm("Yakin hapus seluruh project?")){
+data={}
+document.getElementById("projectName").value=""
+render()
+}
+}
+
 /* ================= TEMPLATE ================= */
 
 function applyTemplate(){
-let t=document.getElementById("templateSelect").value
+let t=templateSelect.value
 
-const templates={
-
-rumah:{
-"Persiapan":[{nama:"Pembersihan Lahan",volume:1,harga:5000000}],
-"Struktur":[{nama:"Pondasi",volume:1,harga:30000000}],
-"Finishing":[{nama:"Cat & Interior",volume:1,harga:15000000}]
+const templates = {
+travel_liburan:{
+"Transportasi":[{nama:"Tiket Pesawat PP",volume:1,harga:7500000}],
+"Akomodasi":[{nama:"Hotel 5 Malam",volume:5,harga:1200000}],
+"Konsumsi":[{nama:"Makan Harian",volume:5,harga:250000}],
+"Tour & Tiket Wisata":[{nama:"Disneyland Ticket",volume:1,harga:1500000}]
 },
-
-resto:{
-"Renovasi":[{nama:"Interior",volume:1,harga:25000000}],
-"Peralatan":[{nama:"Kitchen Set",volume:1,harga:40000000}],
-"Operasional":[{nama:"Bahan Baku Awal",volume:1,harga:10000000}]
+travel_dinas:{
+"Transportasi":[{nama:"Tiket Pesawat",volume:1,harga:3500000}],
+"Hotel":[{nama:"Hotel 3 Malam",volume:3,harga:900000}],
+"Uang Harian":[{nama:"Uang Harian",volume:3,harga:400000}]
 },
-
-travel:{
-"Transportasi":[{nama:"Tiket Pesawat PP",volume:1,harga:7000000}],
-"Hotel":[{nama:"Hotel 5 Malam",volume:5,harga:1200000}],
-"Wisata":[{nama:"Tiket Atraksi",volume:1,harga:2000000}]
+travel_umroh:{
+"Paket Umroh":[{nama:"Paket 9 Hari",volume:1,harga:35000000}],
+"Perlengkapan":[{nama:"Perlengkapan Umroh",volume:1,harga:2000000}]
 },
-
-startup:{
-"Development":[{nama:"Pembuatan Aplikasi",volume:1,harga:80000000}],
-"Marketing":[{nama:"Iklan Digital",volume:1,harga:20000000}]
-},
-
-wedding:{
-"Venue":[{nama:"Sewa Gedung",volume:1,harga:50000000}],
-"Catering":[{nama:"Catering 500 Pax",volume:500,harga:80000}]
+travel_corporate:{
+"Transportasi":[{nama:"Bus Pariwisata",volume:1,harga:12000000}],
+"Hotel":[{nama:"Hotel 2 Malam",volume:2,harga:15000000}],
+"Team Building":[{nama:"Outbound Program",volume:1,harga:25000000}]
+}
 }
 
-}
-
-data = t==="custom" ? {} : (templates[t] || {})
+data = templates[t] || {}
 render()
 }
 
-/* ================= CORE ================= */
-
-function deleteProject(){
-if(confirm("Hapus seluruh project?")){
-data={}
-render()
-}
-}
+/* ================= KATEGORI ================= */
 
 function addKategori(){
 let k=kategoriInput.value.trim()
@@ -232,9 +327,13 @@ render()
 }
 
 function deleteKategori(k){
+if(confirm("Hapus kategori ini?")){
 delete data[k]
 render()
 }
+}
+
+/* ================= ITEM ================= */
 
 function addItem(k){
 let nama=document.getElementById("nama_"+k).value
@@ -245,17 +344,19 @@ data[k].push({nama,volume,harga})
 render()
 }
 
-function updateItem(k,i,field,value){
-if(field==="nama")data[k][i].nama=value
-if(field==="volume")data[k][i].volume=clean(value)
-if(field==="harga")data[k][i].harga=clean(value)
-render()
-}
-
 function deleteItem(k,i){
 data[k].splice(i,1)
 render()
 }
+
+function editItem(k,i,field,value){
+if(field==="nama") data[k][i].nama=value
+if(field==="volume") data[k][i].volume=clean(value)
+if(field==="harga") data[k][i].harga=clean(value)
+render()
+}
+
+/* ================= RENDER ================= */
 
 function render(){
 let container=document.getElementById("kategoriContainer")
@@ -264,10 +365,8 @@ let totalAll=0
 
 Object.keys(data).forEach(k=>{
 let html=`<div class="card">
-<div class="flex" style="justify-content:space-between">
+<button class="btn-delete-kategori" onclick="deleteKategori('${k}')">Delete</button>
 <h3>${k}</h3>
-<button class="btn-danger" onclick="deleteKategori('${k}')">Delete</button>
-</div>
 
 <div class="flex">
 <input id="nama_${k}" placeholder="Nama Item">
@@ -277,9 +376,7 @@ let html=`<div class="card">
 </div>
 
 <table>
-<tr>
-<th>Nama</th><th>Vol</th><th>Harga</th><th>Subtotal</th><th></th>
-</tr>`
+<tr><th>Nama</th><th>Vol</th><th>Harga</th><th>Subtotal</th><th></th></tr>`
 
 let total=0
 data[k].forEach((it,i)=>{
@@ -287,16 +384,15 @@ let sub=it.volume*it.harga
 total+=sub
 html+=`
 <tr>
-<td><input class="edit-input" value="${it.nama}" onchange="updateItem('${k}',${i},'nama',this.value)"></td>
-<td><input class="edit-input" value="${it.volume}" onchange="updateItem('${k}',${i},'volume',this.value)"></td>
-<td><input class="edit-input" value="${it.harga}" onchange="updateItem('${k}',${i},'harga',this.value)"></td>
+<td><input class="edit-input" value="${it.nama}" onchange="editItem('${k}',${i},'nama',this.value)"></td>
+<td><input class="edit-input" value="${it.volume}" onchange="editItem('${k}',${i},'volume',this.value)"></td>
+<td><input class="edit-input" value="${it.harga}" onchange="editItem('${k}',${i},'harga',this.value)"></td>
 <td>${formatRp(sub)}</td>
 <td><button onclick="deleteItem('${k}',${i})" class="btn-danger">X</button></td>
 </tr>`
 })
 
 totalAll+=total
-
 html+=`</table>
 <div class="total-box">Total ${k}: ${formatRp(total)}</div>
 </div>`
@@ -304,23 +400,37 @@ html+=`</table>
 container.innerHTML+=html
 })
 
-let diskon=diskonToggle.checked?totalAll*(diskonInput.value/100):0
+let diskon=diskonAktif?totalAll*(Number(diskonInput.value)/100):0
 let subtotal=totalAll-diskon
 let ppn=ppnToggle.checked?subtotal*0.11:0
 let grand=subtotal+ppn
-let profit=profitToggle.checked?grand*(marginInput.value/100):0
+let profit=profitAktif?grand*(Number(marginInput.value)/100):0
 
 summary.innerHTML=`
 <div class="summary-card">
+
+<div class="toggle-modern">
+<span>Aktifkan Diskon</span>
+<input type="checkbox" ${diskonAktif?"checked":""} onchange="diskonAktif=this.checked;render()">
+</div>
+
+<div class="toggle-modern">
+<span>Aktifkan Profit</span>
+<input type="checkbox" ${profitAktif?"checked":""} onchange="profitAktif=this.checked;render()">
+</div>
+
 <div class="total-box">Subtotal: ${formatRp(totalAll)}</div>
 <div class="total-box">Diskon: ${formatRp(diskon)}</div>
 <div class="total-box">PPN: ${formatRp(ppn)}</div>
 <div class="total-box">Grand Total: ${formatRp(grand)}</div>
-<div class="total-box" style="color:#facc15;font-size:18px">Profit: ${formatRp(profit)}</div>
+<div class="total-box" style="color:#facc15;font-size:18px">Estimasi Profit: ${formatRp(profit)}</div>
+
 </div>`
 
 renderChart(grand,profit)
 }
+
+/* ================= CHART ================= */
 
 function renderChart(total,profit){
 if(chartInstance)chartInstance.destroy()
@@ -332,7 +442,36 @@ options:{plugins:{legend:{display:false}}}
 })
 }
 
+/* ================= EXPORT ================= */
+
+function exportPDF(){html2pdf().from(document.body).save("RAB.pdf")}
+function exportExcel(){
+let wb=XLSX.utils.book_new()
+let rows=[["Kategori","Nama","Volume","Harga","Subtotal"]]
+Object.keys(data).forEach(k=>{
+data[k].forEach(it=>{
+rows.push([k,it.nama,it.volume,it.harga,it.volume*it.harga])
+})
+})
+let ws=XLSX.utils.aoa_to_sheet(rows)
+XLSX.utils.book_append_sheet(wb,ws,"RAB")
+XLSX.writeFile(wb,"RAB.xlsx")
+}
+
+function generateLink(){
+let encoded=btoa(JSON.stringify(data))
+let url=location.origin+location.pathname+"?data="+encoded
+generatedLink.innerHTML=`<div class="link-box">${url}</div>`
+}
+
+window.onload=function(){
+let params=new URLSearchParams(window.location.search)
+if(params.get("data")){
+data=JSON.parse(atob(params.get("data")))
+}
 render()
+}
+
 </script>
 </body>
 </html>
