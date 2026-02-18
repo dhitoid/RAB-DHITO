@@ -3,274 +3,212 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RAB PRO++</title>
+<title>RAB ENTERPRISE</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
-
-body{
-background:linear-gradient(135deg,#0f172a,#1e293b);
-color:#fff;
-padding:20px;
-}
-
+body{background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff;padding:20px;}
 .container{max-width:1200px;margin:auto;}
-h1{text-align:center;margin-bottom:20px;font-weight:600;}
-
-.card{
-background:rgba(255,255,255,0.08);
-backdrop-filter:blur(15px);
-padding:20px;
-border-radius:15px;
-margin-bottom:20px;
-}
-
-input,select{
-width:100%;
-padding:10px;
-margin:8px 0;
-border-radius:8px;
-border:none;
-}
-
-button{
-padding:10px;
-border:none;
-border-radius:8px;
-cursor:pointer;
-font-weight:600;
-}
-
-.btn-primary{background:#3b82f6;color:#fff;width:100%;}
+h1{text-align:center;margin-bottom:20px;}
+.card{background:rgba(255,255,255,0.08);backdrop-filter:blur(15px);padding:20px;border-radius:15px;margin-bottom:20px;}
+input,select{width:100%;padding:10px;margin:8px 0;border-radius:8px;border:none;}
+button{padding:8px 12px;border:none;border-radius:8px;cursor:pointer;font-weight:600;margin:2px;}
+.btn-primary{background:#3b82f6;color:#fff;}
 .btn-success{background:#22c55e;color:#fff;}
 .btn-danger{background:#ef4444;color:#fff;}
-.btn-warning{background:#f59e0b;color:#fff;width:100%;margin-top:10px;}
-.btn-dark{background:#111827;color:#fff;width:100%;margin-top:10px;}
-
-table{
-width:100%;
-border-collapse:collapse;
-margin-top:10px;
-font-size:14px;
-}
-
-th,td{
-padding:8px;
-text-align:center;
-border-bottom:1px solid rgba(255,255,255,0.2);
-}
-
+.btn-warning{background:#f59e0b;color:#fff;}
+.btn-dark{background:#111827;color:#fff;}
+table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px;}
+th,td{padding:6px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.2);}
 th{background:rgba(255,255,255,0.1);}
-
-.total-box{
-text-align:right;
-font-weight:600;
-margin-top:10px;
-}
-
+.total-box{text-align:right;font-weight:600;margin-top:10px;}
 .flex{display:flex;gap:10px;}
-
-@media(max-width:700px){
-table{font-size:11px;}
-.flex{flex-direction:column;}
-}
-
-/* PRINT STYLE */
-@media print{
-body{background:#fff;color:#000;}
-.card{background:#fff;box-shadow:none;}
-button,input,select{display:none;}
-}
+canvas{background:#fff;border-radius:10px;margin-top:15px;}
+#signature{background:#fff;border-radius:10px;}
+@media(max-width:700px){.flex{flex-direction:column;}table{font-size:11px;}}
+@media print{button,input,select{display:none;}body{background:#fff;color:#000;}}
 </style>
 </head>
 <body>
 
 <div class="container">
-<h1>RAB PRO++</h1>
+<h1>RAB ENTERPRISE</h1>
 
-<div class="card">
-<label>Pilih Project</label>
+<div class="card" id="adminPanel">
+<label>Project</label>
 <select id="projectSelect" onchange="render()"></select>
 
 <div class="flex">
-<input type="text" id="newProject" placeholder="Nama Project Baru">
-<button class="btn-success" onclick="addProject()">Tambah Project</button>
-</div>
+<input type="text" id="newProject" placeholder="Project baru">
+<button class="btn-success" onclick="addProject()">Tambah</button>
 </div>
 
-<div class="card">
 <label>Kategori</label>
 <select id="kategoriSelect"></select>
 
 <div class="flex">
-<input type="text" id="newKategori" placeholder="Tambah kategori baru">
+<input type="text" id="newKategori" placeholder="Kategori baru">
 <button class="btn-success" onclick="addKategori()">Tambah</button>
 <button class="btn-danger" onclick="deleteKategori()">Hapus</button>
 </div>
 
-<label>Nama Item</label>
-<input type="text" id="nama">
-
-<label>Volume</label>
-<input type="number" id="volume">
-
-<label>Harga Satuan</label>
-<input type="number" id="harga">
+<input type="text" id="nama" placeholder="Nama Item">
+<input type="text" id="volume" placeholder="Volume">
+<input type="text" id="harga" placeholder="Harga (Rp)">
 
 <button class="btn-primary" onclick="addItem()">Tambah Item</button>
 
-<label style="margin-top:10px;display:block;">
-<input type="checkbox" id="ppnCheck" onchange="render()"> Aktifkan PPN 11%
-</label>
+<label>PPN (%)</label>
+<input type="number" id="ppnInput" value="11" onchange="render()">
 
-<button class="btn-warning" onclick="exportPDF()">Export PDF</button>
+<button class="btn-warning" onclick="window.print()">Export PDF</button>
 <button class="btn-dark" onclick="generateLink()">Generate Link Klien</button>
 </div>
 
 <div id="output"></div>
 
+<div class="card">
+<h3>Grafik Keuntungan (Margin 20%)</h3>
+<canvas id="profitChart"></canvas>
+</div>
+
+<div class="card">
+<h3>Tanda Tangan Digital</h3>
+<canvas id="signature" width="400" height="200"></canvas><br>
+<button class="btn-danger" onclick="clearSignature()">Clear</button>
+</div>
+
 </div>
 
 <script>
-let data = JSON.parse(localStorage.getItem("rabPro")) || {};
+const urlParams=new URLSearchParams(window.location.search);
+const clientMode=urlParams.get("client")==="1";
+if(clientMode) document.getElementById("adminPanel").style.display="none";
 
-function save(){localStorage.setItem("rabPro",JSON.stringify(data));}
-
-function formatRp(n){
-return "Rp " + n.toLocaleString("id-ID");
+let data=JSON.parse(localStorage.getItem("rabEnterprise"))||{};
+function save(){localStorage.setItem("rabEnterprise",JSON.stringify(data));}
+function formatRp(n){return "Rp "+Number(n).toLocaleString("id-ID");}
+function cleanNumber(v){return Number(v.replace(/\./g,''));}
+function formatInput(el){
+let num=cleanNumber(el.value);
+if(!isNaN(num)) el.value=num.toLocaleString("id-ID");
 }
+
+document.getElementById("harga").addEventListener("keyup",e=>formatInput(e.target));
+document.getElementById("volume").addEventListener("keyup",e=>formatInput(e.target));
 
 function loadProjects(){
-let select=document.getElementById("projectSelect");
-select.innerHTML="";
-Object.keys(data).forEach(p=>{
-select.innerHTML+=`<option value="${p}">${p}</option>`;
-});
-if(Object.keys(data).length===0){
-data["Project 1"]={};
-save();
-loadProjects();
+let sel=document.getElementById("projectSelect");sel.innerHTML="";
+Object.keys(data).forEach(p=>sel.innerHTML+=`<option>${p}</option>`);
+if(Object.keys(data).length===0){data["Project 1"]={};save();loadProjects();}
 }
-}
-
 function addProject(){
-let name=document.getElementById("newProject").value.trim();
-if(!name) return alert("Isi nama project");
-if(data[name]) return alert("Sudah ada");
-data[name]={};
-save();
-loadProjects();
-document.getElementById("newProject").value="";
+let n=document.getElementById("newProject").value.trim();
+if(!n)return;data[n]={};save();loadProjects();
 }
-
 function loadKategori(){
-let p=document.getElementById("projectSelect").value;
-let select=document.getElementById("kategoriSelect");
-select.innerHTML="";
-Object.keys(data[p]).forEach(k=>{
-select.innerHTML+=`<option value="${k}">${k}</option>`;
-});
+let p=projectSelect.value;let sel=kategoriSelect;sel.innerHTML="";
+Object.keys(data[p]||{}).forEach(k=>sel.innerHTML+=`<option>${k}</option>`);
 }
-
 function addKategori(){
-let p=document.getElementById("projectSelect").value;
-let name=document.getElementById("newKategori").value.trim();
-if(!name) return alert("Isi kategori");
-if(data[p][name]) return alert("Sudah ada");
-data[p][name]=[];
-save();
-render();
-document.getElementById("newKategori").value="";
+let p=projectSelect.value;let k=newKategori.value.trim();
+if(!k)return;if(!data[p])data[p]={};
+data[p][k]=[];save();render();
 }
-
 function deleteKategori(){
-let p=document.getElementById("projectSelect").value;
-let k=document.getElementById("kategoriSelect").value;
-if(!k) return;
-if(confirm("Hapus kategori?")){
-delete data[p][k];
-save();
-render();
+let p=projectSelect.value;let k=kategoriSelect.value;
+delete data[p][k];save();render();
 }
-}
-
 function addItem(){
-let p=document.getElementById("projectSelect").value;
-let k=document.getElementById("kategoriSelect").value;
-let nama=document.getElementById("nama").value;
-let volume=parseFloat(document.getElementById("volume").value);
-let harga=parseFloat(document.getElementById("harga").value);
-if(!nama||!volume||!harga) return alert("Lengkapi data");
-data[p][k].push({nama,volume,harga});
-save();
-render();
-document.getElementById("nama").value="";
-document.getElementById("volume").value="";
-document.getElementById("harga").value="";
+let p=projectSelect.value;let k=kategoriSelect.value;
+let namaVal=nama.value;
+let vol=cleanNumber(volume.value);
+let har=cleanNumber(harga.value);
+if(!namaVal||!vol||!har)return;
+data[p][k].push({nama:namaVal,volume:vol,harga:har});
+save();render();
+nama.value="";volume.value="";harga.value="";
 }
-
-function deleteItem(p,k,i){
-data[p][k].splice(i,1);
-save();
-render();
+function editItem(p,k,i){
+let item=data[p][k][i];
+let n=prompt("Nama",item.nama);
+let v=prompt("Volume",item.volume);
+let h=prompt("Harga",item.harga);
+if(n&&v&&h){
+data[p][k][i]={nama:n,volume:Number(v),harga:Number(h)};
+save();render();
 }
+}
+function deleteItem(p,k,i){data[p][k].splice(i,1);save();render();}
 
 function render(){
-let p=document.getElementById("projectSelect").value;
 loadKategori();
-let out=document.getElementById("output");
-out.innerHTML="";
-let grandTotal=0;
-
-Object.keys(data[p]).forEach(k=>{
+let p=projectSelect.value;
+let out=document.getElementById("output");out.innerHTML="";
+let totalAll=0;
+Object.keys(data[p]||{}).forEach(k=>{
 let total=0;
-let html=`<div class="card"><h3>${k}</h3>
-<table>
-<tr><th>No</th><th>Nama</th><th>Vol</th><th>Harga</th><th>Subtotal</th><th>Action</th></tr>`;
-
-data[p][k].forEach((item,i)=>{
-let sub=item.volume*item.harga;
-total+=sub;
+let html=`<div class="card"><h3>${k}</h3><table>
+<tr><th>No</th><th>Nama</th><th>Vol</th><th>Harga</th><th>Subtotal</th>${clientMode?"":"<th>Action</th>"}</tr>`;
+data[p][k].forEach((it,i)=>{
+let sub=it.volume*it.harga;total+=sub;
 html+=`<tr>
 <td>${i+1}</td>
-<td>${item.nama}</td>
-<td>${item.volume}</td>
-<td>${formatRp(item.harga)}</td>
+<td>${it.nama}</td>
+<td>${it.volume}</td>
+<td>${formatRp(it.harga)}</td>
 <td>${formatRp(sub)}</td>
-<td><button class="btn-danger" onclick="deleteItem('${p}','${k}',${i})">X</button></td>
+${clientMode?"":`<td>
+<button onclick="editItem('${p}','${k}',${i})">Edit</button>
+<button onclick="deleteItem('${p}','${k}',${i})">X</button>
+</td>`}
 </tr>`;
 });
-
-grandTotal+=total;
-html+=`</table>
-<div class="total-box">Total ${k}: ${formatRp(total)}</div></div>`;
+totalAll+=total;
+html+=`</table><div class="total-box">Total: ${formatRp(total)}</div></div>`;
 out.innerHTML+=html;
 });
-
-let ppn=0;
-if(document.getElementById("ppnCheck").checked){
-ppn=grandTotal*0.11;
+let ppnPersen=Number(document.getElementById("ppnInput").value)||0;
+let ppn=totalAll*(ppnPersen/100);
+let grand=totalAll+ppn;
+out.innerHTML+=`<div class="card">
+<div class="total-box">Subtotal: ${formatRp(totalAll)}</div>
+<div class="total-box">PPN (${ppnPersen}%): ${formatRp(ppn)}</div>
+<div class="total-box" style="font-size:20px;">Grand Total: ${formatRp(grand)}</div>
+</div>`;
+renderChart(totalAll);
 }
 
-out.innerHTML+=`
-<div class="card">
-<div class="total-box">Subtotal: ${formatRp(grandTotal)}</div>
-<div class="total-box">PPN 11%: ${formatRp(ppn)}</div>
-<div class="total-box" style="font-size:20px;">Grand Total: ${formatRp(grandTotal+ppn)}</div>
-</div>
-`;
-}
-
-function exportPDF(){
-window.print();
+function renderChart(total){
+let ctx=document.getElementById("profitChart");
+let profit=total*0.2;
+new Chart(ctx,{type:'bar',
+data:{labels:['Modal','Keuntungan (20%)'],
+datasets:[{data:[total,profit]}]},
+options:{plugins:{legend:{display:false}}}
+});
 }
 
 function generateLink(){
-let p=document.getElementById("projectSelect").value;
+let p=projectSelect.value;
 let encoded=btoa(JSON.stringify(data[p]));
-let url=window.location.origin+window.location.pathname+"?data="+encoded;
-prompt("Copy link ini dan kirim ke klien:",url);
+let url=location.origin+location.pathname+"?client=1&data="+encoded;
+prompt("Copy link:",url);
 }
+
+/* SIGNATURE */
+let canvas=document.getElementById("signature");
+let ctx=canvas.getContext("2d");
+let drawing=false;
+canvas.onmousedown=()=>drawing=true;
+canvas.onmouseup=()=>drawing=false;
+canvas.onmousemove=e=>{
+if(!drawing)return;
+ctx.lineWidth=2;ctx.lineCap="round";
+ctx.lineTo(e.offsetX,e.offsetY);ctx.stroke();
+};
+function clearSignature(){ctx.clearRect(0,0,canvas.width,canvas.height);}
 
 loadProjects();
 render();
