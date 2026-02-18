@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RAB Enterprise Pro</title>
+<title>RAB Enterprise Pro Smart</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -39,7 +39,7 @@ canvas{background:#fff;border-radius:15px;margin-top:15px}
 <body>
 
 <div class="container">
-<h1>RAB Enterprise Pro</h1>
+<h1>RAB Enterprise Pro Smart</h1>
 
 <div class="card" id="adminPanel">
 
@@ -53,7 +53,7 @@ canvas{background:#fff;border-radius:15px;margin-top:15px}
 </div>
 
 <label>Kategori</label>
-<select id="kategoriSelect"></select>
+<select id="kategoriSelect" onchange="applyTemplate()"></select>
 
 <div class="flex">
 <input type="text" id="newKategori" placeholder="Kategori baru">
@@ -87,36 +87,69 @@ Aktifkan PPN
 <canvas id="profitChart"></canvas>
 </div>
 
-<div class="card">
-<h3>Tanda Tangan Digital</h3>
-<input type="text" id="ttdNama" placeholder="Disetujui oleh">
-<canvas id="signature" width="400" height="200"></canvas><br>
-<button class="btn-danger" onclick="clearSignature()">Clear</button>
-</div>
-
-</div>
-
-<!-- TEMPLATE PDF -->
-<div id="pdfTemplate" style="display:none;background:#fff;color:#000;padding:40px;font-family:Inter">
-<h2 style="text-align:center;margin-bottom:20px">RAB PROJECT</h2>
-<div id="pdfContent"></div>
-<div style="margin-top:50px;text-align:right">
-<p id="pdfTanggal"></p>
-<p style="margin-top:60px">_________________________</p>
-<p id="pdfTtdNama"></p>
-<img id="pdfSignature" style="max-width:200px;margin-top:10px"/>
-</div>
 </div>
 
 <script>
-const urlParams=new URLSearchParams(window.location.search);
-const clientMode=urlParams.get("client")==="1";
-if(clientMode) document.getElementById("adminPanel").style.display="none";
 
-const encodedData=urlParams.get("data");
-if(encodedData){
-localStorage.setItem("rabEnterprise",JSON.stringify({"Client Project":JSON.parse(atob(encodedData))}));
-}
+/* ===========================
+   SMART TEMPLATE MASTER
+=========================== */
+
+const smartTemplates = {
+
+"Pembangunan Rumah": [
+{nama:"Semen 50kg", volume:100, harga:65000},
+{nama:"Batu Bata", volume:5000, harga:800},
+{nama:"Pasir (m3)", volume:10, harga:300000},
+{nama:"Upah Tukang (Harian)", volume:30, harga:150000}
+],
+
+"Perjalanan Dinas": [
+{nama:"BBM (Liter)", volume:100, harga:15000},
+{nama:"Tol", volume:1, harga:250000},
+{nama:"Hotel (Malam)", volume:3, harga:500000},
+{nama:"Konsumsi", volume:3, harga:150000}
+],
+
+"Event Organizer": [
+{nama:"Sewa Gedung", volume:1, harga:10000000},
+{nama:"Sound System", volume:1, harga:5000000},
+{nama:"MC", volume:1, harga:2000000},
+{nama:"Dekorasi", volume:1, harga:7000000}
+],
+
+"Properti Kontrakan": [
+{nama:"Renovasi", volume:1, harga:15000000},
+{nama:"Furniture", volume:1, harga:8000000},
+{nama:"Promosi", volume:1, harga:2000000}
+],
+
+"Usaha F&B": [
+{nama:"Bahan Baku", volume:1, harga:5000000},
+{nama:"Gas LPG", volume:5, harga:200000},
+{nama:"Gaji Karyawan", volume:2, harga:2500000},
+{nama:"Listrik", volume:1, harga:1000000}
+],
+
+"Digital Marketing": [
+{nama:"Iklan Facebook Ads", volume:1, harga:3000000},
+{nama:"Google Ads", volume:1, harga:5000000},
+{nama:"Content Creator", volume:1, harga:4000000}
+],
+
+"IT Project": [
+{nama:"Domain", volume:1, harga:200000},
+{nama:"Hosting", volume:1, harga:1500000},
+{nama:"Developer Fee", volume:1, harga:15000000}
+],
+
+"Custom": []
+
+};
+
+/* ===========================
+   SYSTEM CORE (TIDAK DIUBAH)
+=========================== */
 
 let data=JSON.parse(localStorage.getItem("rabEnterprise"))||{};
 let chartInstance=null;
@@ -136,7 +169,9 @@ data["Project 1"]={}; save(); loadProjects();
 function addProject(){
 let n=newProject.value.trim();
 if(!n)return;
-data[n]={}; save(); loadProjects(); render();
+data[n]={};
+Object.keys(smartTemplates).forEach(t=>data[n][t]=[]);
+save(); loadProjects(); render();
 }
 
 function deleteProject(){
@@ -152,12 +187,23 @@ kategoriSelect.innerHTML="";
 Object.keys(data[p]||{}).forEach(k=>kategoriSelect.innerHTML+=`<option>${k}</option>`);
 }
 
+function applyTemplate(){
+let p=projectSelect.value;
+let k=kategoriSelect.value;
+if(!smartTemplates[k]) return;
+if(data[p][k].length===0){
+data[p][k]=JSON.parse(JSON.stringify(smartTemplates[k]));
+save();
+render();
+}
+}
+
 function addKategori(){
 let p=projectSelect.value;
 let k=newKategori.value.trim();
 if(!k)return;
-if(!data[p])data[p]={};
-data[p][k]=[]; save(); render();
+data[p][k]=[];
+save(); render();
 }
 
 function deleteKategori(){
@@ -204,17 +250,17 @@ let totalAll=0;
 Object.keys(data[p]||{}).forEach(k=>{
 let total=0;
 let html=`<div class="card"><h3>${k}</h3><table>
-<tr><th>No</th><th>Nama</th><th>Vol</th><th>Harga</th><th>Subtotal</th>${clientMode?"":"<th>Action</th>"}</tr>`;
+<tr><th>No</th><th>Nama</th><th>Vol</th><th>Harga</th><th>Subtotal</th><th>Action</th></tr>`;
 
 data[p][k].forEach((it,i)=>{
 let sub=it.volume*it.harga; total+=sub;
 html+=`<tr>
 <td>${i+1}</td>
-<td contenteditable="${!clientMode}" onblur="updateItem('${p}','${k}',${i},'nama',this.innerText)">${it.nama}</td>
-<td contenteditable="${!clientMode}" onblur="updateItem('${p}','${k}',${i},'volume',this.innerText)">${it.volume}</td>
-<td contenteditable="${!clientMode}" onblur="updateItem('${p}','${k}',${i},'harga',this.innerText)">${formatRp(it.harga)}</td>
+<td contenteditable onblur="updateItem('${p}','${k}',${i},'nama',this.innerText)">${it.nama}</td>
+<td contenteditable onblur="updateItem('${p}','${k}',${i},'volume',this.innerText)">${it.volume}</td>
+<td contenteditable onblur="updateItem('${p}','${k}',${i},'harga',this.innerText)">${formatRp(it.harga)}</td>
 <td>${formatRp(sub)}</td>
-${clientMode?"":`<td><button onclick="deleteItem('${p}','${k}',${i})" class="btn-danger">X</button></td>`}
+<td><button onclick="deleteItem('${p}','${k}',${i})" class="btn-danger">X</button></td>
 </tr>`;
 });
 
@@ -223,9 +269,7 @@ html+=`</table><div class="total-box">Total: ${formatRp(total)}</div></div>`;
 out.innerHTML+=html;
 });
 
-let ppnAktif=ppnToggle.checked;
-let ppnPersen=Number(ppnInput.value)||0;
-let ppn=ppnAktif? totalAll*(ppnPersen/100):0;
+let ppn=ppnToggle.checked? totalAll*(Number(ppnInput.value)/100):0;
 let grand=totalAll+ppn;
 
 out.innerHTML+=`
@@ -248,68 +292,9 @@ options:{plugins:{legend:{display:false}}}
 });
 }
 
-function exportPDF(){
-let p=projectSelect.value;
-pdfContent.innerHTML=output.innerHTML;
-pdfTanggal.innerText="Tanggal: "+new Date().toLocaleDateString("id-ID");
-pdfTtdNama.innerText=ttdNama.value||"";
-pdfSignature.src=signature.toDataURL();
-pdfTemplate.style.display="block";
-
-html2pdf().set({
-margin:10,
-filename:`RAB-${p}.pdf`,
-html2canvas:{scale:2},
-jsPDF:{unit:'mm',format:'a4'}
-}).from(pdfTemplate).save().then(()=>{
-pdfTemplate.style.display="none";
-});
-}
-
-function generateLink(){
-let p=projectSelect.value;
-let encoded=btoa(JSON.stringify(data[p]));
-let url=location.origin+location.pathname+"?client=1&data="+encoded;
-navigator.clipboard.writeText(url);
-alert("Link berhasil disalin ✔");
-}
-
-/* SIGNATURE */
-let canvas=signature;
-let ctx=canvas.getContext("2d");
-ctx.lineWidth=2; ctx.lineCap="round";
-let drawing=false;
-
-function getPos(e){
-let rect=canvas.getBoundingClientRect();
-if(e.touches){
-return{x:e.touches[0].clientX-rect.left,y:e.touches[0].clientY-rect.top}
-}else{
-return{x:e.clientX-rect.left,y:e.clientY-rect.top}
-}
-}
-
-canvas.addEventListener("mousedown",()=>drawing=true);
-canvas.addEventListener("mouseup",()=>{drawing=false;ctx.beginPath();});
-canvas.addEventListener("mousemove",(e)=>{
-if(!drawing)return;
-let pos=getPos(e);
-ctx.lineTo(pos.x,pos.y); ctx.stroke();
-ctx.beginPath(); ctx.moveTo(pos.x,pos.y);
-});
-canvas.addEventListener("touchstart",()=>drawing=true);
-canvas.addEventListener("touchend",()=>{drawing=false;ctx.beginPath();});
-canvas.addEventListener("touchmove",(e)=>{
-e.preventDefault();
-if(!drawing)return;
-let pos=getPos(e);
-ctx.lineTo(pos.x,pos.y); ctx.stroke();
-ctx.beginPath(); ctx.moveTo(pos.x,pos.y);
-});
-function clearSignature(){ctx.clearRect(0,0,canvas.width,canvas.height)}
-
 loadProjects();
 render();
+
 </script>
 
 </body>
