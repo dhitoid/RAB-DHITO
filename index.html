@@ -11,60 +11,29 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
-body{
-background:linear-gradient(180deg,#0f172a,#1e293b);
-color:#fff;padding:20px;
-}
+body{background:linear-gradient(180deg,#0f172a,#1e293b);color:#fff;padding:20px}
 .container{max-width:1100px;margin:auto}
 h1{text-align:center;margin-bottom:25px;font-weight:700}
-
-.card{
-background:rgba(255,255,255,0.08);
-backdrop-filter:blur(20px);
-border-radius:20px;
-padding:20px;
-margin-bottom:20px;
-box-shadow:0 10px 30px rgba(0,0,0,0.3);
-}
-
-input,select{
-width:100%;padding:12px;
-border-radius:14px;border:none;
-margin:6px 0;
-background:rgba(255,255,255,0.15);
-color:#fff;font-size:14px;
-}
-
-button{
-padding:10px 14px;
-border-radius:14px;
-border:none;
-font-weight:600;
-cursor:pointer;
-margin:4px;
-transition:0.2s;
-}
-
+.card{background:rgba(255,255,255,0.08);backdrop-filter:blur(20px);
+border-radius:20px;padding:20px;margin-bottom:20px;
+box-shadow:0 10px 30px rgba(0,0,0,0.3)}
+input,select{width:100%;padding:12px;border-radius:14px;border:none;
+margin:6px 0;background:rgba(255,255,255,0.15);color:#fff;font-size:14px}
+button{padding:10px 14px;border-radius:14px;border:none;font-weight:600;
+cursor:pointer;margin:4px;transition:0.2s}
 button:hover{transform:scale(1.05)}
-
 .btn-primary{background:#3b82f6;color:#fff}
 .btn-success{background:#22c55e;color:#fff}
 .btn-danger{background:#ef4444;color:#fff}
 .btn-warning{background:#f59e0b;color:#fff}
 .btn-dark{background:#111827;color:#fff}
-
 table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
 th,td{padding:8px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.2)}
 th{background:rgba(255,255,255,0.1)}
-
 .total-box{text-align:right;margin-top:8px;font-weight:600}
 .flex{display:flex;gap:10px;flex-wrap:wrap}
-
 canvas{background:#fff;border-radius:15px;margin-top:15px}
-
-@media(max-width:700px){
-.flex{flex-direction:column}
-}
+@media(max-width:700px){.flex{flex-direction:column}}
 </style>
 </head>
 <body>
@@ -101,6 +70,11 @@ canvas{background:#fff;border-radius:15px;margin-top:15px}
 <label>PPN (%)</label>
 <input type="number" id="ppnInput" value="11" onchange="render()">
 
+<label style="display:flex;align-items:center;gap:8px">
+<input type="checkbox" id="ppnToggle" checked onchange="render()" style="width:auto">
+Aktifkan PPN
+</label>
+
 <button class="btn-warning" onclick="exportPDF()">Export PDF</button>
 <button class="btn-dark" onclick="generateLink()">Generate Link Klien</button>
 
@@ -115,10 +89,23 @@ canvas{background:#fff;border-radius:15px;margin-top:15px}
 
 <div class="card">
 <h3>Tanda Tangan Digital</h3>
+<input type="text" id="ttdNama" placeholder="Disetujui oleh">
 <canvas id="signature" width="400" height="200"></canvas><br>
 <button class="btn-danger" onclick="clearSignature()">Clear</button>
 </div>
 
+</div>
+
+<!-- TEMPLATE PDF -->
+<div id="pdfTemplate" style="display:none;background:#fff;color:#000;padding:40px;font-family:Inter">
+<h2 style="text-align:center;margin-bottom:20px">RAB PROJECT</h2>
+<div id="pdfContent"></div>
+<div style="margin-top:50px;text-align:right">
+<p id="pdfTanggal"></p>
+<p style="margin-top:60px">_________________________</p>
+<p id="pdfTtdNama"></p>
+<img id="pdfSignature" style="max-width:200px;margin-top:10px"/>
+</div>
 </div>
 
 <script>
@@ -126,40 +113,43 @@ const urlParams=new URLSearchParams(window.location.search);
 const clientMode=urlParams.get("client")==="1";
 if(clientMode) document.getElementById("adminPanel").style.display="none";
 
+const encodedData=urlParams.get("data");
+if(encodedData){
+localStorage.setItem("rabEnterprise",JSON.stringify({"Client Project":JSON.parse(atob(encodedData))}));
+}
+
 let data=JSON.parse(localStorage.getItem("rabEnterprise"))||{};
 let chartInstance=null;
 
-function save(){localStorage.setItem("rabEnterprise",JSON.stringify(data));}
-function formatRp(n){return "Rp "+Number(n).toLocaleString("id-ID");}
-function cleanNumber(v){return Number(String(v).replace(/\./g,''));}
+function save(){localStorage.setItem("rabEnterprise",JSON.stringify(data))}
+function formatRp(n){return "Rp "+Number(n).toLocaleString("id-ID")}
+function cleanNumber(v){return Number(String(v).replace(/\D/g,''))}
 
 function loadProjects(){
-let sel=document.getElementById("projectSelect");
-sel.innerHTML="";
+let sel=projectSelect; sel.innerHTML="";
 Object.keys(data).forEach(p=>sel.innerHTML+=`<option>${p}</option>`);
 if(Object.keys(data).length===0){
-data["Project 1"]={};save();loadProjects();
+data["Project 1"]={}; save(); loadProjects();
 }
 }
 
 function addProject(){
 let n=newProject.value.trim();
 if(!n)return;
-data[n]={};save();loadProjects();render();
+data[n]={}; save(); loadProjects(); render();
 }
 
 function deleteProject(){
 let p=projectSelect.value;
 if(confirm("Hapus project ini?")){
-delete data[p];save();loadProjects();render();
+delete data[p]; save(); loadProjects(); render();
 }
 }
 
 function loadKategori(){
 let p=projectSelect.value;
-let sel=kategoriSelect;
-sel.innerHTML="";
-Object.keys(data[p]||{}).forEach(k=>sel.innerHTML+=`<option>${k}</option>`);
+kategoriSelect.innerHTML="";
+Object.keys(data[p]||{}).forEach(k=>kategoriSelect.innerHTML+=`<option>${k}</option>`);
 }
 
 function addKategori(){
@@ -167,14 +157,14 @@ let p=projectSelect.value;
 let k=newKategori.value.trim();
 if(!k)return;
 if(!data[p])data[p]={};
-data[p][k]=[];save();render();
+data[p][k]=[]; save(); render();
 }
 
 function deleteKategori(){
 let p=projectSelect.value;
 let k=kategoriSelect.value;
 if(confirm("Hapus kategori ini?")){
-delete data[p][k];save();render();
+delete data[p][k]; save(); render();
 }
 }
 
@@ -182,47 +172,60 @@ function addItem(){
 let p=projectSelect.value;
 let k=kategoriSelect.value;
 if(!k)return alert("Pilih kategori dulu");
-
 let item={
 nama:nama.value,
 volume:cleanNumber(volume.value),
 harga:cleanNumber(harga.value)
 };
-
 if(!item.nama||!item.volume||!item.harga)return;
 data[p][k].push(item);
-save();render();
-nama.value="";volume.value="";harga.value="";
+save(); render();
+nama.value=""; volume.value=""; harga.value="";
+}
+
+function updateItem(p,k,i,field,value){
+if(field==="harga") value=cleanNumber(value);
+if(field==="volume") value=Number(value);
+data[p][k][i][field]=value;
+save(); render();
+}
+
+function deleteItem(p,k,i){
+data[p][k].splice(i,1);
+save(); render();
 }
 
 function render(){
 loadKategori();
 let p=projectSelect.value;
-let out=document.getElementById("output");
-out.innerHTML="";
+let out=output; out.innerHTML="";
 let totalAll=0;
 
 Object.keys(data[p]||{}).forEach(k=>{
 let total=0;
 let html=`<div class="card"><h3>${k}</h3><table>
-<tr><th>No</th><th>Nama</th><th>Vol</th><th>Harga</th><th>Subtotal</th></tr>`;
+<tr><th>No</th><th>Nama</th><th>Vol</th><th>Harga</th><th>Subtotal</th>${clientMode?"":"<th>Action</th>"}</tr>`;
 
 data[p][k].forEach((it,i)=>{
-let sub=it.volume*it.harga;total+=sub;
+let sub=it.volume*it.harga; total+=sub;
 html+=`<tr>
 <td>${i+1}</td>
-<td>${it.nama}</td>
-<td>${it.volume}</td>
-<td>${formatRp(it.harga)}</td>
+<td contenteditable="${!clientMode}" onblur="updateItem('${p}','${k}',${i},'nama',this.innerText)">${it.nama}</td>
+<td contenteditable="${!clientMode}" onblur="updateItem('${p}','${k}',${i},'volume',this.innerText)">${it.volume}</td>
+<td contenteditable="${!clientMode}" onblur="updateItem('${p}','${k}',${i},'harga',this.innerText)">${formatRp(it.harga)}</td>
 <td>${formatRp(sub)}</td>
+${clientMode?"":`<td><button onclick="deleteItem('${p}','${k}',${i})" class="btn-danger">X</button></td>`}
 </tr>`;
 });
+
 totalAll+=total;
 html+=`</table><div class="total-box">Total: ${formatRp(total)}</div></div>`;
 out.innerHTML+=html;
 });
 
-let ppn=totalAll*(ppnInput.value/100);
+let ppnAktif=ppnToggle.checked;
+let ppnPersen=Number(ppnInput.value)||0;
+let ppn=ppnAktif? totalAll*(ppnPersen/100):0;
 let grand=totalAll+ppn;
 
 out.innerHTML+=`
@@ -237,8 +240,7 @@ renderChart(totalAll);
 
 function renderChart(total){
 if(chartInstance) chartInstance.destroy();
-let ctx=document.getElementById("profitChart");
-chartInstance=new Chart(ctx,{
+chartInstance=new Chart(profitChart,{
 type:'bar',
 data:{labels:['Modal','Margin 20%'],
 datasets:[{data:[total,total*0.2]}]},
@@ -247,36 +249,43 @@ options:{plugins:{legend:{display:false}}}
 }
 
 function exportPDF(){
-html2pdf().from(document.body).save("RAB.pdf");
+let p=projectSelect.value;
+pdfContent.innerHTML=output.innerHTML;
+pdfTanggal.innerText="Tanggal: "+new Date().toLocaleDateString("id-ID");
+pdfTtdNama.innerText=ttdNama.value||"";
+pdfSignature.src=signature.toDataURL();
+pdfTemplate.style.display="block";
+
+html2pdf().set({
+margin:10,
+filename:`RAB-${p}.pdf`,
+html2canvas:{scale:2},
+jsPDF:{unit:'mm',format:'a4'}
+}).from(pdfTemplate).save().then(()=>{
+pdfTemplate.style.display="none";
+});
 }
 
 function generateLink(){
 let p=projectSelect.value;
 let encoded=btoa(JSON.stringify(data[p]));
 let url=location.origin+location.pathname+"?client=1&data="+encoded;
-prompt("Copy link:",url);
+navigator.clipboard.writeText(url);
+alert("Link berhasil disalin ✔");
 }
 
-/* SIGNATURE FIX (Touch + Mouse) */
-let canvas=document.getElementById("signature");
+/* SIGNATURE */
+let canvas=signature;
 let ctx=canvas.getContext("2d");
-ctx.lineWidth=2;
-ctx.lineCap="round";
-
+ctx.lineWidth=2; ctx.lineCap="round";
 let drawing=false;
 
 function getPos(e){
 let rect=canvas.getBoundingClientRect();
 if(e.touches){
-return{
-x:e.touches[0].clientX-rect.left,
-y:e.touches[0].clientY-rect.top
-}
+return{x:e.touches[0].clientX-rect.left,y:e.touches[0].clientY-rect.top}
 }else{
-return{
-x:e.clientX-rect.left,
-y:e.clientY-rect.top
-}
+return{x:e.clientX-rect.left,y:e.clientY-rect.top}
 }
 }
 
@@ -285,27 +294,19 @@ canvas.addEventListener("mouseup",()=>{drawing=false;ctx.beginPath();});
 canvas.addEventListener("mousemove",(e)=>{
 if(!drawing)return;
 let pos=getPos(e);
-ctx.lineTo(pos.x,pos.y);
-ctx.stroke();
-ctx.beginPath();
-ctx.moveTo(pos.x,pos.y);
+ctx.lineTo(pos.x,pos.y); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(pos.x,pos.y);
 });
-
 canvas.addEventListener("touchstart",()=>drawing=true);
 canvas.addEventListener("touchend",()=>{drawing=false;ctx.beginPath();});
 canvas.addEventListener("touchmove",(e)=>{
 e.preventDefault();
 if(!drawing)return;
 let pos=getPos(e);
-ctx.lineTo(pos.x,pos.y);
-ctx.stroke();
-ctx.beginPath();
-ctx.moveTo(pos.x,pos.y);
+ctx.lineTo(pos.x,pos.y); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(pos.x,pos.y);
 });
-
-function clearSignature(){
-ctx.clearRect(0,0,canvas.width,canvas.height);
-}
+function clearSignature(){ctx.clearRect(0,0,canvas.width,canvas.height)}
 
 loadProjects();
 render();
