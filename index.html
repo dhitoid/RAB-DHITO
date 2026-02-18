@@ -12,34 +12,69 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+
 body{
-background:linear-gradient(180deg,#0f172a,#111827);
-color:#fff;padding:20px;
+background:linear-gradient(160deg,#0f172a,#111827,#1e293b);
+color:#fff;
+padding:20px;
 }
-.container{max-width:1100px;margin:auto}
-h1{text-align:center;margin-bottom:25px;font-weight:700;font-size:26px}
+
+.container{max-width:1150px;margin:auto}
+
+h1{
+text-align:center;
+margin-bottom:30px;
+font-size:28px;
+font-weight:700;
+background:linear-gradient(90deg,#3b82f6,#facc15);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
 
 .card{
-background:rgba(255,255,255,0.07);
-backdrop-filter:blur(30px);
-border-radius:24px;
-padding:20px;margin-bottom:20px;
-box-shadow:0 20px 50px rgba(0,0,0,0.5)
+background:rgba(255,255,255,0.06);
+backdrop-filter:blur(35px);
+border-radius:26px;
+padding:22px;
+margin-bottom:22px;
+box-shadow:0 25px 60px rgba(0,0,0,0.6);
+border:1px solid rgba(255,255,255,0.08);
+}
+
+label{
+font-size:13px;
+opacity:0.7;
+margin-top:8px;
+display:block;
 }
 
 input,select{
-width:100%;padding:12px;border-radius:14px;
-border:none;margin:6px 0;
-background:rgba(255,255,255,0.15);
-color:#fff;font-size:14px
+width:100%;
+padding:12px;
+border-radius:14px;
+border:1px solid rgba(255,255,255,0.08);
+margin-top:6px;
+background:rgba(255,255,255,0.1);
+color:#fff;
+font-size:14px;
+outline:none;
+}
+
+input:focus,select:focus{
+border-color:#3b82f6;
 }
 
 button{
-padding:10px 16px;border-radius:14px;border:none;
-font-weight:600;cursor:pointer;margin:4px;
-transition:0.2s
+padding:10px 16px;
+border-radius:14px;
+border:none;
+font-weight:600;
+cursor:pointer;
+margin-top:8px;
+transition:0.2s;
 }
-button:hover{transform:scale(1.05)}
+
+button:hover{transform:translateY(-2px)}
 
 .btn-primary{background:#3b82f6}
 .btn-success{background:#22c55e}
@@ -48,22 +83,53 @@ button:hover{transform:scale(1.05)}
 .btn-dark{background:#1f2937}
 .btn-gold{background:linear-gradient(45deg,#d4af37,#facc15);color:#000}
 
-.flex{display:flex;gap:10px;flex-wrap:wrap}
+.flex{display:flex;gap:12px;flex-wrap:wrap}
 @media(max-width:700px){.flex{flex-direction:column}}
 
-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
-th,td{padding:8px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.15)}
-th{background:rgba(255,255,255,0.08)}
-
-.total-box{text-align:right;margin-top:8px;font-weight:600}
-.toggle{
-display:flex;align-items:center;gap:10px;margin-top:10px
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:12px;
+font-size:13px;
 }
-.toggle input{width:auto}
+
+th,td{
+padding:8px;
+text-align:center;
+border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+th{
+background:rgba(255,255,255,0.05);
+}
+
+.total-box{
+text-align:right;
+margin-top:10px;
+font-weight:600;
+}
+
+.summary-card{
+background:rgba(59,130,246,0.15);
+border-radius:18px;
+padding:16px;
+margin-top:15px;
+}
 
 .link-box{
-background:#000;padding:10px;border-radius:12px;
-word-break:break-all;font-size:12px;margin-top:10px
+background:#000;
+padding:10px;
+border-radius:12px;
+word-break:break-all;
+font-size:12px;
+margin-top:10px;
+}
+
+.toggle{
+display:flex;
+align-items:center;
+gap:10px;
+margin-top:10px;
 }
 </style>
 </head>
@@ -76,54 +142,38 @@ word-break:break-all;font-size:12px;margin-top:10px
 <div class="card">
 
 <label>Nama Project</label>
-<input type="text" id="projectName" placeholder="Contoh: Pembangunan Rumah A">
+<input type="text" id="projectName" placeholder="Contoh: Trip Jepang 2026">
 
 <label>Pilih Template</label>
 <select id="templateSelect">
-<option value="rumah">Properti - Rumah Tinggal</option>
-<option value="villa">Properti - Villa</option>
-<option value="apartemen">Properti - Apartemen</option>
-<option value="perumahan">Developer Perumahan</option>
-<option value="ruko">Properti - Ruko</option>
-
+<option value="rumah">Properti - Rumah</option>
 <option value="gedung">Konstruksi - Gedung</option>
-<option value="jalan">Konstruksi - Jalan</option>
-<option value="jembatan">Konstruksi - Jembatan</option>
-<option value="drainase">Konstruksi - Drainase</option>
-
-<option value="kuliner">Usaha - Restoran / Cafe</option>
-<option value="retail">Usaha - Retail / Toko</option>
-<option value="kantor">Usaha - Kantor</option>
-<option value="laundry">Usaha - Laundry</option>
-<option value="klinik">Usaha - Klinik</option>
-
+<option value="kuliner">Usaha - Restoran</option>
 <option value="startup">Startup Digital</option>
-<option value="agency">Digital Agency</option>
-<option value="saas">SaaS Platform</option>
+<option value="wedding">Event Wedding</option>
 
-<option value="wedding">Event - Wedding</option>
-<option value="corporate_event">Event - Corporate</option>
-<option value="festival">Event - Festival</option>
-
-<option value="manufaktur">Manufaktur</option>
-<option value="pemerintah">Proyek Pemerintah</option>
+<option value="travel_liburan">Perjalanan - Liburan</option>
+<option value="travel_dinas">Perjalanan - Dinas</option>
+<option value="travel_umroh">Perjalanan - Umroh</option>
+<option value="travel_corporate">Perjalanan - Corporate Trip</option>
 
 <option value="custom">Custom (Kosong)</option>
 </select>
+
 <button class="btn-primary" onclick="applyTemplate()">Gunakan Template</button>
 
-<hr style="margin:15px 0;border-color:rgba(255,255,255,0.1)">
+<hr style="margin:18px 0;border-color:rgba(255,255,255,0.08)">
 
-<label>Kategori</label>
-<input type="text" id="kategoriInput" placeholder="Contoh: Pondasi">
-<button class="btn-success" onclick="addKategori()">Tambah Kategori</button>
+<label>Tambah Kategori</label>
+<input type="text" id="kategoriInput" placeholder="Contoh: Transportasi">
+<button class="btn-success" onclick="addKategori()">Tambah</button>
 
 <div id="kategoriContainer"></div>
 
-<hr style="margin:15px 0;border-color:rgba(255,255,255,0.1)">
+<hr style="margin:18px 0;border-color:rgba(255,255,255,0.08)">
 
 <div class="toggle">
-<label>Aktifkan PPN 11%</label>
+<label>PPN 11%</label>
 <input type="checkbox" id="ppnToggle" checked onchange="render()">
 </div>
 
@@ -146,7 +196,7 @@ word-break:break-all;font-size:12px;margin-top:10px
 </div>
 
 <div class="card">
-<h3>Grafik</h3>
+<h3>Grafik Analisa</h3>
 <canvas id="chart"></canvas>
 </div>
 
@@ -164,124 +214,31 @@ function clean(n){return Number(String(n).replace(/\D/g,''))}
 
 function applyTemplate(){
 let t=templateSelect.value
-data={}
 
 const templates = {
 
-rumah:{
-"Persiapan":[{nama:"Pembersihan Lahan",volume:1,harga:3000000}],
-"Pondasi":[{nama:"Galian & Urugan",volume:20,harga:200000}],
-"Struktur":[{nama:"Kolom & Balok Beton",volume:15,harga:500000}],
-"Finishing":[{nama:"Cat & Keramik",volume:1,harga:15000000}]
+travel_liburan:{
+"Transportasi":[{nama:"Tiket Pesawat PP",volume:1,harga:7500000}],
+"Akomodasi":[{nama:"Hotel 5 Malam",volume:5,harga:1200000}],
+"Konsumsi":[{nama:"Makan Harian",volume:5,harga:250000}],
+"Tour & Tiket Wisata":[{nama:"Disneyland Ticket",volume:1,harga:1500000}]
 },
 
-villa:{
-"Struktur":[{nama:"Beton Bertulang",volume:1,harga:120000000}],
-"Kolam Renang":[{nama:"Pembuatan Kolam",volume:1,harga:85000000}],
-"Interior":[{nama:"Furniture Custom",volume:1,harga:95000000}]
+travel_dinas:{
+"Transportasi":[{nama:"Tiket Pesawat",volume:1,harga:3500000}],
+"Hotel":[{nama:"Hotel 3 Malam",volume:3,harga:900000}],
+"Uang Harian":[{nama:"Uang Harian",volume:3,harga:400000}]
 },
 
-apartemen:{
-"Struktur Gedung":[{nama:"Struktur Utama",volume:1,harga:850000000}],
-"Lift":[{nama:"Instalasi Lift",volume:2,harga:300000000}],
-"MEP":[{nama:"Sistem Listrik & Plumbing",volume:1,harga:200000000}]
+travel_umroh:{
+"Paket Umroh":[{nama:"Paket 9 Hari",volume:1,harga:35000000}],
+"Perlengkapan":[{nama:"Perlengkapan Umroh",volume:1,harga:2000000}]
 },
 
-perumahan:{
-"Pembebasan Lahan":[{nama:"Pembelian Tanah",volume:1,harga:2000000000}],
-"Infrastruktur":[{nama:"Jalan Kompleks",volume:1,harga:500000000}],
-"Unit Rumah":[{nama:"Pembangunan 10 Unit",volume:10,harga:150000000}]
-},
-
-ruko:{
-"Struktur Baja":[{nama:"Struktur Baja",volume:1,harga:50000000}],
-"Instalasi":[{nama:"Listrik & Air",volume:1,harga:20000000}]
-},
-
-gedung:{
-"Pondasi":[{nama:"Borepile",volume:10,harga:4000000}],
-"Struktur":[{nama:"Struktur Gedung",volume:1,harga:1200000000}]
-},
-
-jalan:{
-"Perkerasan":[{nama:"Aspal Hotmix",volume:1000,harga:150000}],
-"Drainase":[{nama:"Saluran Air",volume:200,harga:250000}]
-},
-
-jembatan:{
-"Struktur Baja":[{nama:"Rangka Baja",volume:1,harga:2500000000}],
-"Fondasi":[{nama:"Tiang Pancang",volume:20,harga:15000000}]
-},
-
-drainase:{
-"Galian":[{nama:"Galian Tanah",volume:300,harga:100000}],
-"Beton":[{nama:"U-Ditch",volume:200,harga:300000}]
-},
-
-kuliner:{
-"Renovasi":[{nama:"Interior Cafe",volume:1,harga:20000000}],
-"Peralatan":[{nama:"Peralatan Dapur",volume:1,harga:30000000}],
-"Marketing":[{nama:"Soft Opening",volume:1,harga:5000000}]
-},
-
-retail:{
-"Stok Awal":[{nama:"Barang Dagangan",volume:1,harga:100000000}],
-"Rak & Display":[{nama:"Rak Toko",volume:10,harga:1500000}]
-},
-
-kantor:{
-"Interior":[{nama:"Partisi & Meja",volume:1,harga:50000000}],
-"IT":[{nama:"Server & PC",volume:1,harga:150000000}]
-},
-
-laundry:{
-"Mesin Cuci":[{nama:"Mesin Industri",volume:3,harga:15000000}],
-"Renovasi":[{nama:"Renovasi Tempat",volume:1,harga:25000000}]
-},
-
-klinik:{
-"Perizinan":[{nama:"Izin Operasional",volume:1,harga:25000000}],
-"Alat Medis":[{nama:"Peralatan Medis",volume:1,harga:300000000}]
-},
-
-startup:{
-"Development":[{nama:"App Development",volume:1,harga:60000000}],
-"Marketing":[{nama:"Digital Ads",volume:1,harga:30000000}]
-},
-
-agency:{
-"Tim Kreatif":[{nama:"Gaji 3 Bulan",volume:1,harga:90000000}],
-"Operasional":[{nama:"Sewa Kantor",volume:1,harga:45000000}]
-},
-
-saas:{
-"Server":[{nama:"Cloud Server 1 Tahun",volume:1,harga:120000000}],
-"Development":[{nama:"SaaS Platform Dev",volume:1,harga:80000000}]
-},
-
-wedding:{
-"Venue":[{nama:"Sewa Gedung",volume:1,harga:50000000}],
-"Catering":[{nama:"Catering 300 Pax",volume:300,harga:120000}]
-},
-
-corporate_event:{
-"Stage":[{nama:"Stage & Sound",volume:1,harga:75000000}],
-"Branding":[{nama:"Backdrop & LED",volume:1,harga:60000000}]
-},
-
-festival:{
-"Produksi":[{nama:"Sound System Besar",volume:1,harga:150000000}],
-"Talent":[{nama:"Guest Star",volume:1,harga:500000000}]
-},
-
-manufaktur:{
-"Mesin Produksi":[{nama:"Mesin Industri",volume:1,harga:2000000000}],
-"Gudang":[{nama:"Bangun Gudang",volume:1,harga:800000000}]
-},
-
-pemerintah:{
-"Perencanaan":[{nama:"DED & Konsultan",volume:1,harga:100000000}],
-"Konstruksi":[{nama:"Pekerjaan Utama",volume:1,harga:5000000000}]
+travel_corporate:{
+"Transportasi":[{nama:"Bus Pariwisata",volume:1,harga:12000000}],
+"Hotel":[{nama:"Hotel 2 Malam",volume:2,harga:15000000}],
+"Team Building":[{nama:"Outbound Program",volume:1,harga:25000000}]
 }
 
 }
@@ -290,7 +247,7 @@ data = templates[t] || {}
 render()
 }
 
-/* ================= KATEGORI ================= */
+/* ================= CORE ================= */
 
 function addKategori(){
 let k=kategoriInput.value.trim()
@@ -299,8 +256,6 @@ if(!data[k])data[k]=[]
 kategoriInput.value=""
 render()
 }
-
-/* ================= ITEM ================= */
 
 function addItem(k){
 let nama=document.getElementById("nama_"+k).value
@@ -316,8 +271,6 @@ data[k].splice(i,1)
 render()
 }
 
-/* ================= RENDER ================= */
-
 function render(){
 let container=document.getElementById("kategoriContainer")
 container.innerHTML=""
@@ -325,12 +278,15 @@ let totalAll=0
 
 Object.keys(data).forEach(k=>{
 let html=`<div class="card"><h3>${k}</h3>
+<div class="flex">
 <input id="nama_${k}" placeholder="Nama Item">
 <input id="vol_${k}" placeholder="Volume">
 <input id="harga_${k}" placeholder="Harga">
 <button class="btn-primary" onclick="addItem('${k}')">Tambah</button>
+</div>
 <table>
 <tr><th>Nama</th><th>Vol</th><th>Harga</th><th>Subtotal</th><th></th></tr>`
+
 let total=0
 data[k].forEach((it,i)=>{
 let sub=it.volume*it.harga
@@ -343,10 +299,12 @@ html+=`<tr>
 <td><button onclick="deleteItem('${k}',${i})" class="btn-danger">X</button></td>
 </tr>`
 })
+
 totalAll+=total
 html+=`</table>
 <div class="total-box">Total ${k}: ${formatRp(total)}</div>
 </div>`
+
 container.innerHTML+=html
 })
 
@@ -357,7 +315,7 @@ let grand=subtotal+ppn
 let profit=grand*(Number(marginInput.value)/100)
 
 summary.innerHTML=`
-<div class="card">
+<div class="summary-card">
 <div class="total-box">Subtotal: ${formatRp(totalAll)}</div>
 <div class="total-box">Diskon: ${formatRp(diskon)}</div>
 <div class="total-box">PPN: ${formatRp(ppn)}</div>
@@ -368,8 +326,6 @@ summary.innerHTML=`
 renderChart(grand,profit)
 }
 
-/* ================= CHART ================= */
-
 function renderChart(total,profit){
 if(chartInstance)chartInstance.destroy()
 chartInstance=new Chart(chart,{
@@ -379,8 +335,6 @@ datasets:[{data:[total,profit]}]},
 options:{plugins:{legend:{display:false}}}
 })
 }
-
-/* ================= EXPORT ================= */
 
 function exportPDF(){
 html2pdf().from(document.body).save("RAB.pdf")
@@ -399,15 +353,12 @@ XLSX.utils.book_append_sheet(wb,ws,"RAB")
 XLSX.writeFile(wb,"RAB.xlsx")
 }
 
-/* ================= LINK ================= */
-
 function generateLink(){
 let encoded=btoa(JSON.stringify(data))
 let url=location.origin+location.pathname+"?data="+encoded
 generatedLink.innerHTML=`<div class="link-box">${url}</div>`
 }
 
-/* LOAD LINK */
 window.onload=function(){
 let params=new URLSearchParams(window.location.search)
 if(params.get("data")){
