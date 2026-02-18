@@ -22,251 +22,228 @@ font-family:'Inter',sans-serif;
 }
 
 body{
-background:#0b0c10;
+background:#000;
 color:#f5f5f7;
-padding:50px 20px;
+padding:30px 14px;
 min-height:100vh;
 }
 
 /* ================= CONTAINER ================= */
 .container{
-max-width:1050px;
+max-width:480px;
 margin:auto;
 }
 
 /* ================= TITLE ================= */
 h1{
 text-align:center;
-font-size:36px;
+font-size:28px;
 font-weight:700;
-letter-spacing:-0.6px;
-margin-bottom:60px;
-color:#ffffff;
+margin-bottom:30px;
+letter-spacing:-0.4px;
 }
 
 /* ================= CARD ================= */
 .card{
-background:linear-gradient(145deg,#14151a,#101114);
-border-radius:30px;
-padding:35px;
-margin-bottom:35px;
-border:1px solid rgba(255,255,255,0.06);
-box-shadow:
-0 10px 40px rgba(0,0,0,0.6),
-inset 0 1px 0 rgba(255,255,255,0.04);
-transition:all .3s ease;
-position:relative;
+background:#1c1c1e;
+border-radius:22px;
+padding:22px 18px;
+margin-bottom:22px;
+border:1px solid rgba(255,255,255,0.05);
 }
 
-.card:hover{
-box-shadow:
-0 20px 60px rgba(0,0,0,0.7),
-inset 0 1px 0 rgba(255,255,255,0.06);
+/* ================= SECTION DIVIDER ================= */
+hr{
+border:none;
+height:1px;
+background:rgba(255,255,255,0.08);
+margin:20px 0;
 }
 
-/* ================= FORM SPACING ================= */
+/* ================= LABEL ================= */
 label{
 display:block;
-margin-top:22px;
-margin-bottom:8px;
 font-size:13px;
-opacity:0.6;
-letter-spacing:.4px;
+opacity:.6;
+margin-bottom:6px;
+margin-top:18px;
 }
 
 /* ================= INPUT ================= */
 input,select{
 width:100%;
-padding:15px 18px;
-border-radius:18px;
-border:1px solid rgba(255,255,255,0.08);
-background:#181a20;
+padding:14px;
+border-radius:14px;
+border:none;
+background:#2c2c2e;
 color:#fff;
 font-size:14px;
 outline:none;
-transition:all .25s ease;
 }
 
 input:focus,select:focus{
-border-color:#d4af37;
-background:#1e2128;
+background:#3a3a3c;
 }
 
 /* ================= BUTTON ================= */
 button{
-padding:14px 22px;
-border-radius:18px;
+width:100%;
+padding:14px;
+border-radius:14px;
 border:none;
 font-weight:600;
 font-size:14px;
+margin-top:12px;
 cursor:pointer;
-margin-top:18px;
-transition:all .25s ease;
-letter-spacing:.4px;
+transition:.2s;
 }
 
-button:hover{
-transform:translateY(-2px);
-opacity:.92;
+button:active{
+transform:scale(.97);
 }
 
-/* BUTTON VARIANTS */
-.btn-primary{
-background:linear-gradient(135deg,#1e3a8a,#2563eb);
-color:#fff;
-}
+/* BUTTON COLORS */
+.btn-primary{background:#0a84ff;color:#fff;}
+.btn-success{background:#30d158;color:#000;}
+.btn-warning{background:#ff9f0a;color:#000;}
+.btn-dark{background:#3a3a3c;color:#fff;}
+.btn-gold{background:#ffd60a;color:#000;}
+.btn-delete-project{background:#ff453a;color:#fff;margin-top:10px;}
+.btn-danger{background:#2c2c2e;color:#ff453a;}
 
-.btn-success{
-background:linear-gradient(135deg,#14532d,#16a34a);
-color:#fff;
-}
-
-.btn-danger{
-background:#2a2a2e;
-color:#ff4d4f;
-}
-
-.btn-warning{
-background:linear-gradient(135deg,#b45309,#f59e0b);
-color:#000;
-}
-
-.btn-dark{
-background:#1f2937;
-color:#fff;
-}
-
-.btn-gold{
-background:linear-gradient(135deg,#d4af37,#facc15);
-color:#000;
-}
-
-.btn-delete-project{
-background:linear-gradient(135deg,#6d28d9,#9333ea);
-color:#fff;
-}
-
-/* ================= FLEX ================= */
+/* ================= FLEX BUTTON GROUP ================= */
 .flex{
 display:flex;
-gap:18px;
-flex-wrap:wrap;
-margin-top:10px;
+flex-direction:column;
+gap:10px;
+margin-top:14px;
 }
 
-@media(max-width:768px){
-.flex{flex-direction:column;}
+/* ================= KATEGORI CARD ================= */
+.kategori-card{
+background:#2c2c2e;
+border-radius:18px;
+padding:16px;
+margin-top:16px;
+position:relative;
 }
 
-/* ================= TABLE ================= */
+.btn-delete-kategori{
+position:absolute;
+right:12px;
+top:12px;
+background:#3a3a3c;
+color:#ff453a;
+padding:6px 12px;
+border-radius:20px;
+font-size:12px;
+}
+
+/* ================= IOS LIST STYLE (GANTI TABLE FEEL) ================= */
 table{
 width:100%;
-margin-top:25px;
 border-collapse:separate;
-border-spacing:0;
-border-radius:24px;
-overflow:hidden;
+border-spacing:0 8px;
+margin-top:12px;
 }
 
 th{
-background:#1c1e24;
-padding:16px;
-font-weight:600;
-font-size:13px;
-letter-spacing:.4px;
+display:none; /* sembunyikan header biar iOS feel */
 }
 
 td{
-background:#16181d;
-padding:14px;
+display:block;
+background:#1c1c1e;
+padding:12px;
+border-radius:14px;
+margin-bottom:6px;
+text-align:left;
 font-size:13px;
-border-bottom:1px solid rgba(255,255,255,0.05);
 }
 
-tr:last-child td{
-border-bottom:none;
-}
-
-td,th{
-text-align:center;
+td:before{
+content:attr(data-label);
+display:block;
+font-size:11px;
+opacity:.5;
+margin-bottom:4px;
 }
 
 /* ================= EDIT INPUT ================= */
 .edit-input{
-background:#20232b;
-border:1px solid rgba(255,255,255,0.08);
-border-radius:14px;
-padding:6px 10px;
+width:100%;
+background:#2c2c2e;
+border:none;
+border-radius:10px;
+padding:8px;
 color:#fff;
-font-size:12px;
-width:100px;
+font-size:13px;
 }
 
-/* ================= DELETE KATEGORI ================= */
-.btn-delete-kategori{
-position:absolute;
-top:28px;
-right:28px;
-background:#1f1f24;
-color:#ff5c5c;
-font-size:12px;
-padding:8px 12px;
-border-radius:14px;
-}
-
-/* ================= SUMMARY ================= */
-.summary-card{
-margin-top:30px;
-padding:25px;
-border-radius:26px;
-background:linear-gradient(145deg,#191b21,#14161b);
-border:1px solid rgba(255,255,255,0.06);
-}
-
-.total-box{
-text-align:right;
-margin-top:12px;
-font-weight:500;
-letter-spacing:.3px;
-}
-
-/* ================= TOGGLE ================= */
-.toggle-modern{
+/* ================= TOGGLE IOS ================= */
+.toggle{
 display:flex;
 justify-content:space-between;
 align-items:center;
-padding:16px 18px;
 margin-top:18px;
-border-radius:20px;
-background:#1b1d23;
-border:1px solid rgba(255,255,255,0.06);
+background:#2c2c2e;
+padding:14px;
+border-radius:14px;
 }
 
 input[type="checkbox"]{
-width:20px;
-height:20px;
-accent-color:#d4af37;
+width:40px;
+height:22px;
+appearance:none;
+background:#3a3a3c;
+border-radius:20px;
+position:relative;
 cursor:pointer;
+transition:.3s;
+}
+
+input[type="checkbox"]:checked{
+background:#0a84ff;
+}
+
+input[type="checkbox"]::before{
+content:"";
+position:absolute;
+width:18px;
+height:18px;
+background:#fff;
+border-radius:50%;
+top:2px;
+left:2px;
+transition:.3s;
+}
+
+input[type="checkbox"]:checked::before{
+left:20px;
+}
+
+/* ================= SUMMARY ================= */
+#summary{
+background:#2c2c2e;
+padding:16px;
+border-radius:18px;
+margin-top:20px;
+font-size:14px;
 }
 
 /* ================= LINK BOX ================= */
 .link-box{
-background:#121317;
-padding:16px;
-border-radius:20px;
+background:#2c2c2e;
+padding:14px;
+border-radius:14px;
 font-size:12px;
-margin-top:20px;
-border:1px solid rgba(255,255,255,0.08);
+margin-top:14px;
 word-break:break-all;
 }
 
-/* ================= SCROLL ================= */
-::-webkit-scrollbar{
-width:6px;
-}
-::-webkit-scrollbar-thumb{
-background:rgba(255,255,255,0.15);
-border-radius:10px;
+/* ================= CHART CARD ================= */
+canvas{
+margin-top:10px;
 }
 
 </style>
@@ -461,12 +438,30 @@ let sub=it.volume*it.harga
 total+=sub
 html+=`
 <tr>
-<td><input class="edit-input" value="${it.nama}" onchange="editItem('${k}',${i},'nama',this.value)"></td>
-<td><input class="edit-input" value="${it.volume}" onchange="editItem('${k}',${i},'volume',this.value)"></td>
-<td><input class="edit-input" value="${it.harga}" onchange="editItem('${k}',${i},'harga',this.value)"></td>
-<td>${formatRp(sub)}</td>
-<td><button onclick="deleteItem('${k}',${i})" class="btn-danger">X</button></td>
-</tr>`
+<td data-label="Nama">
+<input class="edit-input" value="${it.nama}" 
+onchange="editItem('${k}',${i},'nama',this.value)">
+</td>
+
+<td data-label="Volume">
+<input class="edit-input" value="${it.volume}" 
+onchange="editItem('${k}',${i},'volume',this.value)">
+</td>
+
+<td data-label="Harga">
+<input class="edit-input" value="${it.harga}" 
+onchange="editItem('${k}',${i},'harga',this.value)">
+</td>
+
+<td data-label="Subtotal">
+${formatRp(sub)}
+</td>
+
+<td data-label="Aksi">
+<button onclick="deleteItem('${k}',${i})" 
+class="btn-danger">Hapus</button>
+</td>
+</tr>
 })
 
 totalAll+=total
