@@ -42,6 +42,26 @@ toggle.innerText = "Lihat Lebih Banyak"
 }
 }
 
+/* ================= TEMPLATE CLICK HANDLER ================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+document.querySelectorAll(".template-card").forEach(card => {
+card.addEventListener("click", () => {
+
+const name = card.innerText.trim()
+
+if(projects[name]){
+if(!confirm("Project sudah ada. Replace?")) return
+}
+
+generateAITemplate(name)
+
+})
+})
+
+})
+
 /* ================= ENTERPRISE STRUCTURE ================= */
 
 const enterpriseStructures = {
@@ -83,7 +103,6 @@ Cadangan:[
 }
 
 }
-;
 
 /* ================= TEMPLATE RAB ================= */
 
@@ -223,7 +242,6 @@ Marketing:[
 }
 
 }
-;
 
 /* ================= TEMPLATE GENERATOR ================= */
 
@@ -231,14 +249,18 @@ function generateAITemplate(name){
 
 if(!aiTemplates[name]) return
 
-projects[name] = {
+const uniqueName = projects[name]
+? name + " - " + Date.now()
+: name
+
+projects[uniqueName] = {
 diskon:0,
-margin:20,
+margin:25,
 ppn:11,
 kategori:JSON.parse(JSON.stringify(aiTemplates[name].kategori))
 }
 
-currentProject = name
+currentProject = uniqueName
 activeTab = null
 
 save()
@@ -249,18 +271,40 @@ renderProjects()
 /* ================= AI TEXT PARSER ================= */
 
 function extractBudget(text){
-const match = text.match(/(\d+)\s*(jt|juta|m)/i)
-if(!match) return null
+text = text.toLowerCase()
+let match = text.match(/(\d+)\s*(jt|juta|m)/i)
+if(match){
 return parseInt(match[1]) * 1000000
 }
 
+let numeric = text.match(/\d{7,}/)
+if(numeric){
+return parseInt(numeric[0])
+}
+
+return null
+}
+
 function detectProjectType(text){
+
 text = text.toLowerCase()
 
-if(text.includes("bengkel")) return "bengkel"
-if(text.includes("coffee")||text.includes("cafe")) return "coffee"
-if(text.includes("renovasi")) return "renovasi"
-if(text.includes("rumah")) return "renovasi"
+const keywords = {
+bengkel:["bengkel","motor","mobil","service"],
+coffee:["coffee","cafe","kopi"],
+renovasi:["renovasi","rumah","bangun","kontrakan"],
+startup:["startup","app","aplikasi","digital"],
+laundry:["laundry","cuci"],
+fashion:["fashion","baju","clothing"],
+event:["event","seminar","workshop"]
+}
+
+for(let type in keywords){
+if(keywords[type].some(word => text.includes(word))){
+return type
+}
+}
+
 return "coffee"
 }
 
@@ -284,14 +328,13 @@ return result
 
 function generateFromText(){
 
-const text = document.getElementById("aiPrompt").value
+const text = aiPrompt.value.trim()
 if(!text) return
 
 const budget = extractBudget(text) || 100000000
 const type = detectProjectType(text)
 
-document.getElementById("aiStatus").innerText =
-"AI Enterprise sedang menganalisa..."
+aiStatus.innerText = "AI Enterprise sedang menganalisa..."
 
 setTimeout(()=>{
 
@@ -300,16 +343,16 @@ enterpriseStructures[type] || enterpriseStructures["coffee"]
 
 const kategori = distributeBudget(budget, structure)
 
-const projectNameAI = "AI Enterprise - " + Date.now()
+const name = "AI - " + type.toUpperCase() + " - " + Date.now()
 
-projects[projectNameAI] = {
+projects[name] = {
 diskon:0,
 margin:calculateSuggestedMargin(type),
 ppn:11,
 kategori:kategori
 }
 
-currentProject = projectNameAI
+currentProject = name
 activeTab = null
 
 save()
@@ -317,12 +360,11 @@ render()
 renderProjects()
 
 calculateBEP(budget)
-showAIInsight(projects[projectNameAI])
+showAIInsight(projects[name], budget)
 
-document.getElementById("aiStatus").innerText =
-"RAB Enterprise berhasil dibuat."
+aiStatus.innerText = "RAB Enterprise berhasil dibuat."
 
-},800)
+},700)
 }
 
 /* ================= MARGIN ================= */
@@ -378,14 +420,28 @@ return "Tinggi"
 
 /* ================= INSIGHT UI ================= */
 
-function showAIInsight(project){
+function showAIInsight(project, budget){
 
 const score = calculateAIScore(project)
 const risk = calculateRiskLevel(score)
 
-document.getElementById("aiInsight").innerHTML = `
+let recommendation = ""
+
+if(score >= 85){
+recommendation = "Struktur sangat sehat dan siap dijalankan."
+}
+else if(score >= 70){
+recommendation = "Layak dijalankan dengan kontrol biaya ketat."
+}
+else{
+recommendation = "Perlu optimasi struktur biaya sebelum eksekusi."
+}
+
+aiInsight.innerHTML = `
 <strong>AI Feasibility Score:</strong> ${score}/100 <br>
-<strong>Risk Level:</strong> ${risk}
+<strong>Risk Level:</strong> ${risk}<br>
+<strong>Estimasi BEP:</strong> ~${Math.ceil(budget/(budget*0.08))} bulan<br><br>
+${recommendation}
 `
 }
 
