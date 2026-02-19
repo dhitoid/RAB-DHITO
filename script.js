@@ -609,46 +609,63 @@ return result
 
 function generateUniversalInsight(project){
 
+if(!project) return ""
+
 const total = Object.values(project.kategori)
 .flat()
 .reduce((sum,i)=>sum + i.volume*i.harga,0)
 
+const score = calculateUniversalAIScore(project)
+const risk = calculateRiskLevel(score)
+const color = getInsightColor(score)
+
+let roiSection = ""
 const type = project.type || "general"
 
-// ================= BUSINESS TYPE =================
 if(["coffee","bengkel","startup","laundry","property"].includes(type)){
 
 const roiData = calculateROI(total, project.margin)
 const bepMonths = calculateBEP(total, project.margin)
 
-return `
-<strong>Business Insight</strong><br><br>
-ROI Tahunan: ${roiData.roiYearly.toFixed(1)}%<br>
-Estimasi BEP: ± ${bepMonths} bulan<br>
+roiSection = `
+<hr style="margin:10px 0;border:0;border-top:1px solid #1f2937">
+ROI Tahunan: <b>${roiData.roiYearly.toFixed(1)}%</b><br>
+Estimasi BEP: ± <b>${bepMonths} bulan</b><br>
 Profit Bulanan: Rp ${formatRp(roiData.monthlyProfit)}
 `
 }
 
-// ================= TRAVEL / EVENT =================
-if(type==="general"){
-
-const cadangan = project.kategori["Cadangan"]
-
-let bufferNote = cadangan
-? "Sudah memiliki dana cadangan."
-: "Disarankan tambah dana darurat 10–15%."
-
-return `
-<strong>Budget Planning Insight</strong><br><br>
-Total Anggaran: Rp ${formatRp(total)}<br>
-${bufferNote}<br>
-Pastikan alokasi konsumsi & transport tidak melebihi 60%.
-`
+let warning = ""
+if(project.margin > 50){
+warning = `<div style="color:#f87171;margin-top:6px">
+⚠ Margin sangat tinggi, pastikan realistis.
+</div>`
 }
 
 return `
-<strong>General Financial Insight</strong><br>
-Total Budget: Rp ${formatRp(total)}
+<div style="padding:14px;border-radius:14px;
+background:#0f172a;
+border:1px solid #1f2937">
+
+<div style="font-weight:600;
+color:${color};
+font-size:16px">
+AI Financial Score: ${score}/100
+</div>
+
+<div style="font-size:13px;color:#94a3b8">
+Risk Level: ${risk}
+</div>
+
+<div style="margin-top:10px;font-size:14px">
+Total Budget: Rp ${formatRp(total)}<br>
+Margin: ${project.margin}%
+</div>
+
+${roiSection}
+${warning}
+
+</div>
 `
 }
 
@@ -702,7 +719,6 @@ render()
 renderProjects()
 
 calculateBEP(projects[name])
-showAIInsight(projects[name], budget)
 
 aiStatus.innerText = "RAB Enterprise berhasil dibuat."
 
@@ -817,52 +833,54 @@ if(score >= 60) return "Sedang"
 return "Tinggi"
 }
 
-/* ================= INSIGHT UI ================= */
+/* ================= UNIVERSAL AI SCORE ================= */
 
-function showAIInsight(project, budget){
+function calculateUniversalAIScore(project){
 
-const type = detectProjectType(aiPrompt.value)
-const score = calculateAIScore(project)
-const risk = calculateRiskLevel(score)
+let total = 0
+let categoryTotals = []
+let hasCadangan = false
 
-const roiData = calculateROI(budget, project.margin)
-const bepMonths = calculateBEP(budget, project.margin)
+Object.entries(project.kategori).forEach(([key,items])=>{
 
-const marginCheck = analyzeMargin(type, project.margin)
+let catTotal = 0
+items.forEach(i=>{
+catTotal += i.volume * i.harga
+})
 
-let recommendation = ""
+if(key.toLowerCase().includes("cadangan")) hasCadangan = true
 
-if(score >= 85){
-recommendation = "Struktur sangat sehat dan siap dijalankan."
+categoryTotals.push(catTotal)
+total += catTotal
+})
+
+if(total === 0) return 0
+
+let score = 0
+
+// Diversifikasi kategori
+score += categoryTotals.length >= 4 ? 25 : 15
+
+// Dominasi kategori
+const maxCat = Math.max(...categoryTotals)
+score += (maxCat/total < 0.5) ? 25 : 10
+
+// Margin health
+score += project.margin >= 20 ? 20 : 10
+
+// Cadangan
+score += hasCadangan ? 20 : 5
+
+// Skala budget sehat
+score += total > 20000000 ? 10 : 5
+
+return Math.min(score,100)
 }
-else if(score >= 70){
-recommendation = "Layak dijalankan dengan kontrol biaya ketat."
-}
-else{
-recommendation = "Perlu optimasi struktur biaya sebelum eksekusi."
-}
 
-let roiLabel = ""
-if(roiData.roiYearly >= 60) roiLabel = "High Growth"
-else if(roiData.roiYearly >= 40) roiLabel = "Sangat Menarik"
-else if(roiData.roiYearly >= 25) roiLabel = "Menarik"
-else roiLabel = "Stabil / Konservatif"
-
-aiInsight.innerHTML = `
-<strong>AI Feasibility Score:</strong> ${score}/100 <br>
-<strong>Risk Level:</strong> ${risk}<br><br>
-
-<strong>Effective Profit Rate:</strong> ${(roiData.profitRate*100).toFixed(1)}% / bulan<br>
-<strong>Estimasi Profit Bulanan:</strong> Rp ${roiData.monthlyProfit.toLocaleString()} <br>
-<strong>Estimasi Profit Tahunan:</strong> Rp ${roiData.yearlyProfit.toLocaleString()} <br>
-<strong>ROI Tahunan:</strong> ${roiData.roiYearly.toFixed(1)}% (${roiLabel}) <br>
-<strong>Estimasi BEP:</strong> ± ${bepMonths} bulan<br><br>
-
-<strong>Margin:</strong> ${project.margin}% <br>
-<strong>Margin Analysis:</strong> ${marginCheck.message}<br><br>
-
-${recommendation}
-`
+function getInsightColor(score){
+if(score >= 80) return "#22c55e"
+if(score >= 60) return "#f59e0b"
+return "#ef4444"
 }
 
 /* ================= FORMAT ================= */
@@ -1245,6 +1263,11 @@ smartAnimate(document.getElementById("sum-grand"), "grand", grand, 700)
 smartAnimate(document.getElementById("sum-profit"), "profit", profit, 700)
 
 renderChart(subtotal,profit)
+const insightBox = document.getElementById("aiInsight")
+if(insightBox){
+insightBox.innerHTML =
+generateUniversalInsight(projects[currentProject])
+}
 save()
 }
 
@@ -1287,10 +1310,3 @@ currentProject = Object.keys(projects)[0]
 
 renderProjects()
 render()
-
-const insightBox = document.getElementById("aiInsight")
-if(currentProject && projects[currentProject]){
-insightBox.innerHTML = generateUniversalInsight(projects[currentProject])
-}
-
-})
