@@ -363,20 +363,22 @@ const templateNameMap = generateTemplateNameMap()
 
 /* ================= TEMPLATE GENERATOR ================= */
 
-function generateAITemplate(templateKey){
+function generateAITemplate(name){
 
-if(!aiTemplates[templateKey]){
-alert("Template tidak ditemukan di aiTemplates")
+const key = templateNameMap[name.toLowerCase()]
+
+if(!key){
+alert("Template tidak ditemukan")
 return
 }
 
-const uniqueName = templateKey + " - " + Date.now()
+const uniqueName = key + " - " + Date.now()
 
 projects[uniqueName] = {
 diskon:0,
 margin:25,
 ppn:11,
-kategori:JSON.parse(JSON.stringify(aiTemplates[templateKey].kategori))
+kategori:JSON.parse(JSON.stringify(aiTemplates[key].kategori))
 }
 
 currentProject = uniqueName
