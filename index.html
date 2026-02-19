@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RAB PRO 2026 - Stable</title>
+<title>RAB PRO 2026 - Stable Final</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -14,83 +14,32 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
 body{background:#0f172a;color:#fff;min-height:100vh}
 .hidden{display:none}
-
-header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:15px 20px;
-background:rgba(255,255,255,0.05);
-border-bottom:1px solid rgba(255,255,255,0.05);
-position:sticky;top:0;z-index:1000
-}
-
-.menu-btn{display:none;font-size:20px;cursor:pointer}
-
+header{display:flex;justify-content:space-between;align-items:center;padding:15px 20px;background:rgba(255,255,255,.05);position:sticky;top:0;z-index:1000}
+.menu-btn{display:none;font-size:22px;cursor:pointer}
 .dashboard{display:flex;min-height:100vh}
-
-.sidebar{
-width:260px;background:#020617;padding:20px;
-border-right:1px solid rgba(255,255,255,0.05);
-transition:.3s
-}
-
-.project-item{
-padding:10px;background:rgba(255,255,255,0.05);
-border-radius:8px;margin-bottom:8px;
-cursor:pointer;font-size:13px
-}
-
+.sidebar{width:260px;background:#020617;padding:20px;border-right:1px solid rgba(255,255,255,.05);transition:.3s}
+.sidebar.active{left:0}
+.project-item{padding:10px;background:rgba(255,255,255,.05);border-radius:8px;margin-bottom:8px;cursor:pointer;font-size:13px}
 .project-item.active{background:#0ea5e9}
-
 .main{flex:1;padding:20px;max-width:1100px;margin:auto}
-
-.card{
-background:rgba(255,255,255,0.05);
-border-radius:16px;padding:20px;margin-bottom:20px
-}
-
-input{
-width:100%;padding:10px;margin-top:6px;
-border:none;border-radius:8px;
-background:rgba(255,255,255,0.08);color:#fff
-}
-
-button{
-padding:10px 14px;border:none;border-radius:8px;
-cursor:pointer;font-weight:600;margin-top:8px
-}
-
+.card{background:rgba(255,255,255,.05);border-radius:16px;padding:20px;margin-bottom:20px}
+input{width:100%;padding:10px;margin-top:6px;border:none;border-radius:8px;background:rgba(255,255,255,.08);color:#fff}
+button{padding:8px 12px;border:none;border-radius:8px;cursor:pointer;font-weight:600;margin-top:8px}
 .btn-primary{background:#0ea5e9;color:#fff}
 .btn-success{background:#22c55e;color:#000}
 .btn-danger{background:#ef4444;color:#fff}
 .btn-warning{background:#f59e0b;color:#000}
-.btn-dark{background:#1e293b;color:#fff}
-
 .table-wrapper{overflow-x:auto}
-
 table{width:100%;margin-top:10px;border-collapse:collapse;font-size:13px;min-width:600px}
-th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.08)}
-
-.summary{
-background:rgba(255,255,255,0.08);
-padding:15px;border-radius:12px;margin-top:10px
-}
-
-.login-box{
-max-width:400px;margin:120px auto;
-background:#020617;padding:30px;border-radius:16px
-}
-
-.watermark{
-position:fixed;bottom:10px;right:10px;
-font-size:12px;opacity:.4
-}
+th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,.08)}
+.summary{background:rgba(255,255,255,.08);padding:15px;border-radius:12px;margin-top:10px}
+.login-box{max-width:400px;margin:120px auto;background:#020617;padding:30px;border-radius:16px}
+.watermark{position:fixed;bottom:10px;right:10px;font-size:12px;opacity:.4}
+[contenteditable]{outline:none}
 
 @media(max-width:768px){
 .menu-btn{display:block}
 .sidebar{position:fixed;left:-260px;top:0;height:100%;z-index:2000}
-.sidebar.active{left:0}
 .dashboard{flex-direction:column}
 }
 </style>
@@ -111,7 +60,7 @@ font-size:12px;opacity:.4
 <header>
 <div style="display:flex;gap:10px;align-items:center">
 <div class="menu-btn" onclick="toggleSidebar()">☰</div>
-<h1>💎 RAB PRO Stable</h1>
+<h1>💎 RAB PRO 2026</h1>
 </div>
 <button class="btn-danger" onclick="logout()">Logout</button>
 </header>
@@ -123,14 +72,14 @@ font-size:12px;opacity:.4
 <div id="projectList"></div>
 <input id="newProjectName" placeholder="Project baru">
 <button class="btn-primary" onclick="createProject()">Tambah</button>
-<button class="btn-danger" onclick="deleteProject()">Hapus Project</button>
+<button class="btn-danger" onclick="deleteProject()">Hapus</button>
 </div>
 
 <div class="main">
 
 <div class="card">
 <label>Nama Project</label>
-<input id="projectName" oninput="renameProject(this.value)">
+<input id="projectName" onblur="renameProject()">
 
 <label>Tambah Kategori</label>
 <input id="kategoriInput">
@@ -163,31 +112,47 @@ font-size:12px;opacity:.4
 
 <script>
 let projects=JSON.parse(localStorage.getItem("rab_pro")||"{}")
-let currentProject=null
+let currentProject=localStorage.getItem("rab_current")||null
 let chartInstance=null
 
 function formatRp(n){return "Rp "+Number(n||0).toLocaleString("id-ID")}
 
-function toggleSidebar(){sidebar.classList.toggle("active")}
+function toggleSidebar(){
+document.getElementById("sidebar").classList.toggle("active")
+}
 
 function login(){
 if(username.value==="admin"&&password.value==="123456"){
-loginPage.classList.add("hidden")
-app.classList.remove("hidden")
-init()
+localStorage.setItem("rab_login","true")
+startApp()
 }else alert("Login gagal")
 }
 
-function logout(){location.reload()}
-function save(){localStorage.setItem("rab_pro",JSON.stringify(projects))}
+function logout(){
+localStorage.removeItem("rab_login")
+location.reload()
+}
+
+function startApp(){
+loginPage.classList.add("hidden")
+app.classList.remove("hidden")
+init()
+}
+
+if(localStorage.getItem("rab_login")==="true") startApp()
+
+function save(){
+localStorage.setItem("rab_pro",JSON.stringify(projects))
+localStorage.setItem("rab_current",currentProject||"")
+}
 
 function createProject(){
 let name=newProjectName.value.trim()
-if(!name)return
+if(!name||projects[name])return
 projects[name]={kategori:{},diskon:0,margin:20,ppn:0}
 currentProject=name
-save();renderProjects();render()
 newProjectName.value=""
+save();renderProjects();render()
 }
 
 function deleteProject(){
@@ -197,8 +162,10 @@ currentProject=null
 save();renderProjects();render()
 }
 
-function renameProject(newName){
-if(!currentProject||!newName)return
+function renameProject(){
+let newName=projectName.value.trim()
+if(!newName||newName===currentProject)return
+if(projects[newName])return alert("Nama sudah ada")
 projects[newName]=projects[currentProject]
 delete projects[currentProject]
 currentProject=newName
@@ -212,7 +179,11 @@ projectList.innerHTML+=`<div class="project-item ${p===currentProject?"active":"
 })
 }
 
-function selectProject(p){currentProject=p;renderProjects();render()}
+function selectProject(p){
+currentProject=p
+save();renderProjects();render()
+if(window.innerWidth<768)toggleSidebar()
+}
 
 function addKategori(){
 let k=kategoriInput.value.trim()
@@ -237,9 +208,19 @@ projects[currentProject].kategori[k].splice(i,1)
 save();render()
 }
 
-function updateItem(k,i,key,value){
-if(key==="nama"){projects[currentProject].kategori[k][i][key]=value}
-else{projects[currentProject].kategori[k][i][key]=Number(value.replace(/\D/g,''))||0}
+function updateItem(k,i,key,el){
+let val=el.innerText
+if(key==="nama"){projects[currentProject].kategori[k][i].nama=val}
+if(key==="volume"){
+let num=parseInt(val.replace(/\D/g,''))||0
+projects[currentProject].kategori[k][i].volume=num
+el.innerText=num
+}
+if(key==="harga"){
+let num=parseInt(val.replace(/\D/g,''))||0
+projects[currentProject].kategori[k][i].harga=num
+el.innerText=formatRp(num)
+}
 save();updateSummary()
 }
 
@@ -262,14 +243,13 @@ let html=`<div class="card"><h3>${k}
 
 p.kategori[k].forEach((it,i)=>{
 html+=`<tr>
-<td contenteditable oninput="updateItem('${k}',${i},'nama',this.innerText)">${it.nama}</td>
-<td contenteditable oninput="updateItem('${k}',${i},'volume',this.innerText)">${it.volume}</td>
-<td contenteditable oninput="updateItem('${k}',${i},'harga',this.innerText)">${formatRp(it.harga)}</td>
+<td contenteditable onblur="updateItem('${k}',${i},'nama',this)">${it.nama}</td>
+<td contenteditable onblur="updateItem('${k}',${i},'volume',this)">${it.volume}</td>
+<td contenteditable onblur="updateItem('${k}',${i},'harga',this)">${formatRp(it.harga)}</td>
 <td>${formatRp(it.volume*it.harga)}</td>
 <td><button class="btn-danger" onclick="deleteItem('${k}',${i})">X</button></td>
 </tr>`
 })
-
 html+=`</table></div></div>`
 kategoriContainer.innerHTML+=html
 })
@@ -308,7 +288,8 @@ function renderChart(total,profit){
 if(chartInstance)chartInstance.destroy()
 chartInstance=new Chart(chart,{
 type:"doughnut",
-data:{labels:["Biaya","Profit"],datasets:[{data:[total,profit]}]},
+data:{labels:["Biaya","Profit"],
+datasets:[{data:[total,profit]}]},
 options:{responsive:true,plugins:{legend:{labels:{color:"#fff"}}}}
 })
 }
@@ -330,12 +311,10 @@ XLSX.writeFile(wb,currentProject+"_RAB.xlsx")
 
 function init(){
 renderProjects()
-if(Object.keys(projects).length>0){
+if(!currentProject&&Object.keys(projects).length>0)
 currentProject=Object.keys(projects)[0]
-}
 render()
 }
 </script>
-
 </body>
 </html>
