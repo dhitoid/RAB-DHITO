@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RAB PRO 2026</title>
+<title>RAB PRO Commercial 2026</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -12,54 +12,70 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
-body{
-background:linear-gradient(135deg,#0f172a,#020617);
-color:#fff;
-min-height:100vh;
+body{background:#0f172a;color:#fff;min-height:100vh}
+.hidden{display:none}
+
+header{
 display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px 30px;
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(15px);
+border-bottom:1px solid rgba(255,255,255,0.05);
 }
+header h1{font-size:20px}
+
+.dashboard{
+display:flex;
+min-height:100vh;
+}
+
 .sidebar{
 width:260px;
-background:rgba(255,255,255,0.04);
-backdrop-filter:blur(20px);
+background:#020617;
 padding:20px;
 border-right:1px solid rgba(255,255,255,0.05);
 }
-.sidebar h2{margin-bottom:15px}
+.sidebar h3{margin-bottom:10px}
 .project-item{
 padding:10px;
-background:rgba(255,255,255,0.06);
-border-radius:10px;
+background:rgba(255,255,255,0.05);
+border-radius:8px;
 margin-bottom:8px;
 cursor:pointer;
 font-size:13px;
 }
 .project-item.active{background:#0ea5e9}
+
 .main{
 flex:1;
 padding:30px;
-max-width:1000px;
+max-width:1100px;
 margin:auto;
 }
+
 .card{
 background:rgba(255,255,255,0.05);
-border-radius:20px;
+border-radius:16px;
 padding:20px;
 margin-bottom:20px;
 }
+
 input,select{
 width:100%;
-padding:10px;
-border-radius:10px;
-border:none;
-background:rgba(255,255,255,0.1);
-color:#fff;
+padding:8px;
 margin-top:6px;
-}
-button{
-padding:10px 14px;
 border:none;
-border-radius:10px;
+border-radius:8px;
+background:rgba(255,255,255,0.08);
+color:#fff;
+}
+
+button{
+padding:8px 14px;
+border:none;
+border-radius:8px;
 cursor:pointer;
 font-weight:600;
 margin-top:8px;
@@ -78,42 +94,62 @@ font-size:13px;
 }
 th,td{
 padding:8px;
-border-bottom:1px solid rgba(255,255,255,0.1);
-text-align:left;
+border-bottom:1px solid rgba(255,255,255,0.08);
 }
 th{opacity:.7}
 
-.summary-box{
-background:rgba(255,255,255,0.07);
+.summary{
+background:rgba(255,255,255,0.08);
 padding:15px;
-border-radius:15px;
-margin-top:15px;
-}
-.flex{display:flex;gap:10px;flex-wrap:wrap}
-canvas{margin-top:15px}
-.link-box{
-background:rgba(255,255,255,0.1);
-padding:10px;
-border-radius:10px;
-font-size:12px;
-word-break:break-all;
+border-radius:12px;
 margin-top:10px;
+}
+
+.login-box{
+max-width:400px;
+margin:120px auto;
+background:#020617;
+padding:30px;
+border-radius:16px;
+}
+
+.watermark{
+position:fixed;
+bottom:10px;
+right:10px;
+font-size:12px;
+opacity:.4;
 }
 </style>
 </head>
 <body>
 
-<div class="sidebar">
-<h2>📁 Projects</h2>
-<div id="projectList"></div>
+<div id="loginPage">
+<div class="login-box">
+<h2>Login RAB PRO</h2>
+<input id="username" placeholder="Username">
+<input id="password" type="password" placeholder="Password">
+<button class="btn-primary" onclick="login()">Login</button>
+</div>
+</div>
 
+<div id="app" class="hidden">
+
+<header>
+<h1>💎 RAB PRO Commercial</h1>
+<button class="btn-danger" onclick="logout()">Logout</button>
+</header>
+
+<div class="dashboard">
+
+<div class="sidebar">
+<h3>Projects</h3>
+<div id="projectList"></div>
 <input id="newProjectName" placeholder="Project baru">
-<button class="btn-primary" onclick="createProject()">Tambah Project</button>
+<button class="btn-primary" onclick="createProject()">Tambah</button>
 </div>
 
 <div class="main">
-
-<h1>RAB PRO 2026</h1>
 
 <div class="card">
 <label>Nama Project</label>
@@ -131,96 +167,94 @@ margin-top:10px;
 <label>Margin (%)</label>
 <input type="number" id="marginInput" value="20">
 
-<div id="summary" class="summary-box"></div>
+<div id="summary" class="summary"></div>
 
-<div class="flex">
 <button class="btn-warning" onclick="exportPDF()">Export PDF</button>
 <button class="btn-primary" onclick="exportExcel()">Export Excel</button>
-<button class="btn-dark" onclick="generateLink()">Generate Link</button>
+<button class="btn-dark" onclick="generateInvoice()">Generate Invoice</button>
+
+<canvas id="chart" style="margin-top:20px"></canvas>
 </div>
 
-<div id="generatedLink"></div>
 </div>
 
-<div class="card">
-<h3>Analisa Biaya</h3>
-<canvas id="chart"></canvas>
 </div>
+
+<div class="watermark">RAB PRO Commercial 2026</div>
 
 </div>
 
 <script>
-
-let projects=JSON.parse(localStorage.getItem("rab_projects")||"{}")
+let projects=JSON.parse(localStorage.getItem("rab_pro")||"{}")
 let currentProject=null
 let chartInstance=null
 
-function saveStorage(){
-localStorage.setItem("rab_projects",JSON.stringify(projects))
+function login(){
+if(username.value==="admin" && password.value==="123456"){
+loginPage.classList.add("hidden")
+app.classList.remove("hidden")
+init()
+}else{
+alert("Login gagal")
+}
 }
 
+function logout(){
+location.reload()
+}
+
+function save(){localStorage.setItem("rab_pro",JSON.stringify(projects))}
+
 function createProject(){
-let name=document.getElementById("newProjectName").value.trim()
+let name=newProjectName.value.trim()
 if(!name)return
 projects[name]={kategori:{},diskon:0,margin:20}
 currentProject=name
-saveStorage()
+save()
 renderProjects()
 render()
-document.getElementById("newProjectName").value=""
+newProjectName.value=""
 }
 
 function renderProjects(){
-let list=document.getElementById("projectList")
-list.innerHTML=""
+projectList.innerHTML=""
 Object.keys(projects).forEach(p=>{
-list.innerHTML+=`<div class="project-item ${p===currentProject?"active":""}" onclick="selectProject('${p}')">${p}</div>`
+projectList.innerHTML+=`<div class="project-item ${p===currentProject?"active":""}" onclick="selectProject('${p}')">${p}</div>`
 })
 }
 
-function selectProject(p){
-currentProject=p
-renderProjects()
-render()
-}
+function selectProject(p){currentProject=p;renderProjects();render()}
 
 function addKategori(){
-let k=document.getElementById("kategoriInput").value.trim()
+let k=kategoriInput.value.trim()
 if(!k)return
 projects[currentProject].kategori[k]=[]
-saveStorage()
+save()
 render()
-document.getElementById("kategoriInput").value=""
+kategoriInput.value=""
 }
 
 function addItem(k){
-let nama=prompt("Nama Item")
-let volume=Number(prompt("Volume"))
-let harga=Number(prompt("Harga"))
-if(!nama||!volume||!harga)return
-projects[currentProject].kategori[k].push({nama,volume,harga})
-saveStorage()
+projects[currentProject].kategori[k].push({nama:"Item",volume:1,harga:0})
+save()
 render()
 }
 
 function deleteItem(k,i){
 projects[currentProject].kategori[k].splice(i,1)
-saveStorage()
+save()
 render()
 }
-
-function formatRp(n){return "Rp "+Number(n||0).toLocaleString("id-ID")}
 
 function render(){
 if(!currentProject)return
 let p=projects[currentProject]
-document.getElementById("projectName").value=currentProject
-document.getElementById("diskonInput").value=p.diskon
-document.getElementById("marginInput").value=p.margin
+projectName.value=currentProject
+diskonInput.value=p.diskon
+marginInput.value=p.margin
 
-let container=document.getElementById("kategoriContainer")
-container.innerHTML=""
 let subtotal=0
+kategoriContainer.innerHTML=""
 
 Object.keys(p.kategori).forEach(k=>{
 let total=0
@@ -228,59 +262,60 @@ let html=`<div class="card"><h3>${k}</h3>
 <button class="btn-primary" onclick="addItem('${k}')">Tambah Item</button>
 <table>
 <tr><th>Nama</th><th>Vol</th><th>Harga</th><th>Subtotal</th><th></th></tr>`
+
 p.kategori[k].forEach((it,i)=>{
 let sub=it.volume*it.harga
 total+=sub
 html+=`<tr>
-<td>${it.nama}</td>
-<td>${it.volume}</td>
-<td>${formatRp(it.harga)}</td>
-<td>${formatRp(sub)}</td>
+<td contenteditable oninput="editItem('${k}',${i},'nama',this.innerText)">${it.nama}</td>
+<td contenteditable oninput="editItem('${k}',${i},'volume',this.innerText)">${it.volume}</td>
+<td contenteditable oninput="editItem('${k}',${i},'harga',this.innerText)">${it.harga}</td>
+<td>${sub}</td>
 <td><button class="btn-danger" onclick="deleteItem('${k}',${i})">X</button></td>
 </tr>`
 })
-html+=`</table><strong>Total: ${formatRp(total)}</strong></div>`
+
+html+=`</table><strong>Total: ${total}</strong></div>`
 subtotal+=total
-container.innerHTML+=html
+kategoriContainer.innerHTML+=html
 })
 
-p.diskon=Number(document.getElementById("diskonInput").value)
-p.margin=Number(document.getElementById("marginInput").value)
+p.diskon=Number(diskonInput.value)
+p.margin=Number(marginInput.value)
 
-let diskon=subtotal*(p.diskon/100)
-let grand=subtotal-diskon
+let disk=subtotal*(p.diskon/100)
+let grand=subtotal-disk
 let profit=grand*(p.margin/100)
 
-document.getElementById("summary").innerHTML=
-`Subtotal: ${formatRp(subtotal)}<br>
-Diskon: ${formatRp(diskon)}<br>
-<strong>Grand Total: ${formatRp(grand)}</strong><br>
-Profit: ${formatRp(profit)}`
+summary.innerHTML=`
+Subtotal: ${subtotal}<br>
+Diskon: ${disk}<br>
+<strong>Grand Total: ${grand}</strong><br>
+Profit: ${profit}`
 
-saveStorage()
+save()
 renderChart(subtotal,profit)
+}
+
+function editItem(k,i,key,val){
+projects[currentProject].kategori[k][i][key]=key==="nama"?val:Number(val)
+save()
+render()
 }
 
 function renderChart(total,profit){
 if(chartInstance)chartInstance.destroy()
-chartInstance=new Chart(document.getElementById("chart"),{
+chartInstance=new Chart(chart,{
 type:"doughnut",
-data:{
-labels:["Biaya","Profit"],
-datasets:[{data:[total,profit]}]
-},
-options:{plugins:{legend:{labels:{color:"#fff"}}}}
+data:{labels:["Biaya","Profit"],datasets:[{data:[total,profit]}]}
 })
 }
 
-function exportPDF(){
-html2pdf().from(document.body).save(currentProject+"_RAB.pdf")
-}
-
+function exportPDF(){html2pdf().from(document.querySelector(".main")).save(currentProject+"_RAB.pdf")}
 function exportExcel(){
-let p=projects[currentProject]
 let wb=XLSX.utils.book_new()
 let rows=[["Kategori","Nama","Volume","Harga","Subtotal"]]
+let p=projects[currentProject]
 Object.keys(p.kategori).forEach(k=>{
 p.kategori[k].forEach(it=>{
 rows.push([k,it.nama,it.volume,it.harga,it.volume*it.harga])
@@ -291,20 +326,11 @@ XLSX.utils.book_append_sheet(wb,ws,"RAB")
 XLSX.writeFile(wb,currentProject+"_RAB.xlsx")
 }
 
-function generateLink(){
-let encoded=btoa(JSON.stringify(projects[currentProject]))
-let url=location.origin+location.pathname+"?data="+encoded
-document.getElementById("generatedLink").innerHTML=`<div class="link-box">${url}</div>`
+function generateInvoice(){
+alert("Invoice Generated (upgrade next: PDF Invoice custom template)")
 }
 
-window.onload=()=>{
-let params=new URLSearchParams(location.search)
-if(params.get("data")){
-let imported=JSON.parse(atob(params.get("data")))
-projects["Imported Project"]=imported
-currentProject="Imported Project"
-saveStorage()
-}
+function init(){
 renderProjects()
 if(Object.keys(projects).length>0){
 currentProject=Object.keys(projects)[0]
