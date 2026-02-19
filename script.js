@@ -75,6 +75,19 @@ event: 0.12,      // 12%
 default: 0.08     // fallback
 }
 
+/* ================= IDEAL MARGIN RANGE ================= */
+
+const marginGuidelines = {
+coffee: {min:20, max:40},
+bengkel: {min:15, max:35},
+laundry: {min:25, max:50},
+fashion: {min:30, max:60},
+startup: {min:40, max:80},
+renovasi: {min:10, max:25},
+event: {min:20, max:45},
+default: {min:15, max:40}
+}
+
 /* ================= ENTERPRISE STRUCTURE ================= */
 const enterpriseStructures = {
 
@@ -673,6 +686,32 @@ const monthlyProfit = revenue * (margin/100)
 return Math.ceil(totalModal / monthlyProfit)
 }
 
+/* ================= Analis Margin ================= */
+
+function analyzeMargin(type, margin){
+
+const guide = marginGuidelines[type] || marginGuidelines.default
+
+if(margin < guide.min){
+return {
+status:"low",
+message:`Margin ${margin}% tergolong rendah untuk bisnis ini. Potensi ROI kecil dan BEP lebih lama.`
+}
+}
+
+if(margin > guide.max){
+return {
+status:"high",
+message:`Margin ${margin}% tergolong tinggi dan berisiko tidak kompetitif di pasar. Perlu validasi harga jual.`
+}
+}
+
+return {
+status:"normal",
+message:`Margin ${margin}% masih dalam batas ideal untuk bisnis ini.`
+}
+}
+
 /* ================= ROI CALCULATION ================= */
 
 function calculateROI(totalModal, projectType, margin){
@@ -747,6 +786,7 @@ const risk = calculateRiskLevel(score)
 
 const roiData = calculateROI(budget, type, project.margin)
 const bepMonths = calculateBEP(budget, type)
+const marginCheck = analyzeMargin(type, project.margin)
 
 let recommendation = ""
 
@@ -775,6 +815,9 @@ aiInsight.innerHTML = `
 <strong>Estimasi Profit Tahunan:</strong> Rp ${roiData.yearlyProfit.toLocaleString()} <br>
 <strong>ROI Tahunan:</strong> ${roiData.roiYearly.toFixed(1)}% (${roiLabel}) <br>
 <strong>Estimasi BEP:</strong> ± ${bepMonths} bulan<br><br>
+
+<strong>Margin:</strong> ${project.margin}% <br>
+<strong>Margin Analysis:</strong> ${marginCheck.message} <br><br>
 
 ${recommendation}
 `
