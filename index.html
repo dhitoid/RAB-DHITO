@@ -424,6 +424,38 @@ font-size:13px;
 opacity:.7;
 }
 
+.template-box{
+margin-bottom:20px;
+}
+
+.template-label{
+font-weight:600;
+margin-bottom:10px;
+opacity:.7;
+}
+
+.template-grid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+gap:10px;
+}
+
+.template-card{
+background:#1f2937;
+padding:12px;
+border-radius:10px;
+cursor:pointer;
+text-align:center;
+font-size:13px;
+transition:.2s;
+border:1px solid rgba(255,255,255,.05);
+}
+
+.template-card:hover{
+background:#2563eb;
+transform:translateY(-2px);
+}
+
 @keyframes flashUp{
 0%{color:#22c55e}
 100%{color:inherit}
@@ -467,20 +499,35 @@ to{opacity:1;transform:translateY(0)}
 <div class="sidebar">
 <h3 style="margin-bottom:10px">Projects</h3>
 <div id="projectList"></div>
-<select onchange="generateAITemplate(this.value)">
-<option value="">Template</option>
-<option>Liburan Keluarga</option>
-<option>Renovasi Rumah</option>
-<option>Buka Coffee Shop</option>
-<option>Event Seminar</option>
-<option>Pernikahan Sederhana</option>
-<option>Kontrakan 5 Pintu</option>
-<option>Bisnis Laundry</option>
-<option>UMKM Fashion</option>
-<option>Travel Umroh</option>
-<option>Bangun Rumah 36</option>
-<option>Startup Digital</option>
-</select>
+<div class="template-box">
+<div class="template-label">Template RAB</div>
+
+<div class="template-grid">
+
+<div class="template-card" onclick="generateAITemplate('Liburan Keluarga')">Liburan</div>
+<div class="template-card" onclick="generateAITemplate('Renovasi Rumah')">Renovasi</div>
+<div class="template-card" onclick="generateAITemplate('Buka Coffee Shop')">Coffee</div>
+<div class="template-card" onclick="generateAITemplate('Event Seminar')">Event</div>
+<div class="template-card" onclick="generateAITemplate('Pernikahan Sederhana')">Wedding</div>
+<div class="template-card" onclick="generateAITemplate('Kontrakan 5 Pintu')">Kontrakan</div>
+<div class="template-card" onclick="generateAITemplate('Bisnis Laundry')">Laundry</div>
+<div class="template-card" onclick="generateAITemplate('UMKM Fashion')">Fashion</div>
+<div class="template-card" onclick="generateAITemplate('Travel Umroh')">Umroh</div>
+<div class="template-card" onclick="generateAITemplate('Bangun Rumah 36')">Rumah 36</div>
+<div class="template-card" onclick="generateAITemplate('Startup Digital')">Startup</div>
+
+</div>
+</div>
+<div class="ai-box">
+<div class="ai-header">🤖 AI RAB Generator</div>
+
+<div class="ai-input-wrap">
+<input id="aiPrompt" placeholder="Contoh: Buatkan RAB bengkel motor 80jt">
+<button onclick="generateFromText()">Generate</button>
+</div>
+
+<div id="aiStatus" class="ai-status"></div>
+</div>
 <input id="newProject" placeholder="Nama Project">
 <button class="btn-primary" style="margin-top:10px;width:100%" onclick="createProject()">Tambah</button>
 <button class="btn-danger" style="margin-top:8px;width:100%" onclick="deleteProject()">Hapus</button>
@@ -497,17 +544,6 @@ to{opacity:1;transform:translateY(0)}
 <label>Tambah Kategori</label>
 <input id="newKategori">
 <button class="btn-success" style="margin-top:8px" onclick="addKategori()">Tambah Kategori</button>
-</div>
-
-<div class="ai-box">
-<div class="ai-header">🤖 AI RAB Generator</div>
-
-<div class="ai-input-wrap">
-<input id="aiPrompt" placeholder="Contoh: Buatkan RAB bengkel motor 80jt">
-<button onclick="generateFromText()">Generate</button>
-</div>
-
-<div id="aiStatus" class="ai-status"></div>
 </div>
 
 <div id="kategoriContainer"></div>
@@ -555,6 +591,46 @@ diskon: 0,
 ppn: 0,
 grand: 0,
 profit: 0
+}
+
+const enterpriseStructures = {
+
+bengkel:{
+Peralatan:[
+{nama:"Lift Motor",percent:0.2},
+{nama:"Toolkit Lengkap",percent:0.1},
+{nama:"Compressor",percent:0.08}
+],
+Renovasi:[
+{nama:"Renovasi Tempat",percent:0.25}
+],
+Operasional:[
+{nama:"Sparepart Awal",percent:0.2},
+{nama:"Biaya 3 Bulan",percent:0.12}
+],
+Cadangan:[
+{nama:"Risk Buffer",percent:0.05}
+]
+},
+
+coffee:{
+Peralatan:[
+{nama:"Mesin Espresso",percent:0.25},
+{nama:"Grinder",percent:0.08}
+],
+Interior:[
+{nama:"Meja & Kursi",percent:0.2},
+{nama:"Dekorasi",percent:0.07}
+],
+Operasional:[
+{nama:"Bahan Baku Awal",percent:0.2},
+{nama:"Gaji 2 Bulan",percent:0.15}
+],
+Cadangan:[
+{nama:"Risk Buffer",percent:0.05}
+]
+}
+
 }
 
 const aiTemplates = {
@@ -743,75 +819,22 @@ function generateFromText(){
 let text = document.getElementById("aiPrompt").value
 if(!text) return
 
-let budget = extractBudget(text) || 50000000
+let budget = extractBudget(text) || 100000000
 let type = detectProjectType(text)
 
-document.getElementById("aiStatus").innerText = "AI sedang menyusun RAB..."
+document.getElementById("aiStatus").innerText = "AI Enterprise sedang menganalisa..."
 
 setTimeout(()=>{
 
-let kategori = {}
+let structure = enterpriseStructures[type] || enterpriseStructures["coffee"]
 
-if(type === "bengkel"){
-kategori = {
-Peralatan:[
-{nama:"Lift Motor",volume:1,harga:budget*0.25},
-{nama:"Toolkit Lengkap",volume:1,harga:budget*0.15}
-],
-Renovasi:[
-{nama:"Renovasi Tempat",volume:1,harga:budget*0.3}
-],
-Operasional:[
-{nama:"Modal Awal Sparepart",volume:1,harga:budget*0.2}
-]
-}
-}
+let kategori = distributeBudget(budget, structure)
 
-else if(type === "renovasi" || type === "rumah"){
-kategori = {
-Material:[
-{nama:"Semen & Pasir",volume:1,harga:budget*0.4},
-{nama:"Cat & Finishing",volume:1,harga:budget*0.15}
-],
-Upah:[
-{nama:"Tukang & Mandor",volume:1,harga:budget*0.3}
-],
-Lainnya:[
-{nama:"Biaya Tak Terduga",volume:1,harga:budget*0.1}
-]
-}
-}
-
-else if(type === "liburan"){
-kategori = {
-Transportasi:[
-{nama:"Tiket",volume:1,harga:budget*0.4}
-],
-Akomodasi:[
-{nama:"Hotel",volume:1,harga:budget*0.3}
-],
-Konsumsi:[
-{nama:"Makan & Wisata",volume:1,harga:budget*0.2}
-]
-}
-}
-
-else{
-kategori = {
-Modal:[
-{nama:"Investasi Awal",volume:1,harga:budget*0.6}
-],
-Operasional:[
-{nama:"Biaya Operasional 3 Bulan",volume:1,harga:budget*0.3}
-]
-}
-}
-
-let projectNameAI = "AI Project - " + new Date().getTime()
+let projectNameAI = "AI Enterprise - " + Date.now()
 
 projects[projectNameAI] = {
 diskon:0,
-margin:20,
+margin:calculateSuggestedMargin(type),
 ppn:11,
 kategori:kategori
 }
@@ -822,9 +845,45 @@ activeTab = null
 render()
 saveData()
 
-document.getElementById("aiStatus").innerText = "RAB berhasil dibuat berdasarkan prompt."
+calculateBEP(budget, type)
 
-},800)
+document.getElementById("aiStatus").innerText = "RAB Enterprise berhasil dibuat."
+
+},900)
+}
+
+function distributeBudget(budget, structure){
+
+let result = {}
+
+Object.keys(structure).forEach(cat=>{
+result[cat] = structure[cat].map(item=>{
+return {
+nama:item.nama,
+volume:item.volume || 1,
+harga: Math.round(budget * item.percent)
+}
+})
+})
+
+return result
+}
+
+function calculateSuggestedMargin(type){
+
+if(type==="coffee") return 35
+if(type==="bengkel") return 30
+if(type==="renovasi") return 25
+
+return 20
+}
+
+function calculateBEP(budget, type){
+
+let monthlyProfitEstimate = budget * 0.08
+let bepMonths = Math.ceil(budget / monthlyProfitEstimate)
+
+console.log("Estimasi BEP:", bepMonths, "bulan")
 }
 
 /* ================= FORMAT ================= */
