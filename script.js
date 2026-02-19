@@ -45,6 +45,21 @@ toggle.innerText = "Lihat Lebih Banyak"
 /* ================= TEMPLATE CLICK HANDLER ================= */
 
 document.addEventListener("DOMContentLoaded", () => {
+document.querySelectorAll(".template-card").forEach(card=>{
+card.addEventListener("click",()=>{
+
+const shortName = card.textContent.trim()
+const realTemplate = templateShortMap[shortName]
+
+if(!realTemplate){
+alert("Template tidak ditemukan: " + shortName)
+return
+}
+
+generateAITemplate(realTemplate)
+
+})
+})
 
 document.querySelectorAll(".template-card").forEach(card => {
 card.addEventListener("click", () => {
@@ -316,6 +331,22 @@ Perlengkapan:[
 
 }
 
+/* ================= TEMPLATE SHORT NAME MAP ================= */
+
+const templateShortMap = {
+"Liburan":"Liburan Keluarga",
+"Renovasi":"Renovasi Rumah",
+"Coffee":"Buka Coffee Shop",
+"Event":"Event Seminar",
+"Wedding":"Pernikahan Sederhana",
+"Kontrakan":"Kontrakan 5 Pintu",
+"Laundry":"Bisnis Laundry",
+"Fashion":"UMKM Fashion",
+"Umroh":"Travel Umroh",
+"Rumah 36":"Bangun Rumah 36",
+"Startup":"Startup Digital"
+}
+
 /* ================= AUTO TEMPLATE MAP ================= */
 
 function generateTemplateNameMap(){
@@ -332,22 +363,20 @@ const templateNameMap = generateTemplateNameMap()
 
 /* ================= TEMPLATE GENERATOR ================= */
 
-function generateAITemplate(name){
+function generateAITemplate(templateKey){
 
-const key = templateNameMap[name.toLowerCase()]
-
-if(!key){
-alert("Template tidak ditemukan")
+if(!aiTemplates[templateKey]){
+alert("Template tidak ditemukan di aiTemplates")
 return
 }
 
-const uniqueName = key + " - " + Date.now()
+const uniqueName = templateKey + " - " + Date.now()
 
 projects[uniqueName] = {
 diskon:0,
 margin:25,
 ppn:11,
-kategori:JSON.parse(JSON.stringify(aiTemplates[key].kategori))
+kategori:JSON.parse(JSON.stringify(aiTemplates[templateKey].kategori))
 }
 
 currentProject = uniqueName
