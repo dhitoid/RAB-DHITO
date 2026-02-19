@@ -98,39 +98,94 @@ transition:.2s;
 
 button:hover{opacity:.85}
 
-/* INPUT */
+/* ================= INPUT ================= */
 input{
 width:100%;
-background:rgba(255,255,255,.07);
-border:1px solid rgba(255,255,255,.1);
+background:#0f172a;
+border:1px solid rgba(255,255,255,.15);
 color:#fff;
-padding:8px;
-border-radius:8px;
+padding:10px 12px;
+border-radius:10px;
 outline:none;
+font-size:14px;
+transition:.2s;
 }
 
-input:focus{border-color:#0ea5e9}
+input:focus{
+border-color:#0ea5e9;
+box-shadow:0 0 0 2px rgba(14,165,233,.2);
+}
 
-/* TABLE */
+/* ================= TABLE ================= */
+.table-wrap{
+overflow-x:auto;
+margin-top:15px;
+border-radius:15px;
+border:1px solid rgba(255,255,255,.08);
+}
+
 table{
 width:100%;
 border-collapse:collapse;
-margin-top:15px;
+min-width:700px;
+background:#0b1220;
 }
 
 th{
 text-align:left;
-padding:12px;
-font-size:13px;
-background:rgba(255,255,255,.07);
+padding:14px;
+font-size:12px;
+text-transform:uppercase;
+letter-spacing:.5px;
+background:#111827;
+color:#94a3b8;
+border-bottom:1px solid rgba(255,255,255,.08);
 }
 
 td{
-padding:10px;
-border-bottom:1px solid rgba(255,255,255,.06);
+padding:12px;
+border-bottom:1px solid rgba(255,255,255,.05);
+font-size:14px;
 }
 
-.table-wrap{overflow-x:auto}
+/* Zebra rows */
+tr:nth-child(even){
+background:rgba(255,255,255,.02);
+}
+
+/* Hover row */
+tr:hover{
+background:rgba(14,165,233,.08);
+transition:.2s;
+}
+
+/* Angka rata kanan */
+td:nth-child(2),
+td:nth-child(3),
+td:nth-child(4){
+text-align:right;
+}
+
+/* Subtotal highlight */
+td:nth-child(4){
+font-weight:600;
+color:#22c55e;
+}
+
+/* Delete button lebih kecil */
+td button{
+padding:6px 10px;
+font-size:12px;
+border-radius:8px;
+}
+
+th:first-child, td:first-child{
+min-width:200px;
+}
+
+td input[type="number"]{
+text-align:right;
+}
 
 /* SUMMARY */
 .summary{
