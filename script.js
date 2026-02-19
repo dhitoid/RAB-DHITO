@@ -100,9 +100,143 @@ const enterpriseStructures = {
 
 
 /* ================= AI TEMPLATE ================= */
-/* (SEMUA TEMPLATE KAMU TETAP SAMA - TIDAK DIUBAH) */
+const aiTemplates = {
 
-const aiTemplates = /* --- PASTE PERSIS BLOK aiTemplates LAMA KAMU DI SINI TANPA PERUBAHAN --- */;
+"Liburan Keluarga": {
+kategori:{
+Transportasi:[
+{nama:"Tiket Pesawat",volume:4,harga:1500000},
+{nama:"Transport Lokal",volume:5,harga:300000}
+],
+Akomodasi:[
+{nama:"Hotel 3 Malam",volume:3,harga:750000}
+],
+Konsumsi:[
+{nama:"Makan Harian",volume:4,harga:250000}
+]
+}
+},
+
+"Renovasi Rumah": {
+kategori:{
+Material:[
+{nama:"Semen",volume:50,harga:65000},
+{nama:"Cat Tembok",volume:10,harga:180000}
+],
+Upah:[
+{nama:"Tukang",volume:20,harga:150000}
+]
+}
+},
+
+"Buka Coffee Shop": {
+kategori:{
+Peralatan:[
+{nama:"Mesin Espresso",volume:1,harga:15000000},
+{nama:"Grinder",volume:1,harga:5000000}
+],
+Interior:[
+{nama:"Meja & Kursi",volume:10,harga:750000}
+],
+Operasional:[
+{nama:"Bahan Baku Awal",volume:1,harga:5000000}
+]
+}
+},
+
+"Event Seminar": {
+kategori:{
+Venue:[
+{nama:"Sewa Gedung",volume:1,harga:8000000}
+],
+Konsumsi:[
+{nama:"Snack Peserta",volume:100,harga:35000}
+],
+Marketing:[
+{nama:"Iklan Sosial Media",volume:1,harga:2000000}
+]
+}
+},
+
+"Pernikahan Sederhana": {
+kategori:{
+Venue:[
+{nama:"Gedung",volume:1,harga:15000000}
+],
+Katering:[
+{nama:"Paket 300 Tamu",volume:300,harga:50000}
+],
+Dokumentasi:[
+{nama:"Foto & Video",volume:1,harga:5000000}
+]
+}
+},
+
+"Kontrakan 5 Pintu": {
+kategori:{
+Material:[
+{nama:"Bata Ringan",volume:1000,harga:1200}
+],
+Upah:[
+{nama:"Tukang",volume:60,harga:150000}
+]
+}
+},
+
+"Bisnis Laundry": {
+kategori:{
+Mesin:[
+{nama:"Mesin Cuci",volume:2,harga:4500000}
+],
+Operasional:[
+{nama:"Deterjen Awal",volume:1,harga:1000000}
+]
+}
+},
+
+"UMKM Fashion": {
+kategori:{
+Produksi:[
+{nama:"Bahan Kain",volume:100,harga:45000}
+],
+Marketing:[
+{nama:"Iklan Instagram",volume:1,harga:3000000}
+]
+}
+},
+
+"Travel Umroh": {
+kategori:{
+Paket:[
+{nama:"Paket Umroh",volume:1,harga:30000000}
+]
+}
+},
+
+"Bangun Rumah 36": {
+kategori:{
+Material:[
+{nama:"Semen",volume:100,harga:65000}
+],
+Upah:[
+{nama:"Mandor",volume:30,harga:200000}
+]
+}
+},
+
+"Startup Digital": {
+kategori:{
+Development:[
+{nama:"Developer 3 Bulan",volume:3,harga:8000000}
+],
+Marketing:[
+{nama:"Ads Budget",volume:1,harga:10000000}
+]
+}
+}
+
+}
+;
 
 
 /* ================= AI SYSTEM ================= */
