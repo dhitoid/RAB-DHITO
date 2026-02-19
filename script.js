@@ -17,6 +17,37 @@ profit:0
 }
 
 let templateExpanded = false
+/* ================= DOM ELEMENT ================= */
+
+let projectList
+let kategoriContainer
+let summary
+let projectName
+let diskon
+let margin
+let ppn
+let newProject
+let newKategori
+let aiPrompt
+let aiStatus
+let aiInsight
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+projectList = document.getElementById("projectList")
+kategoriContainer = document.getElementById("kategoriContainer")
+summary = document.getElementById("summary")
+projectName = document.getElementById("projectName")
+diskon = document.getElementById("diskon")
+margin = document.getElementById("margin")
+ppn = document.getElementById("ppn")
+newProject = document.getElementById("newProject")
+newKategori = document.getElementById("newKategori")
+aiPrompt = document.getElementById("aiPrompt")
+aiStatus = document.getElementById("aiStatus")
+aiInsight = document.getElementById("aiInsight")
+
+})
 
 /* ================= SAVE ================= */
 
@@ -347,23 +378,20 @@ return map
 const templateNameMap = generateTemplateNameMap()
 
 /* ================= TEMPLATE GENERATOR ================= */
+function generateAITemplate(templateName){
 
-function generateAITemplate(name){
-
-const key = templateNameMap[name.toLowerCase()]
-
-if(!key){
+if(!aiTemplates[templateName]){
 alert("Template tidak ditemukan")
 return
 }
 
-const uniqueName = key + " - " + Date.now()
+const uniqueName = templateName + " - " + Date.now()
 
 projects[uniqueName] = {
 diskon:0,
 margin:25,
 ppn:11,
-kategori:JSON.parse(JSON.stringify(aiTemplates[key].kategori))
+kategori:JSON.parse(JSON.stringify(aiTemplates[templateName].kategori))
 }
 
 currentProject = uniqueName
@@ -878,12 +906,14 @@ updateSummary()
 
 /* ================= SUMMARY ================= */
 function updateSummary(){
-if(!currentProject) return
-let p=projects[currentProject]
 
-p.diskon=Number(diskon.value)||0
-p.margin=Number(margin.value)||0
-p.ppn=Number(ppn.value)||0
+if(!currentProject) return
+
+let p = projects[currentProject]
+
+p.diskon = Number(diskon.value)||0
+p.margin = Number(margin.value)||0
+p.ppn = Number(ppn.value)||0
 
 let subtotal=0
 Object.values(p.kategori).forEach(arr=>{
@@ -896,39 +926,22 @@ let ppnVal=afterDisk*(p.ppn/100)
 let grand=afterDisk+ppnVal
 let profit=grand*(p.margin/100)
 
+/* Kalau summary belum ada, baru render HTML */
+if(!document.getElementById("sum-subtotal")){
 summary.innerHTML=`
-<div class="summary-box">
-<small>Subtotal</small>
-<strong id="sum-subtotal">Rp 0</strong>
-</div>
-
-<div class="summary-box">
-<small>Diskon</small>
-<strong id="sum-diskon">Rp 0</strong>
-</div>
-
-<div class="summary-box">
-<small>PPN</small>
-<strong id="sum-ppn">Rp 0</strong>
-</div>
-
-<div class="summary-box total">
-<small>Grand Total</small>
-<strong id="sum-grand">Rp 0</strong>
-</div>
-
-<div class="summary-box">
-<small>Estimasi Profit</small>
-<strong id="sum-profit" style="color:#22c55e">Rp 0</strong>
-</div>
+<div class="summary-box"><small>Subtotal</small><strong id="sum-subtotal"></strong></div>
+<div class="summary-box"><small>Diskon</small><strong id="sum-diskon"></strong></div>
+<div class="summary-box"><small>PPN</small><strong id="sum-ppn"></strong></div>
+<div class="summary-box total"><small>Grand Total</small><strong id="sum-grand"></strong></div>
+<div class="summary-box"><small>Estimasi Profit</small><strong id="sum-profit" style="color:#22c55e"></strong></div>
 `
+}
 
-/* Animate values */
 smartAnimate(document.getElementById("sum-subtotal"), "subtotal", subtotal)
 smartAnimate(document.getElementById("sum-diskon"), "diskon", disk)
 smartAnimate(document.getElementById("sum-ppn"), "ppn", ppnVal)
-smartAnimate(document.getElementById("sum-grand"), "grand", grand, 700)
-smartAnimate(document.getElementById("sum-profit"), "profit", profit, 700)
+smartAnimate(document.getElementById("sum-grand"), "grand", grand)
+smartAnimate(document.getElementById("sum-profit"), "profit", profit)
 
 renderChart(subtotal,profit)
 save()
@@ -967,8 +980,8 @@ XLSX.writeFile(wb,currentProject+"_RAB.xlsx")
 /* ================= INIT ================= */
 document.addEventListener("DOMContentLoaded", ()=>{
 
-if(!currentProject && Object.keys(projects).length>0){
-currentProject = Object.keys(projects)[0]
+if(Object.keys(projects).length > 0){
+currentProject = currentProject || Object.keys(projects)[0]
 }
 
 renderProjects()
