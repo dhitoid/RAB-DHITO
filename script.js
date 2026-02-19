@@ -1276,8 +1276,17 @@ smartAnimate(document.getElementById("sum-profit"), "profit", profit, 700)
 renderChart(subtotal,profit)
 const insightBox = document.getElementById("aiInsight")
 if(insightBox){
+insightBox.classList.remove("ai-fade-in")
+insightBox.classList.add("ai-fade-out")
+
+setTimeout(()=>{
+
 insightBox.innerHTML =
 generateUniversalInsight(projects[currentProject])
+insightBox.classList.remove("ai-fade-out")
+insightBox.classList.add("ai-fade-in")
+
+},150)
 }
 save()
 }
