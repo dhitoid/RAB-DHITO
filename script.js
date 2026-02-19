@@ -683,6 +683,7 @@ function calculateBEP(totalModal, margin){
 const turnoverRate = 0.4
 const revenue = totalModal * turnoverRate
 const monthlyProfit = revenue * (margin/100)
+if(monthlyProfit <= 0) return 0
 return Math.ceil(totalModal / monthlyProfit)
 }
 
@@ -714,31 +715,22 @@ message:`Margin ${margin}% masih dalam batas ideal untuk bisnis ini.`
 
 /* ================= ROI CALCULATION ================= */
 
-function calculateROI(totalModal, projectType, margin){
+function calculateROI(totalModal, margin){
 
-// asumsi perputaran modal per bulan
 const turnoverRate = 0.4
-
-// margin dalam desimal
 const marginRate = margin / 100
 
-// estimasi omset bulanan
 const estimatedRevenue = totalModal * turnoverRate
-
-// profit bulanan
 const monthlyProfit = estimatedRevenue * marginRate
-
-// profit tahunan
 const yearlyProfit = monthlyProfit * 12
-
-// ROI tahunan
 const roiYearly = (yearlyProfit / totalModal) * 100
 
 return {
 monthlyProfit,
 yearlyProfit,
 roiYearly,
-turnoverRate
+turnoverRate,
+profitRate: turnoverRate * marginRate
 }
 }
 
@@ -784,8 +776,9 @@ const type = detectProjectType(aiPrompt.value)
 const score = calculateAIScore(project)
 const risk = calculateRiskLevel(score)
 
-const roiData = calculateROI(budget, type, project.margin)
-const bepMonths = calculateBEP(budget, type)
+const roiData = calculateROI(budget, project.margin)
+const bepMonths = calculateBEP(budget, project.margin)
+
 const marginCheck = analyzeMargin(type, project.margin)
 
 let recommendation = ""
@@ -810,14 +803,14 @@ aiInsight.innerHTML = `
 <strong>AI Feasibility Score:</strong> ${score}/100 <br>
 <strong>Risk Level:</strong> ${risk}<br><br>
 
-<strong>Profit Rate:</strong> ${(roiData.rate*100).toFixed(0)}% / bulan<br>
+<strong>Effective Profit Rate:</strong> ${(roiData.profitRate*100).toFixed(1)}% / bulan<br>
 <strong>Estimasi Profit Bulanan:</strong> Rp ${roiData.monthlyProfit.toLocaleString()} <br>
 <strong>Estimasi Profit Tahunan:</strong> Rp ${roiData.yearlyProfit.toLocaleString()} <br>
 <strong>ROI Tahunan:</strong> ${roiData.roiYearly.toFixed(1)}% (${roiLabel}) <br>
 <strong>Estimasi BEP:</strong> ± ${bepMonths} bulan<br><br>
 
 <strong>Margin:</strong> ${project.margin}% <br>
-<strong>Margin Analysis:</strong> ${marginCheck.message} <br><br>
+<strong>Margin Analysis:</strong> ${marginCheck.message}<br><br>
 
 ${recommendation}
 `
