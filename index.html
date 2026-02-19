@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RAB PRO Commercial 2026</title>
+<title>RAB PRO 2026 - Stable</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -12,98 +12,53 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
-
-body{
-background:#0f172a;
-color:#fff;
-min-height:100vh;
-overflow-x:hidden;
-}
-
+body{background:#0f172a;color:#fff;min-height:100vh}
 .hidden{display:none}
 
-/* HEADER */
 header{
 display:flex;
 justify-content:space-between;
 align-items:center;
 padding:15px 20px;
 background:rgba(255,255,255,0.05);
-backdrop-filter:blur(15px);
 border-bottom:1px solid rgba(255,255,255,0.05);
-position:sticky;
-top:0;
-z-index:1000;
+position:sticky;top:0;z-index:1000
 }
 
-.menu-btn{
-display:none;
-font-size:20px;
-cursor:pointer;
-}
+.menu-btn{display:none;font-size:20px;cursor:pointer}
 
-/* LAYOUT */
-.dashboard{
-display:flex;
-min-height:100vh;
-}
+.dashboard{display:flex;min-height:100vh}
 
-/* SIDEBAR */
 .sidebar{
-width:260px;
-background:#020617;
-padding:20px;
+width:260px;background:#020617;padding:20px;
 border-right:1px solid rgba(255,255,255,0.05);
-transition:0.3s ease;
+transition:.3s
 }
-
-.sidebar h3{margin-bottom:10px}
 
 .project-item{
-padding:10px;
-background:rgba(255,255,255,0.05);
-border-radius:8px;
-margin-bottom:8px;
-cursor:pointer;
-font-size:13px;
+padding:10px;background:rgba(255,255,255,0.05);
+border-radius:8px;margin-bottom:8px;
+cursor:pointer;font-size:13px
 }
 
 .project-item.active{background:#0ea5e9}
 
-/* MAIN */
-.main{
-flex:1;
-padding:20px;
-max-width:1100px;
-margin:auto;
-}
+.main{flex:1;padding:20px;max-width:1100px;margin:auto}
 
-/* CARD */
 .card{
 background:rgba(255,255,255,0.05);
-border-radius:16px;
-padding:20px;
-margin-bottom:20px;
+border-radius:16px;padding:20px;margin-bottom:20px
 }
 
-/* FORM */
-input,select{
-width:100%;
-padding:10px;
-margin-top:6px;
-border:none;
-border-radius:8px;
-background:rgba(255,255,255,0.08);
-color:#fff;
+input{
+width:100%;padding:10px;margin-top:6px;
+border:none;border-radius:8px;
+background:rgba(255,255,255,0.08);color:#fff
 }
 
 button{
-padding:10px 14px;
-border:none;
-border-radius:8px;
-cursor:pointer;
-font-weight:600;
-margin-top:8px;
+padding:10px 14px;border:none;border-radius:8px;
+cursor:pointer;font-weight:600;margin-top:8px
 }
 
 .btn-primary{background:#0ea5e9;color:#fff}
@@ -112,76 +67,31 @@ margin-top:8px;
 .btn-warning{background:#f59e0b;color:#000}
 .btn-dark{background:#1e293b;color:#fff}
 
-/* TABLE */
-.table-wrapper{
-overflow-x:auto;
-}
+.table-wrapper{overflow-x:auto}
 
-table{
-width:100%;
-margin-top:10px;
-border-collapse:collapse;
-font-size:13px;
-min-width:600px;
-}
-
-th,td{
-padding:8px;
-border-bottom:1px solid rgba(255,255,255,0.08);
-}
+table{width:100%;margin-top:10px;border-collapse:collapse;font-size:13px;min-width:600px}
+th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.08)}
 
 .summary{
 background:rgba(255,255,255,0.08);
-padding:15px;
-border-radius:12px;
-margin-top:10px;
+padding:15px;border-radius:12px;margin-top:10px
 }
 
-/* LOGIN */
 .login-box{
-max-width:400px;
-margin:120px auto;
-background:#020617;
-padding:30px;
-border-radius:16px;
+max-width:400px;margin:120px auto;
+background:#020617;padding:30px;border-radius:16px
 }
 
-/* WATERMARK */
 .watermark{
-position:fixed;
-bottom:10px;
-right:10px;
-font-size:12px;
-opacity:.4;
+position:fixed;bottom:10px;right:10px;
+font-size:12px;opacity:.4
 }
 
-/* MOBILE STYLE */
 @media(max-width:768px){
-
-.menu-btn{
-display:block;
-}
-
-.sidebar{
-position:fixed;
-left:-260px;
-top:0;
-height:100%;
-z-index:2000;
-}
-
-.sidebar.active{
-left:0;
-}
-
-.dashboard{
-flex-direction:column;
-}
-
-.main{
-padding:15px;
-}
-
+.menu-btn{display:block}
+.sidebar{position:fixed;left:-260px;top:0;height:100%;z-index:2000}
+.sidebar.active{left:0}
+.dashboard{flex-direction:column}
 }
 </style>
 </head>
@@ -199,9 +109,9 @@ padding:15px;
 <div id="app" class="hidden">
 
 <header>
-<div style="display:flex;align-items:center;gap:10px">
+<div style="display:flex;gap:10px;align-items:center">
 <div class="menu-btn" onclick="toggleSidebar()">☰</div>
-<h1>💎 RAB PRO</h1>
+<h1>💎 RAB PRO Stable</h1>
 </div>
 <button class="btn-danger" onclick="logout()">Logout</button>
 </header>
@@ -213,13 +123,14 @@ padding:15px;
 <div id="projectList"></div>
 <input id="newProjectName" placeholder="Project baru">
 <button class="btn-primary" onclick="createProject()">Tambah</button>
+<button class="btn-danger" onclick="deleteProject()">Hapus Project</button>
 </div>
 
 <div class="main">
 
 <div class="card">
 <label>Nama Project</label>
-<input id="projectName">
+<input id="projectName" oninput="renameProject(this.value)">
 
 <label>Tambah Kategori</label>
 <input id="kategoriInput">
@@ -228,10 +139,13 @@ padding:15px;
 <div id="kategoriContainer"></div>
 
 <label>Diskon (%)</label>
-<input type="number" id="diskonInput" value="0">
+<input type="number" id="diskonInput" value="0" oninput="updateSummary()">
 
 <label>Margin (%)</label>
-<input type="number" id="marginInput" value="20">
+<input type="number" id="marginInput" value="20" oninput="updateSummary()">
+
+<label>PPN (%)</label>
+<input type="number" id="ppnInput" value="0" oninput="updateSummary()">
 
 <div id="summary" class="summary"></div>
 
@@ -242,11 +156,9 @@ padding:15px;
 </div>
 
 </div>
-
 </div>
 
-<div class="watermark">RAB PRO Commercial 2026</div>
-
+<div class="watermark">RAB PRO 2026</div>
 </div>
 
 <script>
@@ -254,18 +166,16 @@ let projects=JSON.parse(localStorage.getItem("rab_pro")||"{}")
 let currentProject=null
 let chartInstance=null
 
-function toggleSidebar(){
-sidebar.classList.toggle("active")
-}
+function formatRp(n){return "Rp "+Number(n||0).toLocaleString("id-ID")}
+
+function toggleSidebar(){sidebar.classList.toggle("active")}
 
 function login(){
-if(username.value==="admin" && password.value==="123456"){
+if(username.value==="admin"&&password.value==="123456"){
 loginPage.classList.add("hidden")
 app.classList.remove("hidden")
 init()
-}else{
-alert("Login gagal")
-}
+}else alert("Login gagal")
 }
 
 function logout(){location.reload()}
@@ -274,12 +184,25 @@ function save(){localStorage.setItem("rab_pro",JSON.stringify(projects))}
 function createProject(){
 let name=newProjectName.value.trim()
 if(!name)return
-projects[name]={kategori:{},diskon:0,margin:20}
+projects[name]={kategori:{},diskon:0,margin:20,ppn:0}
 currentProject=name
-save()
-renderProjects()
-render()
+save();renderProjects();render()
 newProjectName.value=""
+}
+
+function deleteProject(){
+if(!currentProject)return
+delete projects[currentProject]
+currentProject=null
+save();renderProjects();render()
+}
+
+function renameProject(newName){
+if(!currentProject||!newName)return
+projects[newName]=projects[currentProject]
+delete projects[currentProject]
+currentProject=newName
+save();renderProjects()
 }
 
 function renderProjects(){
@@ -289,32 +212,35 @@ projectList.innerHTML+=`<div class="project-item ${p===currentProject?"active":"
 })
 }
 
-function selectProject(p){
-currentProject=p
-renderProjects()
-render()
-if(window.innerWidth<768)sidebar.classList.remove("active")
-}
+function selectProject(p){currentProject=p;renderProjects();render()}
 
 function addKategori(){
 let k=kategoriInput.value.trim()
-if(!k)return
+if(!k||!currentProject)return
 projects[currentProject].kategori[k]=[]
-save()
-render()
 kategoriInput.value=""
+save();render()
+}
+
+function deleteKategori(k){
+delete projects[currentProject].kategori[k]
+save();render()
 }
 
 function addItem(k){
 projects[currentProject].kategori[k].push({nama:"Item",volume:1,harga:0})
-save()
-render()
+save();render()
 }
 
 function deleteItem(k,i){
 projects[currentProject].kategori[k].splice(i,1)
-save()
-render()
+save();render()
+}
+
+function updateItem(k,i,key,value){
+if(key==="nama"){projects[currentProject].kategori[k][i][key]=value}
+else{projects[currentProject].kategori[k][i][key]=Number(value.replace(/\D/g,''))||0}
+save();updateSummary()
 }
 
 function render(){
@@ -323,56 +249,59 @@ let p=projects[currentProject]
 projectName.value=currentProject
 diskonInput.value=p.diskon
 marginInput.value=p.margin
+ppnInput.value=p.ppn
 
-let subtotal=0
 kategoriContainer.innerHTML=""
-
 Object.keys(p.kategori).forEach(k=>{
-let total=0
-let html=`<div class="card"><h3>${k}</h3>
+let html=`<div class="card"><h3>${k}
+<button class="btn-danger" onclick="deleteKategori('${k}')">X</button>
+</h3>
 <button class="btn-primary" onclick="addItem('${k}')">Tambah Item</button>
-<div class="table-wrapper">
-<table>
+<div class="table-wrapper"><table>
 <tr><th>Nama</th><th>Vol</th><th>Harga</th><th>Subtotal</th><th></th></tr>`
 
 p.kategori[k].forEach((it,i)=>{
-let sub=it.volume*it.harga
-total+=sub
 html+=`<tr>
-<td contenteditable oninput="editItem('${k}',${i},'nama',this.innerText)">${it.nama}</td>
-<td contenteditable oninput="editItem('${k}',${i},'volume',this.innerText)">${it.volume}</td>
-<td contenteditable oninput="editItem('${k}',${i},'harga',this.innerText)">${it.harga}</td>
-<td>${sub}</td>
+<td contenteditable oninput="updateItem('${k}',${i},'nama',this.innerText)">${it.nama}</td>
+<td contenteditable oninput="updateItem('${k}',${i},'volume',this.innerText)">${it.volume}</td>
+<td contenteditable oninput="updateItem('${k}',${i},'harga',this.innerText)">${formatRp(it.harga)}</td>
+<td>${formatRp(it.volume*it.harga)}</td>
 <td><button class="btn-danger" onclick="deleteItem('${k}',${i})">X</button></td>
 </tr>`
 })
 
-html+=`</table></div><strong>Total: ${total}</strong></div>`
-subtotal+=total
+html+=`</table></div></div>`
 kategoriContainer.innerHTML+=html
 })
+updateSummary()
+}
 
-p.diskon=Number(diskonInput.value)
-p.margin=Number(marginInput.value)
+function updateSummary(){
+if(!currentProject)return
+let p=projects[currentProject]
+p.diskon=Number(diskonInput.value)||0
+p.margin=Number(marginInput.value)||0
+p.ppn=Number(ppnInput.value)||0
+
+let subtotal=0
+Object.values(p.kategori).forEach(arr=>{
+arr.forEach(it=>subtotal+=it.volume*it.harga)
+})
 
 let disk=subtotal*(p.diskon/100)
-let grand=subtotal-disk
+let afterDisk=subtotal-disk
+let ppnVal=afterDisk*(p.ppn/100)
+let grand=afterDisk+ppnVal
 let profit=grand*(p.margin/100)
 
 summary.innerHTML=`
-Subtotal: ${subtotal}<br>
-Diskon: ${disk}<br>
-<strong>Grand Total: ${grand}</strong><br>
-Profit: ${profit}`
-
-save()
-renderChart(subtotal,profit)
-}
-
-function editItem(k,i,key,val){
-projects[currentProject].kategori[k][i][key]=key==="nama"?val:Number(val)
-save()
-render()
+Subtotal: ${formatRp(subtotal)}<br>
+Diskon: ${formatRp(disk)}<br>
+PPN: ${formatRp(ppnVal)}<br>
+<strong>Grand Total: ${formatRp(grand)}</strong><br>
+Profit: ${formatRp(profit)}
+`
+save();renderChart(subtotal,profit)
 }
 
 function renderChart(total,profit){
@@ -380,7 +309,7 @@ if(chartInstance)chartInstance.destroy()
 chartInstance=new Chart(chart,{
 type:"doughnut",
 data:{labels:["Biaya","Profit"],datasets:[{data:[total,profit]}]},
-options:{responsive:true}
+options:{responsive:true,plugins:{legend:{labels:{color:"#fff"}}}}
 })
 }
 
