@@ -108,61 +108,113 @@ Cadangan:[
 
 const aiTemplates = {
 
+/* ================= LIBURAN ================= */
+
 "Liburan Keluarga": {
 kategori:{
 Transportasi:[
-{nama:"Tiket Pesawat",volume:4,harga:1500000},
-{nama:"Transport Lokal",volume:5,harga:300000}
+{nama:"Tiket Pesawat PP (4 Orang)",volume:4,harga:1500000},
+{nama:"Bagasi Tambahan",volume:4,harga:250000},
+{nama:"Transport Lokal (5 Hari)",volume:5,harga:300000}
 ],
 Akomodasi:[
-{nama:"Hotel 3 Malam",volume:3,harga:750000}
+{nama:"Hotel 3 Malam",volume:3,harga:750000},
+{nama:"Early Check-in / Late Check-out",volume:1,harga:500000}
 ],
 Konsumsi:[
-{nama:"Makan Harian",volume:4,harga:250000}
+{nama:"Makan Harian (4 Org x 4 Hari)",volume:4,harga:250000},
+{nama:"Cafe & Jajan",volume:4,harga:150000}
+],
+Aktivitas:[
+{nama:"Tiket Wisata",volume:4,harga:300000},
+{nama:"Souvenir",volume:1,harga:1500000}
+],
+Cadangan:[
+{nama:"Emergency Fund",volume:1,harga:2000000}
 ]
 }
 },
+
+/* ================= RENOVASI ================= */
 
 "Renovasi Rumah": {
 kategori:{
 Material:[
 {nama:"Semen",volume:50,harga:65000},
-{nama:"Cat Tembok",volume:10,harga:180000}
+{nama:"Pasir",volume:5,harga:250000},
+{nama:"Cat Tembok Premium",volume:10,harga:180000},
+{nama:"Keramik",volume:40,harga:85000}
 ],
 Upah:[
-{nama:"Tukang",volume:20,harga:150000}
+{nama:"Tukang",volume:20,harga:150000},
+{nama:"Mandor",volume:10,harga:200000}
+],
+Peralatan:[
+{nama:"Sewa Alat",volume:1,harga:2000000}
+],
+Cadangan:[
+{nama:"Overbudget Material",volume:1,harga:3000000}
 ]
 }
 },
+
+/* ================= COFFEE SHOP ================= */
 
 "Buka Coffee Shop": {
 kategori:{
 Peralatan:[
-{nama:"Mesin Espresso",volume:1,harga:15000000},
-{nama:"Grinder",volume:1,harga:5000000}
+{nama:"Mesin Espresso 2 Group",volume:1,harga:15000000},
+{nama:"Grinder Profesional",volume:1,harga:5000000},
+{nama:"Freezer & Chiller",volume:1,harga:7000000},
+{nama:"POS System",volume:1,harga:4000000}
 ],
 Interior:[
-{nama:"Meja & Kursi",volume:10,harga:750000}
+{nama:"Meja & Kursi",volume:10,harga:750000},
+{nama:"Renovasi Interior",volume:1,harga:20000000},
+{nama:"Neon Sign & Branding",volume:1,harga:5000000}
 ],
 Operasional:[
-{nama:"Bahan Baku Awal",volume:1,harga:5000000}
+{nama:"Bahan Baku Awal",volume:1,harga:5000000},
+{nama:"Gaji Barista 2 Bulan",volume:2,harga:3500000},
+{nama:"Sewa Tempat 2 Bulan",volume:2,harga:7000000}
+],
+Marketing:[
+{nama:"Soft Opening Event",volume:1,harga:3000000},
+{nama:"Ads Instagram 1 Bulan",volume:1,harga:5000000}
+],
+Cadangan:[
+{nama:"Risk Buffer",volume:1,harga:7000000}
 ]
 }
 },
 
+/* ================= EVENT ================= */
+
 "Event Seminar": {
 kategori:{
 Venue:[
-{nama:"Sewa Gedung",volume:1,harga:8000000}
+{nama:"Sewa Gedung 1 Hari",volume:1,harga:8000000},
+{nama:"Sound System",volume:1,harga:3000000}
 ],
 Konsumsi:[
-{nama:"Snack Peserta",volume:100,harga:35000}
+{nama:"Snack 100 Peserta",volume:100,harga:35000},
+{nama:"Air Mineral",volume:100,harga:5000}
 ],
 Marketing:[
-{nama:"Iklan Sosial Media",volume:1,harga:2000000}
+{nama:"Iklan Sosial Media",volume:1,harga:2000000},
+{nama:"Desain Poster",volume:1,harga:1000000}
+],
+Operasional:[
+{nama:"MC & Moderator",volume:1,harga:2500000},
+{nama:"Dokumentasi",volume:1,harga:2000000}
+],
+Cadangan:[
+{nama:"Biaya Tak Terduga",volume:1,harga:3000000}
 ]
 }
 },
+
+/* ================= PERNIKAHAN ================= */
 
 "Pernikahan Sederhana": {
 kategori:{
@@ -174,69 +226,147 @@ Katering:[
 ],
 Dokumentasi:[
 {nama:"Foto & Video",volume:1,harga:5000000}
+],
+Dekorasi:[
+{nama:"Dekor Pelaminan",volume:1,harga:8000000}
+],
+Hiburan:[
+{nama:"Band / Organ Tunggal",volume:1,harga:5000000}
+],
+Cadangan:[
+{nama:"Biaya Tambahan",volume:1,harga:5000000}
 ]
 }
 },
+
+/* ================= KONTRAKAN ================= */
 
 "Kontrakan 5 Pintu": {
 kategori:{
 Material:[
-{nama:"Bata Ringan",volume:1000,harga:1200}
+{nama:"Bata Ringan",volume:1000,harga:1200},
+{nama:"Semen",volume:200,harga:65000},
+{nama:"Besi",volume:100,harga:90000}
 ],
 Upah:[
-{nama:"Tukang",volume:60,harga:150000}
+{nama:"Tukang",volume:60,harga:150000},
+{nama:"Mandor",volume:30,harga:200000}
+],
+Perizinan:[
+{nama:"IMB & Administrasi",volume:1,harga:5000000}
+],
+Cadangan:[
+{nama:"Biaya Overrun",volume:1,harga:10000000}
 ]
 }
 },
+
+/* ================= LAUNDRY ================= */
 
 "Bisnis Laundry": {
 kategori:{
 Mesin:[
-{nama:"Mesin Cuci",volume:2,harga:4500000}
+{nama:"Mesin Cuci",volume:2,harga:4500000},
+{nama:"Mesin Pengering",volume:2,harga:4000000}
+],
+Interior:[
+{nama:"Renovasi Tempat",volume:1,harga:8000000}
 ],
 Operasional:[
-{nama:"Deterjen Awal",volume:1,harga:1000000}
+{nama:"Deterjen Awal",volume:1,harga:1000000},
+{nama:"Gaji Karyawan 2 Bulan",volume:2,harga:2500000}
+],
+Marketing:[
+{nama:"Spanduk & Brosur",volume:1,harga:1500000}
+],
+Cadangan:[
+{nama:"Dana Darurat",volume:1,harga:3000000}
 ]
 }
 },
+
+/* ================= FASHION ================= */
 
 "UMKM Fashion": {
 kategori:{
 Produksi:[
-{nama:"Bahan Kain",volume:100,harga:45000}
+{nama:"Bahan Kain",volume:100,harga:45000},
+{nama:"Jahit Produksi",volume:100,harga:25000}
+],
+Branding:[
+{nama:"Logo & Packaging",volume:1,harga:3000000}
 ],
 Marketing:[
-{nama:"Iklan Instagram",volume:1,harga:3000000}
+{nama:"Iklan Instagram",volume:1,harga:3000000},
+{nama:"Influencer Endorse",volume:1,harga:5000000}
+],
+Cadangan:[
+{nama:"Return & Reject Buffer",volume:1,harga:2000000}
 ]
 }
 },
+
+/* ================= UMROH ================= */
 
 "Travel Umroh": {
 kategori:{
 Paket:[
-{nama:"Paket Umroh",volume:1,harga:30000000}
+{nama:"Paket Umroh 1 Orang",volume:1,harga:30000000}
+],
+Administrasi:[
+{nama:"Visa & Handling",volume:1,harga:5000000}
+],
+Perlengkapan:[
+{nama:"Perlengkapan Umroh",volume:1,harga:2000000}
+],
+Cadangan:[
+{nama:"Biaya Tambahan",volume:1,harga:3000000}
 ]
 }
 },
+
+/* ================= RUMAH 36 ================= */
 
 "Bangun Rumah 36": {
 kategori:{
 Material:[
-{nama:"Semen",volume:100,harga:65000}
+{nama:"Semen",volume:100,harga:65000},
+{nama:"Bata Ringan",volume:2000,harga:1200},
+{nama:"Besi Beton",volume:200,harga:90000}
 ],
 Upah:[
-{nama:"Mandor",volume:30,harga:200000}
+{nama:"Mandor",volume:30,harga:200000},
+{nama:"Tukang",volume:60,harga:150000}
+],
+Instalasi:[
+{nama:"Listrik & Plumbing",volume:1,harga:15000000}
+],
+Cadangan:[
+{nama:"Biaya Overrun",volume:1,harga:10000000}
 ]
 }
 },
 
+/* ================= STARTUP ================= */
+
 "Startup Digital": {
 kategori:{
 Development:[
-{nama:"Developer 3 Bulan",volume:3,harga:8000000}
+{nama:"Developer 3 Bulan",volume:3,harga:8000000},
+{nama:"UI/UX Designer",volume:2,harga:7000000}
+],
+Infrastructure:[
+{nama:"Server & Hosting 1 Tahun",volume:1,harga:12000000}
 ],
 Marketing:[
-{nama:"Ads Budget",volume:1,harga:10000000}
+{nama:"Ads Budget",volume:1,harga:10000000},
+{nama:"Influencer Tech Review",volume:1,harga:8000000}
+],
+Legal:[
+{nama:"Legalitas PT",volume:1,harga:15000000}
+],
+Cadangan:[
+{nama:"Runway Buffer",volume:1,harga:20000000}
 ]
 }
 }
