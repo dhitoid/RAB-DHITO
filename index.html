@@ -25,14 +25,13 @@
 
 <!-- SIDEBAR -->
 <div class="sidebar">
-<h3 class="sidebar-title">Projects</h3>
-
+<h3 style="margin-bottom:10px">Projects</h3>
 <div id="projectList"></div>
-
 <div class="template-box">
 <div class="template-label">Template RAB</div>
 
 <div id="templateGrid" class="template-grid collapsed">
+
 <div class="template-card">Liburan</div>
 <div class="template-card">Renovasi</div>
 <div class="template-card">Coffee</div>
@@ -45,13 +44,13 @@
 <div class="template-card extra">Umroh</div>
 <div class="template-card extra">Rumah 36</div>
 <div class="template-card extra">Startup</div>
+
 </div>
 
 <div class="template-toggle" onclick="toggleTemplate()">
 Lihat Lebih Banyak
 </div>
 </div>
-
 <div class="ai-box">
 <div class="ai-header">🤖 AI RAB Generator</div>
 
@@ -63,33 +62,29 @@ Lihat Lebih Banyak
 <div id="aiStatus" class="ai-status"></div>
 <div id="aiInsight" class="ai-insight"></div>
 </div>
-
 <input id="newProject" placeholder="Nama Project">
-
-<button class="btn-primary full mt-10" onclick="createProject()">Tambah</button>
-<button class="btn-danger full mt-8" onclick="deleteProject()">Hapus</button>
-
+<button class="btn-primary" style="margin-top:10px;width:100%" onclick="createProject()">Tambah</button>
+<button class="btn-danger" style="margin-top:8px;width:100%" onclick="deleteProject()">Hapus</button>
 </div>
 
 <!-- MAIN -->
 <div class="main">
 
 <div class="card">
-
 <label>Nama Project</label>
 <input id="projectName" onblur="renameProject()">
 
-<div class="mt-15">
+<div style="margin-top:15px">
 <label>Tambah Kategori</label>
 <input id="newKategori">
-<button class="btn-success mt-8" onclick="addKategori()">Tambah Kategori</button>
+<button class="btn-success" style="margin-top:8px" onclick="addKategori()">Tambah Kategori</button>
 </div>
 
 <div id="kategoriContainer"></div>
 
-<h3 class="mt-20">Pengaturan</h3>
+<h3 style="margin-top:20px">Pengaturan</h3>
 
-<div class="grid-settings">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin-top:10px">
 <div>
 <label>Diskon %</label>
 <input type="number" id="diskon" oninput="updateSummary()">
@@ -106,7 +101,7 @@ Lihat Lebih Banyak
 
 <div class="summary" id="summary"></div>
 
-<button class="btn-warning">Export Excel</button>
+<button class="btn-warning" onclick="exportExcel()">Export Excel</button>
 
 </div>
 
