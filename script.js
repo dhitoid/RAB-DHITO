@@ -62,50 +62,124 @@ generateAITemplate(name)
 
 })
 
-/* ================= ENTERPRISE STRUCTURE ================= */
+/* ================= PROFIT RATE BY BUSINESS ================= */
 
+const businessProfitRates = {
+coffee: 0.12,     // 12% per bulan
+bengkel: 0.10,    // 10%
+laundry: 0.15,    // 15%
+fashion: 0.18,    // 18%
+startup: 0.20,    // 20%
+renovasi: 0.08,   // 8%
+event: 0.12,      // 12%
+default: 0.08     // fallback
+}
+
+/* ================= ENTERPRISE STRUCTURE ================= */
 const enterpriseStructures = {
 
 bengkel:{
 Peralatan:[
-{nama:"Lift Motor",percent:0.2},
-{nama:"Toolkit Lengkap",percent:0.1},
-{nama:"Compressor",percent:0.08}
+{nama:"Lift Motor",percent:0.18},
+{nama:"Toolkit Lengkap",percent:0.10},
+{nama:"Compressor",percent:0.07}
 ],
 Renovasi:[
-{nama:"Renovasi Tempat",percent:0.25}
+{nama:"Renovasi Tempat",percent:0.20}
 ],
 Operasional:[
-{nama:"Sparepart Awal",percent:0.2},
-{nama:"Biaya 3 Bulan",percent:0.12}
+{nama:"Sparepart Awal",percent:0.18},
+{nama:"Gaji 2 Bulan",percent:0.12}
+],
+Marketing:[
+{nama:"Spanduk & Promosi",percent:0.05}
 ],
 Cadangan:[
-{nama:"Risk Buffer",percent:0.05}
+{nama:"Risk Buffer",percent:0.10}
 ]
 },
 
 coffee:{
 Peralatan:[
-{nama:"Mesin Espresso",percent:0.25},
+{nama:"Mesin Espresso",percent:0.22},
 {nama:"Grinder",percent:0.08}
 ],
 Interior:[
-{nama:"Meja & Kursi",percent:0.2},
-{nama:"Dekorasi",percent:0.07}
+{nama:"Renovasi & Furniture",percent:0.22}
 ],
 Operasional:[
-{nama:"Bahan Baku Awal",percent:0.2},
-{nama:"Gaji 2 Bulan",percent:0.15}
+{nama:"Bahan Baku Awal",percent:0.15},
+{nama:"Gaji 2 Bulan",percent:0.12}
+],
+Marketing:[
+{nama:"Grand Opening & Ads",percent:0.08}
 ],
 Cadangan:[
-{nama:"Risk Buffer",percent:0.05}
+{nama:"Risk Buffer",percent:0.13}
+]
+},
+
+laundry:{
+Mesin:[
+{nama:"Mesin Cuci & Dryer",percent:0.35}
+],
+Renovasi:[
+{nama:"Renovasi Tempat",percent:0.20}
+],
+Operasional:[
+{nama:"Gaji 2 Bulan",percent:0.15},
+{nama:"Deterjen & Perlengkapan",percent:0.08}
+],
+Marketing:[
+{nama:"Spanduk & Brosur",percent:0.05}
+],
+Cadangan:[
+{nama:"Risk Buffer",percent:0.17}
+]
+},
+
+property:{
+Material:[
+{nama:"Material Bangunan",percent:0.45}
+],
+Upah:[
+{nama:"Tukang & Mandor",percent:0.25}
+],
+Perizinan:[
+{nama:"IMB & Legal",percent:0.05}
+],
+Operasional:[
+{nama:"Biaya Lapangan",percent:0.05}
+],
+Cadangan:[
+{nama:"Overrun Buffer",percent:0.20}
+]
+},
+
+startup:{
+Development:[
+{nama:"Developer & Designer",percent:0.35}
+],
+Infrastructure:[
+{nama:"Server & Tools",percent:0.10}
+],
+Marketing:[
+{nama:"Digital Ads",percent:0.20}
+],
+Legal:[
+{nama:"Legalitas & Notaris",percent:0.05}
+],
+Operasional:[
+{nama:"Gaji Tim 3 Bulan",percent:0.10}
+],
+Cadangan:[
+{nama:"Runway Buffer",percent:0.20}
 ]
 }
 
 }
 
 /* ================= TEMPLATE RAB ================= */
-
 const aiTemplates = {
 
 /* ================= LIBURAN ================= */
@@ -418,10 +492,17 @@ render()
 /* ================= AI TEXT PARSER ================= */
 
 function extractBudget(text){
-text = text.toLowerCase()
-let match = text.match(/(\d+)\s*(jt|juta|m)/i)
+
+text = text.toLowerCase().replace(/\./g,"")
+
+let match = text.match(/(\d+(\.\d+)?)\s*(jt|juta)/)
 if(match){
-return parseInt(match[1]) * 1000000
+return parseFloat(match[1]) * 1000000
+}
+
+let matchM = text.match(/(\d+(\.\d+)?)\s*(m|milyar)/)
+if(matchM){
+return parseFloat(matchM[1]) * 1000000000
 }
 
 let numeric = text.match(/\d{7,}/)
@@ -437,13 +518,32 @@ function detectProjectType(text){
 text = text.toLowerCase()
 
 const keywords = {
-bengkel:["bengkel","motor","mobil","service"],
-coffee:["coffee","cafe","kopi"],
-renovasi:["renovasi","rumah","bangun","kontrakan"],
-startup:["startup","app","aplikasi","digital"],
-laundry:["laundry","cuci"],
-fashion:["fashion","baju","clothing"],
-event:["event","seminar","workshop"]
+
+bengkel:[
+"bengkel","motor","mobil","service",
+"oli","sparepart","tune up","ganti ban"
+],
+
+coffee:[
+"coffee","cafe","kopi","espresso",
+"barista","kedai kopi","ngopi"
+],
+
+laundry:[
+"laundry","cuci","dry clean",
+"setrika","laundry kiloan"
+],
+
+property:[
+"renovasi","bangun rumah","rumah 36",
+"kontrakan","kost","ruko","proyek"
+],
+
+startup:[
+"startup","app","aplikasi","digital",
+"software","saas","platform","website"
+]
+
 }
 
 for(let type in keywords){
@@ -455,17 +555,37 @@ return type
 return "coffee"
 }
 
+function detectScale(budget){
+
+if(budget < 50000000) return "kecil"
+if(budget < 250000000) return "menengah"
+return "besar"
+}
+
 /* ================= DISTRIBUTE ================= */
 
 function distributeBudget(budget, structure){
+
 let result = {}
+let scale = detectScale(budget)
 
 Object.keys(structure).forEach(cat=>{
-result[cat] = structure[cat].map(item=>({
+
+result[cat] = structure[cat].map(item=>{
+
+let multiplier = 1
+
+if(scale==="besar") multiplier = 1.2
+if(scale==="kecil") multiplier = 0.9
+
+return {
 nama:item.nama,
 volume:1,
-harga:Math.round(budget * item.percent)
-}))
+harga:Math.round(budget * item.percent * multiplier)
+}
+
+})
+
 })
 
 return result
@@ -490,11 +610,16 @@ enterpriseStructures[type] || enterpriseStructures["coffee"]
 
 const kategori = distributeBudget(budget, structure)
 
-const name = "AI - " + type.toUpperCase() + " - " + Date.now()
+const scale = detectScale(budget)
+
+const name =
+"AI - " + type.toUpperCase() +
+" - " + scale.toUpperCase() +
+" - " + Date.now()
 
 projects[name] = {
 diskon:0,
-margin:calculateSuggestedMargin(type),
+margin:calculateSuggestedMargin(type, scale),
 ppn:11,
 kategori:kategori
 }
@@ -502,33 +627,67 @@ kategori:kategori
 currentProject = name
 activeTab = null
 
+previousTotals = {
+subtotal:0,
+diskon:0,
+ppn:0,
+grand:0,
+profit:0
+}
+
 save()
 render()
 renderProjects()
 
-calculateBEP(budget)
+calculateBEP(projects[name])
 showAIInsight(projects[name], budget)
 
 aiStatus.innerText = "RAB Enterprise berhasil dibuat."
 
-},700)
+},600)
 }
 
 /* ================= MARGIN ================= */
 
-function calculateSuggestedMargin(type){
-if(type==="coffee") return 35
-if(type==="bengkel") return 30
-if(type==="renovasi") return 25
-return 20
+function calculateSuggestedMargin(type, scale){
+
+let base = 25
+
+if(type==="startup") base = 40
+if(type==="coffee") base = 35
+if(type==="bengkel") base = 30
+if(type==="property") base = 25
+
+if(scale==="besar") base += 5
+if(scale==="kecil") base -= 5
+
+return base
 }
 
 /* ================= BEP ================= */
 
-function calculateBEP(budget){
-const monthlyProfitEstimate = budget * 0.08
-const bepMonths = Math.ceil(budget / monthlyProfitEstimate)
-console.log("Estimasi BEP:",bepMonths,"bulan")
+function calculateBEP(totalModal, type){
+const rate = businessProfitRates[type] || businessProfitRates.default
+const monthlyProfit = totalModal * rate
+return Math.ceil(totalModal / monthlyProfit)
+}
+
+/* ================= ROI CALCULATION ================= */
+
+function calculateROI(totalModal, type){
+
+const rate = businessProfitRates[type] || businessProfitRates.default
+
+const monthlyProfit = totalModal * rate
+const yearlyProfit = monthlyProfit * 12
+const roiYearly = (yearlyProfit / totalModal) * 100
+
+return {
+monthlyProfit,
+yearlyProfit,
+roiYearly,
+rate
+}
 }
 
 /* ================= AI SCORE ================= */
@@ -569,8 +728,12 @@ return "Tinggi"
 
 function showAIInsight(project, budget){
 
+const type = detectProjectType(aiPrompt.value)
 const score = calculateAIScore(project)
 const risk = calculateRiskLevel(score)
+
+const roiData = calculateROI(budget, type)
+const bepMonths = calculateBEP(budget, type)
 
 let recommendation = ""
 
@@ -584,10 +747,22 @@ else{
 recommendation = "Perlu optimasi struktur biaya sebelum eksekusi."
 }
 
+let roiLabel = ""
+if(roiData.roiYearly >= 60) roiLabel = "High Growth"
+else if(roiData.roiYearly >= 40) roiLabel = "Sangat Menarik"
+else if(roiData.roiYearly >= 25) roiLabel = "Menarik"
+else roiLabel = "Stabil / Konservatif"
+
 aiInsight.innerHTML = `
 <strong>AI Feasibility Score:</strong> ${score}/100 <br>
-<strong>Risk Level:</strong> ${risk}<br>
-<strong>Estimasi BEP:</strong> ~${Math.ceil(budget/(budget*0.08))} bulan<br><br>
+<strong>Risk Level:</strong> ${risk}<br><br>
+
+<strong>Profit Rate:</strong> ${(roiData.rate*100).toFixed(0)}% / bulan<br>
+<strong>Estimasi Profit Bulanan:</strong> Rp ${roiData.monthlyProfit.toLocaleString()} <br>
+<strong>Estimasi Profit Tahunan:</strong> Rp ${roiData.yearlyProfit.toLocaleString()} <br>
+<strong>ROI Tahunan:</strong> ${roiData.roiYearly.toFixed(1)}% (${roiLabel}) <br>
+<strong>Estimasi BEP:</strong> ± ${bepMonths} bulan<br><br>
+
 ${recommendation}
 `
 }
