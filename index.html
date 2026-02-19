@@ -137,6 +137,75 @@ font-size:12px;opacity:.4
 .sidebar.open{left:0}
 .dashboard{flex-direction:column}
 }
+
+.main{
+flex:1;
+padding:30px;
+max-width:1200px;
+margin:auto;
+}
+
+.card{
+background:rgba(255,255,255,.06);
+border-radius:20px;
+padding:25px;
+margin-bottom:25px;
+box-shadow:0 10px 25px rgba(0,0,0,.3);
+}
+
+table{
+width:100%;
+margin-top:15px;
+border-collapse:collapse;
+font-size:14px;
+min-width:700px;
+}
+
+th{
+background:rgba(255,255,255,.08);
+text-align:left;
+}
+
+td{
+background:rgba(255,255,255,.03);
+}
+
+td[contenteditable]{
+background:rgba(255,255,255,.07);
+border-radius:6px;
+}
+
+.summary{
+font-size:15px;
+line-height:1.8;
+}
+
+.summary strong{
+font-size:18px;
+color:#22c55e;
+}
+
+@media(max-width:768px){
+
+.main{
+padding:15px;
+}
+
+.card{
+padding:15px;
+}
+
+table{
+font-size:12px;
+min-width:600px;
+}
+
+button{
+width:100%;
+}
+
+}
+
 </style>
 </head>
 <body>
@@ -324,18 +393,29 @@ save();render()
 
 function updateItem(k,i,key,el){
 let val=el.innerText
-if(key==="nama")projects[currentProject].kategori[k][i].nama=val
+
+if(key==="nama"){
+    projects[currentProject].kategori[k][i].nama=val
+}
+
 if(key==="volume"){
-let num=parseInt(val.replace(/\D/g,''))||0
-projects[currentProject].kategori[k][i].volume=num
-el.innerText=num
+    let num=parseInt(val.replace(/\D/g,''))||0
+    projects[currentProject].kategori[k][i].volume=num
+    el.innerText=num
 }
+
 if(key==="harga"){
-let num=parseInt(val.replace(/\D/g,''))||0
-projects[currentProject].kategori[k][i].harga=num
-el.innerText=formatRp(num)
+    let num=parseInt(val.replace(/\D/g,''))||0
+    projects[currentProject].kategori[k][i].harga=num
+    el.innerText=formatRp(num)
 }
-save();updateSummary()
+
+let row = el.parentElement
+let item = projects[currentProject].kategori[k][i]
+row.children[3].innerText = formatRp(item.volume * item.harga)
+
+save()
+updateSummary()
 }
 
 function render(){
@@ -359,9 +439,9 @@ let html=`<div class="card"><h3>${k}
 
 p.kategori[k].forEach((it,i)=>{
 html+=`<tr>
-<td contenteditable onblur="updateItem('${k}',${i},'nama',this)">${it.nama}</td>
-<td contenteditable onblur="updateItem('${k}',${i},'volume',this)">${it.volume}</td>
-<td contenteditable onblur="updateItem('${k}',${i},'harga',this)">${formatRp(it.harga)}</td>
+<td contenteditable oninput="updateItem('${k}',${i},'nama',this)">${it.nama}</td>
+<td contenteditable oninput="updateItem('${k}',${i},'volume',this)">${it.volume}</td>
+<td contenteditable oninput="updateItem('${k}',${i},'harga',this)">${formatRp(it.harga)}</td>
 <td>${formatRp(it.volume*it.harga)}</td>
 <td><button class="btn-danger" onclick="deleteItem('${k}',${i})">X</button></td>
 </tr>`
@@ -393,11 +473,12 @@ let grand=afterDisk+ppnVal
 let profit=grand*(p.margin/100)
 
 summary.innerHTML=`
-Subtotal: ${formatRp(subtotal)}<br>
-Diskon: ${formatRp(disk)}<br>
-PPN: ${formatRp(ppnVal)}<br>
-<strong>Grand Total: ${formatRp(grand)}</strong><br>
-Profit: ${formatRp(profit)}
+<div>Subtotal: ${formatRp(subtotal)}</div>
+<div>Diskon: ${formatRp(disk)}</div>
+<div>PPN: ${formatRp(ppnVal)}</div>
+<hr style="margin:10px 0;border:0;border-top:1px solid rgba(255,255,255,.2)">
+<div><strong>Grand Total: ${formatRp(grand)}</strong></div>
+<div style="color:#22c55e">Estimasi Profit: ${formatRp(profit)}</div>
 `
 
 save();renderChart(subtotal,profit)
