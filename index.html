@@ -456,6 +456,31 @@ background:#2563eb;
 transform:translateY(-2px);
 }
 
+.template-grid.collapsed .extra{
+display:none;
+}
+
+.template-toggle{
+margin-top:12px;
+font-size:13px;
+cursor:pointer;
+opacity:.6;
+transition:.2s;
+}
+
+.template-toggle:hover{
+opacity:1;
+}
+
+.ai-insight{
+margin-top:15px;
+padding:14px;
+border-radius:10px;
+background:#1f2937;
+font-size:13px;
+line-height:1.5;
+}
+
 @keyframes flashUp{
 0%{color:#22c55e}
 100%{color:inherit}
@@ -502,20 +527,25 @@ to{opacity:1;transform:translateY(0)}
 <div class="template-box">
 <div class="template-label">Template RAB</div>
 
-<div class="template-grid">
+<div id="templateGrid" class="template-grid collapsed">
 
-<div class="template-card" onclick="generateAITemplate('Liburan Keluarga')">Liburan</div>
-<div class="template-card" onclick="generateAITemplate('Renovasi Rumah')">Renovasi</div>
-<div class="template-card" onclick="generateAITemplate('Buka Coffee Shop')">Coffee</div>
-<div class="template-card" onclick="generateAITemplate('Event Seminar')">Event</div>
-<div class="template-card" onclick="generateAITemplate('Pernikahan Sederhana')">Wedding</div>
-<div class="template-card" onclick="generateAITemplate('Kontrakan 5 Pintu')">Kontrakan</div>
-<div class="template-card" onclick="generateAITemplate('Bisnis Laundry')">Laundry</div>
-<div class="template-card" onclick="generateAITemplate('UMKM Fashion')">Fashion</div>
-<div class="template-card" onclick="generateAITemplate('Travel Umroh')">Umroh</div>
-<div class="template-card" onclick="generateAITemplate('Bangun Rumah 36')">Rumah 36</div>
-<div class="template-card" onclick="generateAITemplate('Startup Digital')">Startup</div>
+<div class="template-card">Liburan</div>
+<div class="template-card">Renovasi</div>
+<div class="template-card">Coffee</div>
 
+<div class="template-card extra">Event</div>
+<div class="template-card extra">Wedding</div>
+<div class="template-card extra">Kontrakan</div>
+<div class="template-card extra">Laundry</div>
+<div class="template-card extra">Fashion</div>
+<div class="template-card extra">Umroh</div>
+<div class="template-card extra">Rumah 36</div>
+<div class="template-card extra">Startup</div>
+
+</div>
+
+<div class="template-toggle" onclick="toggleTemplate()">
+Lihat Lebih Banyak
 </div>
 </div>
 <div class="ai-box">
@@ -566,6 +596,7 @@ to{opacity:1;transform:translateY(0)}
 </div>
 
 <div class="summary" id="summary"></div>
+<div id="aiInsight" class="ai-insight"></div>
 
 <button class="btn-warning" onclick="exportExcel()">Export Excel</button>
 
@@ -591,6 +622,32 @@ diskon: 0,
 ppn: 0,
 grand: 0,
 profit: 0
+}
+
+let score = calculateAIScore(projects[projectNameAI])
+let risk = calculateRiskLevel(score)
+
+document.getElementById("aiInsight").innerHTML = `
+<strong>AI Feasibility Score:</strong> ${score}/100 <br>
+<strong>Risk Level:</strong> ${risk}
+`
+
+let templateExpanded = false
+
+function toggleTemplate(){
+
+let grid = document.getElementById("templateGrid")
+let toggle = document.querySelector(".template-toggle")
+
+templateExpanded = !templateExpanded
+
+if(templateExpanded){
+grid.classList.remove("collapsed")
+toggle.innerText = "Lihat Lebih Sedikit"
+}else{
+grid.classList.add("collapsed")
+toggle.innerText = "Lihat Lebih Banyak"
+}
 }
 
 const enterpriseStructures = {
@@ -884,6 +941,52 @@ let monthlyProfitEstimate = budget * 0.08
 let bepMonths = Math.ceil(budget / monthlyProfitEstimate)
 
 console.log("Estimasi BEP:", bepMonths, "bulan")
+}
+
+function calculateAIScore(project){
+
+let score = 100
+let total = 0
+let categoryTotals = []
+
+Object.values(project.kategori).forEach(items=>{
+let catTotal = 0
+items.forEach(i=>{
+catTotal += i.volume * i.harga
+})
+categoryTotals.push(catTotal)
+total += catTotal
+})
+
+/* Risk Buffer Check */
+if(!project.kategori["Cadangan"]){
+score -= 15
+}
+
+/* Margin Check */
+if(project.margin < 20){
+score -= 10
+}
+
+/* Distribution Check */
+let maxCat = Math.max(...categoryTotals)
+if(maxCat / total > 0.6){
+score -= 15
+}
+
+/* Budget realism */
+if(total < 20000000){
+score -= 10
+}
+
+return Math.max(score,0)
+}
+
+function calculateRiskLevel(score){
+
+if(score >= 80) return "Rendah"
+if(score >= 60) return "Sedang"
+return "Tinggi"
 }
 
 /* ================= FORMAT ================= */
