@@ -351,6 +351,26 @@ border-radius:999px;
 animation:slideFade .25s ease;
 }
 
+/* ===== STICKY TAB NAV ===== */
+
+.tab-wrapper{
+position:relative;
+}
+
+.tab-nav{
+position:sticky;
+top:90px; /* sesuaikan dengan tinggi header */
+z-index:50;
+background:#111827;
+padding:12px 0;
+border-bottom:1px solid rgba(255,255,255,.05);
+backdrop-filter:blur(6px);
+}
+
+.tab-nav.sticky-active{
+box-shadow:0 10px 25px rgba(0,0,0,.6);
+}
+
 @keyframes slideFade{
 from{opacity:0;transform:translateX(10px)}
 to{opacity:1;transform:translateX(0)}
@@ -508,6 +528,31 @@ projectList.innerHTML+=`
 <div class="project-item ${p===currentProject?"active":""}" onclick="selectProject('${p}')">${p}</div>
 `
 })
+}
+
+function animateValue(element, start, end, duration){
+let startTime = null
+
+function easeOutCubic(t){
+return 1 - Math.pow(1 - t, 3)
+}
+
+function animation(currentTime){
+if(!startTime) startTime = currentTime
+let progress = (currentTime - startTime) / duration
+progress = Math.min(progress, 1)
+
+let eased = easeOutCubic(progress)
+let value = Math.floor(start + (end - start) * eased)
+
+element.innerText = "Rp " + formatRp(value)
+
+if(progress < 1){
+requestAnimationFrame(animation)
+}
+}
+
+requestAnimationFrame(animation)
 }
 
 /* ================= KATEGORI ================= */
@@ -734,31 +779,36 @@ let profit=grand*(p.margin/100)
 summary.innerHTML=`
 <div class="summary-box">
 <small>Subtotal</small>
-<strong>Rp ${formatRp(subtotal)}</strong>
+<strong id="sum-subtotal">Rp 0</strong>
 </div>
 
 <div class="summary-box">
 <small>Diskon</small>
-<strong>Rp ${formatRp(disk)}</strong>
+<strong id="sum-diskon">Rp 0</strong>
 </div>
 
 <div class="summary-box">
 <small>PPN</small>
-<strong>Rp ${formatRp(ppnVal)}</strong>
+<strong id="sum-ppn">Rp 0</strong>
 </div>
 
 <div class="summary-box total">
 <small>Grand Total</small>
-<strong>Rp ${formatRp(grand)}</strong>
+<strong id="sum-grand">Rp 0</strong>
 </div>
 
 <div class="summary-box">
 <small>Estimasi Profit</small>
-<strong style="color:#22c55e">
-Rp ${formatRp(profit)}
-</strong>
+<strong id="sum-profit" style="color:#22c55e">Rp 0</strong>
 </div>
 `
+
+/* Animate values */
+animateValue(document.getElementById("sum-subtotal"), 0, subtotal, 500)
+animateValue(document.getElementById("sum-diskon"), 0, disk, 500)
+animateValue(document.getElementById("sum-ppn"), 0, ppnVal, 500)
+animateValue(document.getElementById("sum-grand"), 0, grand, 700)
+animateValue(document.getElementById("sum-profit"), 0, profit, 700)
 
 renderChart(subtotal,profit)
 save()
