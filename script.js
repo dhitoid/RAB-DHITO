@@ -17,7 +17,8 @@ profit:0
 }
 
 let templateExpanded = false
-/* ================= DOM ELEMENT ================= */
+
+/* ================= DOM BIND ================= */
 
 let projectList
 let kategoriContainer
@@ -32,7 +33,7 @@ let aiPrompt
 let aiStatus
 let aiInsight
 
-document.addEventListener("DOMContentLoaded",()=>{
+document.addEventListener("DOMContentLoaded", () => {
 
 projectList = document.getElementById("projectList")
 kategoriContainer = document.getElementById("kategoriContainer")
@@ -46,6 +47,14 @@ newKategori = document.getElementById("newKategori")
 aiPrompt = document.getElementById("aiPrompt")
 aiStatus = document.getElementById("aiStatus")
 aiInsight = document.getElementById("aiInsight")
+
+/* INIT pindahkan ke sini */
+if(!currentProject && Object.keys(projects).length>0){
+currentProject = Object.keys(projects)[0]
+}
+
+renderProjects()
+render()
 
 })
 
@@ -76,21 +85,23 @@ toggle.innerText = "Lihat Lebih Banyak"
 /* ================= TEMPLATE CLICK HANDLER ================= */
 
 document.addEventListener("DOMContentLoaded", () => {
-document.querySelectorAll(".template-card").forEach(card=>{
-card.addEventListener("click",()=>{
 
-const shortName = card.textContent.trim()
-const realTemplate = templateShortMap[shortName]
+document.querySelectorAll(".template-card").forEach(card => {
+card.addEventListener("click", () => {
 
-if(!realTemplate){
-alert("Template tidak ditemukan: " + shortName)
+const shortName = card.innerText.trim()
+const realName = templateShortMap[shortName]
+
+if(!realName){
+alert("Template tidak ditemukan")
 return
 }
 
-generateAITemplate(realTemplate)
+generateAITemplate(realName)
 
 })
 })
+
 })
 
 /* ================= ENTERPRISE STRUCTURE ================= */
@@ -139,106 +150,17 @@ Cadangan:[
 
 const aiTemplates = {
 
-/* ================= BISNIS ================= */
-
-"Buka Coffee Shop": {
+"Liburan Keluarga": {
 kategori:{
-Peralatan:[
-{nama:"Mesin Espresso",volume:1,harga:18000000},
-{nama:"Grinder Profesional",volume:1,harga:6000000},
-{nama:"Mesin Kasir POS",volume:1,harga:5000000}
+Transportasi:[
+{nama:"Tiket Pesawat",volume:4,harga:1500000},
+{nama:"Transport Lokal",volume:5,harga:300000}
 ],
-Interior:[
-{nama:"Renovasi Interior",volume:1,harga:25000000},
-{nama:"Meja & Kursi",volume:12,harga:850000}
+Akomodasi:[
+{nama:"Hotel 3 Malam",volume:3,harga:750000}
 ],
-Operasional Awal:[
-{nama:"Bahan Baku 1 Bulan",volume:1,harga:7000000},
-{nama:"Gaji Barista 1 Bulan",volume:2,harga:3000000}
-],
-Legalitas:[
-{nama:"NIB & Izin Usaha",volume:1,harga:2000000}
-],
-Cadangan Risiko:[
-{nama:"Contingency Fund (5%)",volume:1,harga:5000000}
-]
-}
-},
-
-"Bisnis Laundry": {
-kategori:{
-Mesin:[
-{nama:"Mesin Cuci Industrial",volume:2,harga:5500000},
-{nama:"Mesin Pengering",volume:1,harga:6000000}
-],
-Renovasi:[
-{nama:"Renovasi Tempat",volume:1,harga:15000000}
-],
-Operasional Awal:[
-{nama:"Deterjen & Pewangi",volume:1,harga:2000000},
-{nama:"Gaji Karyawan 1 Bulan",volume:1,harga:2500000}
-],
-Legalitas:[
-{nama:"Izin Usaha",volume:1,harga:1500000}
-]
-}
-},
-
-"UMKM Fashion": {
-kategori:{
-Produksi:[
-{nama:"Bahan Kain",volume:150,harga:50000},
-{nama:"Jasa Jahit",volume:100,harga:40000}
-],
-Branding:[
-{nama:"Desain Logo & Branding",volume:1,harga:3000000}
-],
-Marketing:[
-{nama:"Iklan Instagram 1 Bulan",volume:1,harga:5000000}
-],
-Operasional Awal:[
-{nama:"Packing & Label",volume:100,harga:5000}
-]
-}
-},
-
-"Startup Digital": {
-kategori:{
-Development:[
-{nama:"UI/UX Design",volume:1,harga:15000000},
-{nama:"Backend Developer 3 Bulan",volume:3,harga:10000000},
-{nama:"Frontend Developer 3 Bulan",volume:3,harga:8000000}
-],
-Server:[
-{nama:"Cloud Hosting 6 Bulan",volume:6,harga:1000000}
-],
-Marketing:[
-{nama:"Digital Ads Budget",volume:1,harga:20000000}
-],
-Legalitas:[
-{nama:"PT & Legal Setup",volume:1,harga:10000000}
-]
-}
-},
-
-/* ================= PROPERTI ================= */
-
-"Bangun Rumah 36": {
-kategori:{
-Material:[
-{nama:"Semen",volume:120,harga:65000},
-{nama:"Bata Ringan",volume:1500,harga:1200},
-{nama:"Besi Beton",volume:300,harga:15000}
-],
-Upah:[
-{nama:"Mandor",volume:30,harga:200000},
-{nama:"Tukang",volume:60,harga:150000}
-],
-Finishing:[
-{nama:"Cat & Finishing",volume:1,harga:10000000}
-],
-Cadangan Risiko:[
-{nama:"Contingency 5%",volume:1,harga:8000000}
+Konsumsi:[
+{nama:"Makan Harian",volume:4,harga:250000}
 ]
 }
 },
@@ -246,51 +168,26 @@ Cadangan Risiko:[
 "Renovasi Rumah": {
 kategori:{
 Material:[
-{nama:"Semen",volume:70,harga:65000},
-{nama:"Cat Tembok",volume:20,harga:200000}
+{nama:"Semen",volume:50,harga:65000},
+{nama:"Cat Tembok",volume:10,harga:180000}
 ],
 Upah:[
-{nama:"Tukang",volume:25,harga:160000}
-],
-Finishing:[
-{nama:"Lampu & Instalasi",volume:1,harga:5000000}
+{nama:"Tukang",volume:20,harga:150000}
 ]
 }
 },
 
-"Kontrakan 5 Pintu": {
+"Buka Coffee Shop": {
 kategori:{
-Struktur:[
-{nama:"Bata Ringan",volume:2000,harga:1200},
-{nama:"Semen",volume:200,harga:65000}
+Peralatan:[
+{nama:"Mesin Espresso",volume:1,harga:15000000},
+{nama:"Grinder",volume:1,harga:5000000}
 ],
-Upah:[
-{nama:"Tukang 2 Bulan",volume:60,harga:150000}
+Interior:[
+{nama:"Meja & Kursi",volume:10,harga:750000}
 ],
-Finishing:[
-{nama:"Keramik & Pintu",volume:1,harga:20000000}
-]
-}
-},
-
-/* ================= EVENT ================= */
-
-"Pernikahan Sederhana": {
-kategori:{
-Venue:[
-{nama:"Gedung",volume:1,harga:20000000}
-],
-Katering:[
-{nama:"Paket 300 Tamu",volume:300,harga:60000}
-],
-Dekorasi:[
-{nama:"Dekorasi Pelaminan",volume:1,harga:10000000}
-],
-Dokumentasi:[
-{nama:"Foto & Video",volume:1,harga:7000000}
-],
-MC & Entertainment:[
-{nama:"MC & Sound System",volume:1,harga:8000000}
+Operasional:[
+{nama:"Bahan Baku Awal",volume:1,harga:5000000}
 ]
 }
 },
@@ -298,56 +195,97 @@ MC & Entertainment:[
 "Event Seminar": {
 kategori:{
 Venue:[
-{nama:"Sewa Ballroom",volume:1,harga:12000000}
+{nama:"Sewa Gedung",volume:1,harga:8000000}
 ],
 Konsumsi:[
-{nama:"Snack 200 Peserta",volume:200,harga:40000}
+{nama:"Snack Peserta",volume:100,harga:35000}
 ],
 Marketing:[
-{nama:"Iklan Digital",volume:1,harga:5000000}
-],
-Operasional:[
-{nama:"Print Kit & ID Card",volume:200,harga:10000}
+{nama:"Iklan Sosial Media",volume:1,harga:2000000}
 ]
 }
 },
 
-/* ================= PRIBADI ================= */
-
-"Liburan Keluarga": {
+"Pernikahan Sederhana": {
 kategori:{
-Transportasi:[
-{nama:"Tiket Pesawat PP",volume:4,harga:2000000}
+Venue:[
+{nama:"Gedung",volume:1,harga:15000000}
 ],
-Akomodasi:[
-{nama:"Hotel 4 Malam",volume:4,harga:900000}
+Katering:[
+{nama:"Paket 300 Tamu",volume:300,harga:50000}
 ],
-Konsumsi:[
-{nama:"Makan Harian",volume:4,harga:300000}
+Dokumentasi:[
+{nama:"Foto & Video",volume:1,harga:5000000}
+]
+}
+},
+
+"Kontrakan 5 Pintu": {
+kategori:{
+Material:[
+{nama:"Bata Ringan",volume:1000,harga:1200}
 ],
-Wisata:[
-{nama:"Tiket Tempat Wisata",volume:4,harga:250000}
+Upah:[
+{nama:"Tukang",volume:60,harga:150000}
+]
+}
+},
+
+"Bisnis Laundry": {
+kategori:{
+Mesin:[
+{nama:"Mesin Cuci",volume:2,harga:4500000}
+],
+Operasional:[
+{nama:"Deterjen Awal",volume:1,harga:1000000}
+]
+}
+},
+
+"UMKM Fashion": {
+kategori:{
+Produksi:[
+{nama:"Bahan Kain",volume:100,harga:45000}
+],
+Marketing:[
+{nama:"Iklan Instagram",volume:1,harga:3000000}
 ]
 }
 },
 
 "Travel Umroh": {
 kategori:{
-Paket Umroh:[
-{nama:"Paket Umroh Reguler",volume:1,harga:32000000}
+Paket:[
+{nama:"Paket Umroh",volume:1,harga:30000000}
+]
+}
+},
+
+"Bangun Rumah 36": {
+kategori:{
+Material:[
+{nama:"Semen",volume:100,harga:65000}
 ],
-Administrasi:[
-{nama:"Paspor & Vaksin",volume:1,harga:2500000}
+Upah:[
+{nama:"Mandor",volume:30,harga:200000}
+]
+}
+},
+
+"Startup Digital": {
+kategori:{
+Development:[
+{nama:"Developer 3 Bulan",volume:3,harga:8000000}
 ],
-Perlengkapan:[
-{nama:"Perlengkapan Umroh",volume:1,harga:1500000}
+Marketing:[
+{nama:"Ads Budget",volume:1,harga:10000000}
 ]
 }
 }
 
 }
 
-/* ================= TEMPLATE SHORT NAME MAP ================= */
+/* ================= TEMPLATE SHORT MAP ================= */
 
 const templateShortMap = {
 "Liburan":"Liburan Keluarga",
@@ -363,39 +301,33 @@ const templateShortMap = {
 "Startup":"Startup Digital"
 }
 
-/* ================= AUTO TEMPLATE MAP ================= */
-
-function generateTemplateNameMap(){
-const map = {}
-
-Object.keys(aiTemplates).forEach(name=>{
-map[name.toLowerCase()] = name
-})
-
-return map
-}
-
-const templateNameMap = generateTemplateNameMap()
-
 /* ================= TEMPLATE GENERATOR ================= */
-function generateAITemplate(templateName){
 
-if(!aiTemplates[templateName]){
-alert("Template tidak ditemukan")
-return
-}
+function generateAITemplate(name){
 
-const uniqueName = templateName + " - " + Date.now()
+if(!aiTemplates[name]) return
+
+const uniqueName = projects[name]
+? name + " - " + Date.now()
+: name
 
 projects[uniqueName] = {
 diskon:0,
 margin:25,
 ppn:11,
-kategori:JSON.parse(JSON.stringify(aiTemplates[templateName].kategori))
+kategori:JSON.parse(JSON.stringify(aiTemplates[name].kategori))
 }
 
 currentProject = uniqueName
 activeTab = null
+
+previousTotals = {
+subtotal:0,
+diskon:0,
+ppn:0,
+grand:0,
+profit:0
+}
 
 save()
 renderProjects()
@@ -606,14 +538,9 @@ render()
 }
 
 function deleteProject(){
-
 if(!currentProject) return
-
 delete projects[currentProject]
-
-let keys = Object.keys(projects)
-currentProject = keys.length ? keys[0] : null
-
+currentProject=null
 save()
 renderProjects()
 render()
@@ -638,26 +565,12 @@ render()
 }
 
 function renderProjects(){
-
-projectList.innerHTML = ""
-
-if(Object.keys(projects).length === 0){
-projectList.innerHTML = `
-<div style="opacity:.6;font-size:13px">
-Belum ada project
-</div>
-`
-return
-}
-
+projectList.innerHTML=""
 Object.keys(projects).forEach(p=>{
-let div = document.createElement("div")
-div.className = "project-item " + (p===currentProject?"active":"")
-div.innerText = p
-div.onclick = ()=>selectProject(p)
-projectList.appendChild(div)
+projectList.innerHTML+=`
+<div class="project-item ${p===currentProject?"active":""}" onclick="selectProject('${p}')">${p}</div>
+`
 })
-
 }
 
 function smartAnimate(element, key, newValue, duration = 600){
@@ -840,24 +753,18 @@ tabContent.innerHTML = html
 
 /* ================= RENDER ================= */
 function render(){
-
-/* RESET UI jika tidak ada project */
-if(!currentProject){
-
-kategoriContainer.innerHTML = `
-<div style="opacity:.6;padding:20px">
-Belum ada project. Buat baru atau pilih template.
-</div>
-`
-
-summary.innerHTML = ""
-if(chartInstance){
-chartInstance.destroy()
-chartInstance = null
-}
-
+if(!projects[currentProject]){
+currentProject = null
 return
 }
+
+kategoriContainer.innerHTML = `
+<div class="shimmer"></div>
+<div class="shimmer"></div>
+`
+
+activeTab = null
+setTimeout(()=>{
 
 let p = projects[currentProject]
 
@@ -868,11 +775,12 @@ ppn.value = p.ppn
 
 let kategoriKeys = Object.keys(p.kategori)
 
-/* Reset active tab */
+/* reset activeTab jika invalid */
 if(!kategoriKeys.includes(activeTab)){
 activeTab = kategoriKeys[0] || null
 }
 
+/* render tab wrapper */
 kategoriContainer.innerHTML = `
 <div class="tab-wrapper">
 <div class="tab-nav" id="tabNav"></div>
@@ -882,6 +790,7 @@ kategoriContainer.innerHTML = `
 
 let tabNav = document.getElementById("tabNav")
 
+/* render tab button dengan badge */
 kategoriKeys.forEach(k=>{
 let btn = document.createElement("div")
 btn.className = "tab-btn " + (k === activeTab ? "active" : "")
@@ -892,8 +801,10 @@ btn.innerHTML = `
 
 btn.onclick = () => {
 activeTab = k
+
 document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"))
 btn.classList.add("active")
+
 renderActiveTab()
 }
 
@@ -901,19 +812,20 @@ tabNav.appendChild(btn)
 })
 
 renderActiveTab()
+
 updateSummary()
+
+},400)
 }
 
 /* ================= SUMMARY ================= */
 function updateSummary(){
-
 if(!currentProject) return
+let p=projects[currentProject]
 
-let p = projects[currentProject]
-
-p.diskon = Number(diskon.value)||0
-p.margin = Number(margin.value)||0
-p.ppn = Number(ppn.value)||0
+p.diskon=Number(diskon.value)||0
+p.margin=Number(margin.value)||0
+p.ppn=Number(ppn.value)||0
 
 let subtotal=0
 Object.values(p.kategori).forEach(arr=>{
@@ -926,22 +838,39 @@ let ppnVal=afterDisk*(p.ppn/100)
 let grand=afterDisk+ppnVal
 let profit=grand*(p.margin/100)
 
-/* Kalau summary belum ada, baru render HTML */
-if(!document.getElementById("sum-subtotal")){
 summary.innerHTML=`
-<div class="summary-box"><small>Subtotal</small><strong id="sum-subtotal"></strong></div>
-<div class="summary-box"><small>Diskon</small><strong id="sum-diskon"></strong></div>
-<div class="summary-box"><small>PPN</small><strong id="sum-ppn"></strong></div>
-<div class="summary-box total"><small>Grand Total</small><strong id="sum-grand"></strong></div>
-<div class="summary-box"><small>Estimasi Profit</small><strong id="sum-profit" style="color:#22c55e"></strong></div>
-`
-}
+<div class="summary-box">
+<small>Subtotal</small>
+<strong id="sum-subtotal">Rp 0</strong>
+</div>
 
+<div class="summary-box">
+<small>Diskon</small>
+<strong id="sum-diskon">Rp 0</strong>
+</div>
+
+<div class="summary-box">
+<small>PPN</small>
+<strong id="sum-ppn">Rp 0</strong>
+</div>
+
+<div class="summary-box total">
+<small>Grand Total</small>
+<strong id="sum-grand">Rp 0</strong>
+</div>
+
+<div class="summary-box">
+<small>Estimasi Profit</small>
+<strong id="sum-profit" style="color:#22c55e">Rp 0</strong>
+</div>
+`
+
+/* Animate values */
 smartAnimate(document.getElementById("sum-subtotal"), "subtotal", subtotal)
 smartAnimate(document.getElementById("sum-diskon"), "diskon", disk)
 smartAnimate(document.getElementById("sum-ppn"), "ppn", ppnVal)
-smartAnimate(document.getElementById("sum-grand"), "grand", grand)
-smartAnimate(document.getElementById("sum-profit"), "profit", profit)
+smartAnimate(document.getElementById("sum-grand"), "grand", grand, 700)
+smartAnimate(document.getElementById("sum-profit"), "profit", profit, 700)
 
 renderChart(subtotal,profit)
 save()
@@ -976,15 +905,3 @@ let ws=XLSX.utils.aoa_to_sheet(rows)
 XLSX.utils.book_append_sheet(wb,ws,"RAB")
 XLSX.writeFile(wb,currentProject+"_RAB.xlsx")
 }
-
-/* ================= INIT ================= */
-document.addEventListener("DOMContentLoaded", ()=>{
-
-if(Object.keys(projects).length > 0){
-currentProject = currentProject || Object.keys(projects)[0]
-}
-
-renderProjects()
-render()
-
-})
