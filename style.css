@@ -469,6 +469,26 @@ font-size:13px;
 line-height:1.5;
 }
 
+/* ================= AI INSIGHT ANIMATION ================= */
+
+.ai-fade-out {
+opacity: 0;
+transform: translateY(6px);
+transition: all 0.18s ease;
+}
+
+.ai-fade-in {
+opacity: 1;
+transform: translateY(0);
+transition: all 0.22s ease;
+}
+
+#aiInsight {
+opacity: 1;
+transform: translateY(0);
+transition: all 0.2s ease;
+}
+
 @keyframes flashUp{
 0%{color:#22c55e}
 100%{color:inherit}
