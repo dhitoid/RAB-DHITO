@@ -666,27 +666,40 @@ return base
 
 /* ================= BEP ================= */
 
-function calculateBEP(totalModal, type){
-const rate = businessProfitRates[type] || businessProfitRates.default
-const monthlyProfit = totalModal * rate
+function calculateBEP(totalModal, margin){
+const turnoverRate = 0.4
+const revenue = totalModal * turnoverRate
+const monthlyProfit = revenue * (margin/100)
 return Math.ceil(totalModal / monthlyProfit)
 }
 
 /* ================= ROI CALCULATION ================= */
 
-function calculateROI(totalModal, type){
+function calculateROI(totalModal, projectType, margin){
 
-const rate = businessProfitRates[type] || businessProfitRates.default
+// asumsi perputaran modal per bulan
+const turnoverRate = 0.4
 
-const monthlyProfit = totalModal * rate
+// margin dalam desimal
+const marginRate = margin / 100
+
+// estimasi omset bulanan
+const estimatedRevenue = totalModal * turnoverRate
+
+// profit bulanan
+const monthlyProfit = estimatedRevenue * marginRate
+
+// profit tahunan
 const yearlyProfit = monthlyProfit * 12
+
+// ROI tahunan
 const roiYearly = (yearlyProfit / totalModal) * 100
 
 return {
 monthlyProfit,
 yearlyProfit,
 roiYearly,
-rate
+turnoverRate
 }
 }
 
@@ -732,7 +745,7 @@ const type = detectProjectType(aiPrompt.value)
 const score = calculateAIScore(project)
 const risk = calculateRiskLevel(score)
 
-const roiData = calculateROI(budget, type)
+const roiData = calculateROI(budget, type, project.margin)
 const bepMonths = calculateBEP(budget, type)
 
 let recommendation = ""
