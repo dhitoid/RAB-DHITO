@@ -615,12 +615,16 @@ const total = Object.values(project.kategori)
 .flat()
 .reduce((sum,i)=>sum + i.volume*i.harga,0)
 
+let type = project.type
+if(!type){
+type = detectProjectType(currentProject.toLowerCase())
+}
+
 const score = calculateUniversalAIScore(project)
 const risk = calculateRiskLevel(score)
 const color = getInsightColor(score)
 
 let roiSection = ""
-const type = project.type || "general"
 
 if(["coffee","bengkel","startup","laundry","property"].includes(type)){
 
@@ -634,6 +638,8 @@ Estimasi BEP: ± <b>${bepMonths} bulan</b><br>
 Profit Bulanan: Rp ${formatRp(roiData.monthlyProfit)}
 `
 }
+
+const marginCheck = analyzeMargin(type, project.margin)
 
 let warning = ""
 if(project.margin > 50){
@@ -663,6 +669,11 @@ Margin: ${project.margin}%
 </div>
 
 ${roiSection}
+
+<div style="margin-top:8px;font-size:13px;color:#94a3b8">
+${marginCheck.message}
+</div>
+
 ${warning}
 
 </div>
