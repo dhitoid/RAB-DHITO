@@ -1275,33 +1275,57 @@ smartAnimate(document.getElementById("sum-profit"), "profit", profit, 700)
 
 renderChart(subtotal,profit)
 const insightBox = document.getElementById("aiInsight")
+
 if(insightBox){
+
+const content = generateUniversalInsight(projects[currentProject])
+
+// Cancel animation jika belum selesai
+clearTimeout(insightBox._fadeTimer)
+
 insightBox.classList.remove("ai-fade-in")
 insightBox.classList.add("ai-fade-out")
 
-setTimeout(()=>{
+insightBox._fadeTimer = setTimeout(()=>{
 
-insightBox.innerHTML =
-generateUniversalInsight(projects[currentProject])
+if(!document.body.contains(insightBox)) return
+
+insightBox.innerHTML = content
 insightBox.classList.remove("ai-fade-out")
 insightBox.classList.add("ai-fade-in")
 
 },150)
+
 }
 save()
 }
 
 /* ================= CHART ================= */
-function renderChart(total,profit){
-if(chartInstance) chartInstance.destroy()
-chartInstance=new Chart(document.getElementById("chart"),{
+function renderChart(total, profit){
+
+const canvas = document.getElementById("chart")
+if(!canvas) return
+if(typeof Chart === "undefined") return
+
+if(chartInstance){
+chartInstance.destroy()
+chartInstance = null
+}
+
+chartInstance = new Chart(canvas,{
 type:"doughnut",
 data:{
 labels:["Biaya","Profit"],
-datasets:[{data:[total,profit]}]
+datasets:[{
+data:[total,profit]
+}]
 },
-options:{responsive:true}
+options:{
+responsive:true,
+maintainAspectRatio:false
+}
 })
+
 }
 
 /* ================= EXPORT ================= */
@@ -1330,3 +1354,5 @@ currentProject = Object.keys(projects)[0]
 
 renderProjects()
 render()
+
+})
