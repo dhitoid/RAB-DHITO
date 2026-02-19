@@ -12,32 +12,53 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
-body{background:#0f172a;color:#fff;min-height:100vh}
+
+body{
+background:#0f172a;
+color:#fff;
+min-height:100vh;
+overflow-x:hidden;
+}
+
 .hidden{display:none}
 
+/* HEADER */
 header{
 display:flex;
 justify-content:space-between;
 align-items:center;
-padding:15px 30px;
+padding:15px 20px;
 background:rgba(255,255,255,0.05);
 backdrop-filter:blur(15px);
 border-bottom:1px solid rgba(255,255,255,0.05);
+position:sticky;
+top:0;
+z-index:1000;
 }
-header h1{font-size:20px}
 
+.menu-btn{
+display:none;
+font-size:20px;
+cursor:pointer;
+}
+
+/* LAYOUT */
 .dashboard{
 display:flex;
 min-height:100vh;
 }
 
+/* SIDEBAR */
 .sidebar{
 width:260px;
 background:#020617;
 padding:20px;
 border-right:1px solid rgba(255,255,255,0.05);
+transition:0.3s ease;
 }
+
 .sidebar h3{margin-bottom:10px}
+
 .project-item{
 padding:10px;
 background:rgba(255,255,255,0.05);
@@ -46,15 +67,18 @@ margin-bottom:8px;
 cursor:pointer;
 font-size:13px;
 }
+
 .project-item.active{background:#0ea5e9}
 
+/* MAIN */
 .main{
 flex:1;
-padding:30px;
+padding:20px;
 max-width:1100px;
 margin:auto;
 }
 
+/* CARD */
 .card{
 background:rgba(255,255,255,0.05);
 border-radius:16px;
@@ -62,9 +86,10 @@ padding:20px;
 margin-bottom:20px;
 }
 
+/* FORM */
 input,select{
 width:100%;
-padding:8px;
+padding:10px;
 margin-top:6px;
 border:none;
 border-radius:8px;
@@ -73,30 +98,37 @@ color:#fff;
 }
 
 button{
-padding:8px 14px;
+padding:10px 14px;
 border:none;
 border-radius:8px;
 cursor:pointer;
 font-weight:600;
 margin-top:8px;
 }
+
 .btn-primary{background:#0ea5e9;color:#fff}
 .btn-success{background:#22c55e;color:#000}
 .btn-danger{background:#ef4444;color:#fff}
 .btn-warning{background:#f59e0b;color:#000}
 .btn-dark{background:#1e293b;color:#fff}
 
+/* TABLE */
+.table-wrapper{
+overflow-x:auto;
+}
+
 table{
 width:100%;
 margin-top:10px;
 border-collapse:collapse;
 font-size:13px;
+min-width:600px;
 }
+
 th,td{
 padding:8px;
 border-bottom:1px solid rgba(255,255,255,0.08);
 }
-th{opacity:.7}
 
 .summary{
 background:rgba(255,255,255,0.08);
@@ -105,6 +137,7 @@ border-radius:12px;
 margin-top:10px;
 }
 
+/* LOGIN */
 .login-box{
 max-width:400px;
 margin:120px auto;
@@ -113,12 +146,42 @@ padding:30px;
 border-radius:16px;
 }
 
+/* WATERMARK */
 .watermark{
 position:fixed;
 bottom:10px;
 right:10px;
 font-size:12px;
 opacity:.4;
+}
+
+/* MOBILE STYLE */
+@media(max-width:768px){
+
+.menu-btn{
+display:block;
+}
+
+.sidebar{
+position:fixed;
+left:-260px;
+top:0;
+height:100%;
+z-index:2000;
+}
+
+.sidebar.active{
+left:0;
+}
+
+.dashboard{
+flex-direction:column;
+}
+
+.main{
+padding:15px;
+}
+
 }
 </style>
 </head>
@@ -136,13 +199,16 @@ opacity:.4;
 <div id="app" class="hidden">
 
 <header>
-<h1>💎 RAB PRO Commercial</h1>
+<div style="display:flex;align-items:center;gap:10px">
+<div class="menu-btn" onclick="toggleSidebar()">☰</div>
+<h1>💎 RAB PRO</h1>
+</div>
 <button class="btn-danger" onclick="logout()">Logout</button>
 </header>
 
 <div class="dashboard">
 
-<div class="sidebar">
+<div class="sidebar" id="sidebar">
 <h3>Projects</h3>
 <div id="projectList"></div>
 <input id="newProjectName" placeholder="Project baru">
@@ -171,7 +237,6 @@ opacity:.4;
 
 <button class="btn-warning" onclick="exportPDF()">Export PDF</button>
 <button class="btn-primary" onclick="exportExcel()">Export Excel</button>
-<button class="btn-dark" onclick="generateInvoice()">Generate Invoice</button>
 
 <canvas id="chart" style="margin-top:20px"></canvas>
 </div>
@@ -189,6 +254,10 @@ let projects=JSON.parse(localStorage.getItem("rab_pro")||"{}")
 let currentProject=null
 let chartInstance=null
 
+function toggleSidebar(){
+sidebar.classList.toggle("active")
+}
+
 function login(){
 if(username.value==="admin" && password.value==="123456"){
 loginPage.classList.add("hidden")
@@ -199,10 +268,7 @@ alert("Login gagal")
 }
 }
 
-function logout(){
-location.reload()
-}
-
+function logout(){location.reload()}
 function save(){localStorage.setItem("rab_pro",JSON.stringify(projects))}
 
 function createProject(){
@@ -223,7 +289,12 @@ projectList.innerHTML+=`<div class="project-item ${p===currentProject?"active":"
 })
 }
 
-function selectProject(p){currentProject=p;renderProjects();render()}
+function selectProject(p){
+currentProject=p
+renderProjects()
+render()
+if(window.innerWidth<768)sidebar.classList.remove("active")
+}
 
 function addKategori(){
 let k=kategoriInput.value.trim()
@@ -260,6 +331,7 @@ Object.keys(p.kategori).forEach(k=>{
 let total=0
 let html=`<div class="card"><h3>${k}</h3>
 <button class="btn-primary" onclick="addItem('${k}')">Tambah Item</button>
+<div class="table-wrapper">
 <table>
 <tr><th>Nama</th><th>Vol</th><th>Harga</th><th>Subtotal</th><th></th></tr>`
 
@@ -275,7 +347,7 @@ html+=`<tr>
 </tr>`
 })
 
-html+=`</table><strong>Total: ${total}</strong></div>`
+html+=`</table></div><strong>Total: ${total}</strong></div>`
 subtotal+=total
 kategoriContainer.innerHTML+=html
 })
@@ -307,7 +379,8 @@ function renderChart(total,profit){
 if(chartInstance)chartInstance.destroy()
 chartInstance=new Chart(chart,{
 type:"doughnut",
-data:{labels:["Biaya","Profit"],datasets:[{data:[total,profit]}]}
+data:{labels:["Biaya","Profit"],datasets:[{data:[total,profit]}]},
+options:{responsive:true}
 })
 }
 
@@ -324,10 +397,6 @@ rows.push([k,it.nama,it.volume,it.harga,it.volume*it.harga])
 let ws=XLSX.utils.aoa_to_sheet(rows)
 XLSX.utils.book_append_sheet(wb,ws,"RAB")
 XLSX.writeFile(wb,currentProject+"_RAB.xlsx")
-}
-
-function generateInvoice(){
-alert("Invoice Generated (upgrade next: PDF Invoice custom template)")
 }
 
 function init(){
