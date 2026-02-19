@@ -2,173 +2,171 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RAB Platinum Pro 2026</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>RAB iOS 17 Edition</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;
+-webkit-tap-highlight-color:transparent;
+}
 
 body{
-background:linear-gradient(135deg,#0f172a,#020617);
+background:linear-gradient(180deg,#0f0f11,#000);
 color:#fff;
-padding:20px;
+padding:20px 16px 120px;
 min-height:100vh;
 }
 
-.container{max-width:1100px;margin:auto}
-
 h1{
 font-size:28px;
-margin-bottom:20px;
 font-weight:700;
-background:linear-gradient(90deg,#fff,#94a3b8);
--webkit-background-clip:text;
-color:transparent;
+margin-bottom:20px;
+letter-spacing:-0.5px;
 }
 
-.grid{
-display:grid;
-grid-template-columns:1fr 380px;
-gap:20px;
+.section{
+margin-bottom:22px;
 }
 
-.card{
-background:rgba(255,255,255,0.05);
-backdrop-filter:blur(15px);
-border:1px solid rgba(255,255,255,0.08);
-border-radius:18px;
+.glass{
+background:rgba(255,255,255,0.06);
+backdrop-filter:blur(20px);
+border:1px solid rgba(255,255,255,0.1);
+border-radius:22px;
 padding:18px;
-box-shadow:0 10px 30px rgba(0,0,0,.4);
-margin-bottom:15px;
+box-shadow:0 10px 40px rgba(0,0,0,0.6);
 }
 
-input,select{
+label{
+font-size:12px;
+opacity:.6;
+margin-bottom:6px;
+display:block;
+}
+
+input{
 width:100%;
-padding:10px;
-border-radius:10px;
+padding:14px;
+border-radius:16px;
 border:none;
 background:rgba(255,255,255,0.08);
 color:#fff;
-margin-top:6px;
+font-size:15px;
+margin-bottom:12px;
+}
+
+input:focus{
+outline:none;
+background:rgba(255,255,255,0.15);
 }
 
 button{
-padding:8px 14px;
-border-radius:10px;
+width:100%;
+padding:14px;
+border-radius:16px;
 border:none;
-cursor:pointer;
 font-weight:600;
+font-size:15px;
 margin-top:8px;
+transition:.2s;
 }
 
-.btn-primary{background:#3b82f6;color:#fff}
-.btn-success{background:#22c55e;color:#000}
-.btn-danger{background:#ef4444;color:#fff}
-.btn-warning{background:#f59e0b;color:#000}
-.btn-dark{background:#1e293b;color:#fff}
+button:active{transform:scale(.97)}
 
-table{
-width:100%;
-margin-top:10px;
-border-collapse:collapse;
-font-size:13px;
+.btn-primary{background:#0a84ff;color:#fff}
+.btn-success{background:#30d158;color:#000}
+.btn-danger{background:#ff453a;color:#fff}
+
+.category-card{
+margin-top:16px;
+padding:16px;
+border-radius:20px;
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(12px);
 }
 
-th,td{
-padding:8px;
-text-align:left;
-}
-
-th{
-opacity:.6;
-font-size:12px;
-}
-
-tr{
-background:rgba(255,255,255,0.04);
-}
-
-td input{
-background:transparent;
-border:none;
-color:#fff;
-width:100%;
-}
-
-.summary h3{
+.category-title{
+display:flex;
+justify-content:space-between;
+align-items:center;
+font-weight:600;
 margin-bottom:10px;
 }
 
-.total-highlight{
-font-size:20px;
-font-weight:700;
-margin-top:10px;
-color:#22c55e;
+.item{
+background:rgba(255,255,255,0.06);
+padding:12px;
+border-radius:16px;
+margin-bottom:10px;
 }
 
-canvas{margin-top:15px}
+.item input{
+background:transparent;
+padding:6px 0;
+margin-bottom:6px;
+font-size:14px;
+}
 
-.flex{display:flex;gap:10px;flex-wrap:wrap}
+.subtotal{
+font-size:13px;
+opacity:.7;
+margin-top:6px;
+}
+
+.bottom-summary{
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+background:rgba(20,20,22,0.9);
+backdrop-filter:blur(25px);
+border-top:1px solid rgba(255,255,255,0.1);
+padding:16px;
+border-top-left-radius:28px;
+border-top-right-radius:28px;
+}
+
+.summary-total{
+font-size:20px;
+font-weight:700;
+}
+
+.summary-small{
+font-size:13px;
+opacity:.6;
+margin-top:4px;
+}
+
+canvas{
+margin-top:10px;
+}
 </style>
 </head>
 <body>
 
-<div class="container">
-<h1>RAB Platinum Pro 2026</h1>
+<h1>RAB</h1>
 
-<div class="grid">
-
-<!-- LEFT -->
-<div>
-
-<div class="card">
+<div class="section glass">
 <label>Nama Project</label>
 <input id="projectName">
 
 <label>Tambah Kategori</label>
-<div class="flex">
-<input id="kategoriInput">
-<button class="btn-success" onclick="addKategori()">Tambah</button>
-</div>
+<input id="kategoriInput" placeholder="Contoh: Struktur">
+<button class="btn-primary" onclick="addKategori()">Tambah Kategori</button>
 </div>
 
 <div id="kategoriContainer"></div>
 
-</div>
-
-<!-- RIGHT -->
-<div>
-
-<div class="card summary">
-<h3>Summary</h3>
-
-<label>Diskon (%)</label>
-<input type="number" id="diskonInput" value="0" onchange="render()">
-
-<label>Margin (%)</label>
-<input type="number" id="marginInput" value="20" onchange="render()">
-
+<div class="bottom-summary">
 <div id="summaryContent"></div>
-
-<div class="flex">
-<button class="btn-warning" onclick="exportPDF()">PDF</button>
-<button class="btn-primary" onclick="exportExcel()">Excel</button>
-<button class="btn-dark" onclick="generateLink()">Share</button>
-</div>
-
-<div id="generatedLink" style="margin-top:10px;font-size:12px;"></div>
-
-<canvas id="chart"></canvas>
-
-</div>
-
-</div>
-
+<canvas id="chart" height="80"></canvas>
 </div>
 
 <script>
@@ -179,39 +177,21 @@ function formatRp(n){
 return "Rp "+Number(n||0).toLocaleString("id-ID")
 }
 
-function saveLocal(){
-localStorage.setItem("rab_data",JSON.stringify(data))
-}
-
-function loadLocal(){
-let d=localStorage.getItem("rab_data")
-if(d)data=JSON.parse(d)
-}
-
 function addKategori(){
 let k=document.getElementById("kategoriInput").value.trim()
 if(!k)return
 if(!data[k])data[k]=[]
 document.getElementById("kategoriInput").value=""
-saveLocal()
-render()
-}
-
-function deleteKategori(k){
-delete data[k]
-saveLocal()
 render()
 }
 
 function addItem(k){
 data[k].push({nama:"Item Baru",volume:1,harga:0})
-saveLocal()
 render()
 }
 
 function deleteItem(k,i){
 data[k].splice(i,1)
-saveLocal()
 render()
 }
 
@@ -221,7 +201,6 @@ data[k][i][field]=Number(value)||0
 }else{
 data[k][i][field]=value
 }
-saveLocal()
 render(false)
 }
 
@@ -235,114 +214,62 @@ Object.keys(data).forEach(k=>{
 let totalKategori=0
 
 let html=`
-<div class="card">
-<div class="flex" style="justify-content:space-between">
-<strong>${k}</strong>
-<button class="btn-danger" onclick="deleteKategori('${k}')">X</button>
+<div class="category-card">
+<div class="category-title">
+<span>${k}</span>
+<button class="btn-success" style="width:auto;padding:6px 12px;font-size:13px" onclick="addItem('${k}')">+ Item</button>
 </div>
-
-<button class="btn-success" onclick="addItem('${k}')">+ Tambah Item</button>
-
-<table>
-<tr>
-<th>Nama</th>
-<th>Vol</th>
-<th>Harga</th>
-<th>Subtotal</th>
-<th></th>
-</tr>
 `
 
 data[k].forEach((it,i)=>{
 let sub=it.volume*it.harga
 totalKategori+=sub
 html+=`
-<tr>
-<td><input value="${it.nama}" onchange="updateItem('${k}',${i},'nama',this.value)"></td>
-<td><input type="number" value="${it.volume}" onchange="updateItem('${k}',${i},'volume',this.value)"></td>
-<td><input type="number" value="${it.harga}" onchange="updateItem('${k}',${i},'harga',this.value)"></td>
-<td>${formatRp(sub)}</td>
-<td><button class="btn-danger" onclick="deleteItem('${k}',${i})">X</button></td>
-</tr>
+<div class="item">
+<input value="${it.nama}" onchange="updateItem('${k}',${i},'nama',this.value)">
+<input type="number" value="${it.volume}" onchange="updateItem('${k}',${i},'volume',this.value)">
+<input type="number" value="${it.harga}" onchange="updateItem('${k}',${i},'harga',this.value)">
+<div class="subtotal">${formatRp(sub)}</div>
+<button class="btn-danger" onclick="deleteItem('${k}',${i})">Hapus</button>
+</div>
 `
 })
 
 subtotal+=totalKategori
 
-html+=`</table>
-<div style="margin-top:10px;font-weight:600">Total Kategori: ${formatRp(totalKategori)}</div>
-</div>`
-
+html+=`<div class="subtotal">Total ${formatRp(totalKategori)}</div></div>`
 container.innerHTML+=html
 })
 
-let diskonPersen=Number(document.getElementById("diskonInput").value)||0
-let marginPersen=Number(document.getElementById("marginInput").value)||0
-
-let diskon=subtotal*(diskonPersen/100)
-let afterDiskon=subtotal-diskon
-let profit=afterDiskon*(marginPersen/100)
-let grandTotal=afterDiskon+profit
-
 document.getElementById("summaryContent").innerHTML=`
-Subtotal: ${formatRp(subtotal)}<br>
-Diskon: ${formatRp(diskon)}<br>
-Setelah Diskon: ${formatRp(afterDiskon)}<br>
-Profit: ${formatRp(profit)}<br>
-<div class="total-highlight">
-Harga Jual: ${formatRp(grandTotal)}
-</div>
+<div class="summary-total">${formatRp(subtotal)}</div>
+<div class="summary-small">Total Keseluruhan</div>
 `
 
-if(updateChart)renderChart(afterDiskon,profit)
+if(updateChart)renderChart(subtotal)
 }
 
-function renderChart(total,profit){
+function renderChart(total){
 if(chartInstance)chartInstance.destroy()
 chartInstance=new Chart(document.getElementById("chart"),{
 type:"doughnut",
 data:{
-labels:["Biaya","Profit"],
-datasets:[{data:[total,profit]}]
+labels:["Total"],
+datasets:[{
+data:[total,1],
+backgroundColor:["#0a84ff","rgba(255,255,255,0.05)"],
+borderWidth:0
+}]
 },
 options:{
-plugins:{legend:{labels:{color:"#fff"}}}
+cutout:"80%",
+plugins:{legend:{display:false}},
+responsive:true
 }
 })
 }
 
-function exportPDF(){
-html2pdf().from(document.body).save("RAB-Pro.pdf")
-}
-
-function exportExcel(){
-let wb=XLSX.utils.book_new()
-let rows=[["Kategori","Nama","Volume","Harga","Subtotal"]]
-Object.keys(data).forEach(k=>{
-data[k].forEach(it=>{
-rows.push([k,it.nama,it.volume,it.harga,it.volume*it.harga])
-})
-})
-let ws=XLSX.utils.aoa_to_sheet(rows)
-XLSX.utils.book_append_sheet(wb,ws,"RAB")
-XLSX.writeFile(wb,"RAB-Pro.xlsx")
-}
-
-function generateLink(){
-let encoded=btoa(JSON.stringify(data))
-let url=location.origin+location.pathname+"?data="+encoded
-document.getElementById("generatedLink").innerText=url
-}
-
-window.onload=()=>{
-let p=new URLSearchParams(location.search)
-if(p.get("data")){
-data=JSON.parse(atob(p.get("data")))
-}else{
-loadLocal()
-}
 render()
-}
 </script>
 
 </body>
