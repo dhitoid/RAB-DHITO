@@ -543,20 +543,27 @@ kategoriContainer.innerHTML = `
 `
 
 setTimeout(()=>{
-let p=projects[currentProject]
-projectName.value=currentProject
-diskon.value=p.diskon
-margin.value=p.margin
-ppn.value=p.ppn
 
-kategoriContainer.innerHTML=""
+let p = projects[currentProject]
+
+projectName.value = currentProject
+diskon.value = p.diskon
+margin.value = p.margin
+ppn.value = p.ppn
 
 let kategoriKeys = Object.keys(p.kategori)
 
+/* reset activeTab jika sudah tidak ada */
+if(!kategoriKeys.includes(activeTab)){
+activeTab = kategoriKeys[0] || null
+}
+
+/* kalau belum ada tab aktif */
 if(kategoriKeys.length > 0 && !activeTab){
 activeTab = kategoriKeys[0]
 }
 
+/* render wrapper */
 kategoriContainer.innerHTML = `
 <div class="tab-wrapper">
 <div class="tab-nav" id="tabNav"></div>
@@ -567,6 +574,7 @@ kategoriContainer.innerHTML = `
 let tabNav = document.getElementById("tabNav")
 let tabContent = document.getElementById("tabContent")
 
+/* render tab button */
 kategoriKeys.forEach(k=>{
 let btn = document.createElement("div")
 btn.className = "tab-btn " + (k === activeTab ? "active" : "")
@@ -578,7 +586,9 @@ render()
 tabNav.appendChild(btn)
 })
 
+/* render isi tab aktif */
 if(activeTab && p.kategori[activeTab]){
+
 let k = activeTab
 let html = `
 <div class="card">
@@ -637,12 +647,9 @@ html+=`
 tabContent.innerHTML = html
 }
 
-kategoriContainer.innerHTML+=html
-})
-
 updateSummary()
 
-},400) // shimmer delay
+},400)
 }
 
 /* ================= SUMMARY ================= */
