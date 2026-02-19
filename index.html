@@ -207,6 +207,60 @@ color:#22c55e;
 .wrapper{flex-direction:column}
 .sidebar{width:100%}
 }
+
+/* ===== SHIMMER LOADING ===== */
+.shimmer {
+position: relative;
+overflow: hidden;
+background: rgba(255,255,255,.08);
+border-radius: 12px;
+height: 120px;
+margin-bottom: 15px;
+}
+
+.shimmer::after {
+content: "";
+position: absolute;
+top: 0;
+left: -150%;
+height: 100%;
+width: 150%;
+background: linear-gradient(
+90deg,
+transparent,
+rgba(255,255,255,0.2),
+transparent
+);
+animation: shimmer 1.2s infinite;
+}
+
+@keyframes shimmer {
+100% {
+left: 150%;
+}
+}
+
+/* TABLE IMPROVE UI */
+table th {
+font-weight: 600;
+letter-spacing: .5px;
+}
+
+table td input {
+background: rgba(255,255,255,.12);
+border: 1px solid rgba(255,255,255,.2);
+font-weight: 500;
+}
+
+table td input:focus {
+background: rgba(14,165,233,.15);
+border-color: #0ea5e9;
+box-shadow: 0 0 0 2px rgba(14,165,233,.3);
+}
+
+td:last-child button {
+padding: 6px 10px;
+}
 </style>
 </head>
 <body>
@@ -390,10 +444,44 @@ updateSummary()
 save()
 }
 
+function updateVolume(k,i,input){
+let val=Number(input.value)||0
+projects[currentProject].kategori[k][i].volume=val
+updateSubtotalCell(k,i)
+save()
+}
+
+function updateHargaRealtime(k,i,input){
+let number=parseNumber(input.value)
+projects[currentProject].kategori[k][i].harga=number
+input.value=formatRp(number)
+updateSubtotalCell(k,i)
+save()
+}
+
+function updateSubtotalCell(k,i){
+let item=projects[currentProject].kategori[k][i]
+let subtotal=item.volume*item.harga
+
+let cell=document.getElementById(`subtotal-${k}-${i}`)
+if(cell){
+cell.innerHTML="Rp "+formatRp(subtotal)
+}
+
+updateSummary()
+}
+
+
 /* ================= RENDER ================= */
 function render(){
 if(!currentProject) return
 
+kategoriContainer.innerHTML = `
+<div class="shimmer"></div>
+<div class="shimmer"></div>
+`
+
+setTimeout(()=>{
 let p=projects[currentProject]
 projectName.value=currentProject
 diskon.value=p.diskon
@@ -405,7 +493,8 @@ kategoriContainer.innerHTML=""
 Object.keys(p.kategori).forEach(k=>{
 let html=`
 <div class="card">
-<h3>${k} 
+<h3 style="display:flex;justify-content:space-between;align-items:center">
+<span>${k}</span>
 <button class="btn-danger" onclick="deleteKategori('${k}')">X</button>
 </h3>
 
@@ -413,21 +502,38 @@ let html=`
 <table>
 <tr>
 <th>Nama</th>
-<th>Volume</th>
-<th>Harga</th>
-<th>Subtotal</th>
-<th></th>
+<th style="width:90px">Volume</th>
+<th style="width:140px">Harga</th>
+<th style="width:160px">Subtotal</th>
+<th style="width:60px"></th>
 </tr>
 `
 
 p.kategori[k].forEach((it,i)=>{
 html+=`
 <tr>
-<td><input value="${it.nama}" oninput="updateItem('${k}',${i},'nama',this.value)"></td>
-<td><input type="number" value="${it.volume}" oninput="updateItem('${k}',${i},'volume',this.value)"></td>
-<td><input value="${formatRp(it.harga)}" oninput="updateHarga('${k}',${i},this)"></td>
-<td>Rp ${formatRp(it.volume*it.harga)}</td>
-<td><button class="btn-danger" onclick="removeItem('${k}',${i})">X</button></td>
+<td>
+<input value="${it.nama}" 
+oninput="updateItem('${k}',${i},'nama',this.value)">
+</td>
+
+<td>
+<input type="number" value="${it.volume}" 
+oninput="updateVolume('${k}',${i},this)">
+</td>
+
+<td>
+<input value="${formatRp(it.harga)}" 
+oninput="updateHargaRealtime('${k}',${i},this)">
+</td>
+
+<td id="subtotal-${k}-${i}" style="font-weight:600;color:#22c55e">
+Rp ${formatRp(it.volume*it.harga)}
+</td>
+
+<td>
+<button class="btn-danger" onclick="removeItem('${k}',${i})">X</button>
+</td>
 </tr>
 `
 })
@@ -437,10 +543,13 @@ html+=`</table>
 </div>
 </div>
 `
+
 kategoriContainer.innerHTML+=html
 })
 
 updateSummary()
+
+},400) // shimmer delay
 }
 
 /* ================= SUMMARY ================= */
