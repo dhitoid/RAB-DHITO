@@ -63,6 +63,12 @@ generateAITemplate(name)
 })
 
 /* ================= ENTERPRISE STRUCTURE ================= */
+const templateNameMap = {
+"Coffee":"Buka Coffee Shop",
+"Wedding":"Pernikahan Sederhana",
+"Laundry":"Bisnis Laundry",
+"Rumah 36":"Bangun Rumah 36"
+}
 
 const enterpriseStructures = {
 
@@ -247,25 +253,28 @@ Marketing:[
 
 function generateAITemplate(name){
 
-if(!aiTemplates[name]) return
+const realName = templateNameMap[name] || name
 
-const uniqueName = projects[name]
-? name + " - " + Date.now()
-: name
+if(!aiTemplates[realName]) {
+alert("Template tidak ditemukan")
+return
+}
+
+const uniqueName = realName + " - " + Date.now()
 
 projects[uniqueName] = {
 diskon:0,
 margin:25,
 ppn:11,
-kategori:JSON.parse(JSON.stringify(aiTemplates[name].kategori))
+kategori:JSON.parse(JSON.stringify(aiTemplates[realName].kategori))
 }
 
 currentProject = uniqueName
 activeTab = null
 
 save()
-render()
 renderProjects()
+render()
 }
 
 /* ================= AI TEXT PARSER ================= */
@@ -472,9 +481,14 @@ render()
 }
 
 function deleteProject(){
+
 if(!currentProject) return
+
 delete projects[currentProject]
-currentProject=null
+
+let keys = Object.keys(projects)
+currentProject = keys.length ? keys[0] : null
+
 save()
 renderProjects()
 render()
@@ -499,12 +513,26 @@ render()
 }
 
 function renderProjects(){
-projectList.innerHTML=""
-Object.keys(projects).forEach(p=>{
-projectList.innerHTML+=`
-<div class="project-item ${p===currentProject?"active":""}" onclick="selectProject('${p}')">${p}</div>
+
+projectList.innerHTML = ""
+
+if(Object.keys(projects).length === 0){
+projectList.innerHTML = `
+<div style="opacity:.6;font-size:13px">
+Belum ada project
+</div>
 `
+return
+}
+
+Object.keys(projects).forEach(p=>{
+let div = document.createElement("div")
+div.className = "project-item " + (p===currentProject?"active":"")
+div.innerText = p
+div.onclick = ()=>selectProject(p)
+projectList.appendChild(div)
 })
+
 }
 
 function smartAnimate(element, key, newValue, duration = 600){
@@ -687,14 +715,24 @@ tabContent.innerHTML = html
 
 /* ================= RENDER ================= */
 function render(){
-if(!currentProject) return
+
+/* RESET UI jika tidak ada project */
+if(!currentProject){
 
 kategoriContainer.innerHTML = `
-<div class="shimmer"></div>
-<div class="shimmer"></div>
+<div style="opacity:.6;padding:20px">
+Belum ada project. Buat baru atau pilih template.
+</div>
 `
 
-setTimeout(()=>{
+summary.innerHTML = ""
+if(chartInstance){
+chartInstance.destroy()
+chartInstance = null
+}
+
+return
+}
 
 let p = projects[currentProject]
 
@@ -705,12 +743,11 @@ ppn.value = p.ppn
 
 let kategoriKeys = Object.keys(p.kategori)
 
-/* reset activeTab jika invalid */
+/* Reset active tab */
 if(!kategoriKeys.includes(activeTab)){
 activeTab = kategoriKeys[0] || null
 }
 
-/* render tab wrapper */
 kategoriContainer.innerHTML = `
 <div class="tab-wrapper">
 <div class="tab-nav" id="tabNav"></div>
@@ -720,7 +757,6 @@ kategoriContainer.innerHTML = `
 
 let tabNav = document.getElementById("tabNav")
 
-/* render tab button dengan badge */
 kategoriKeys.forEach(k=>{
 let btn = document.createElement("div")
 btn.className = "tab-btn " + (k === activeTab ? "active" : "")
@@ -731,10 +767,8 @@ btn.innerHTML = `
 
 btn.onclick = () => {
 activeTab = k
-
 document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"))
 btn.classList.add("active")
-
 renderActiveTab()
 }
 
@@ -742,10 +776,7 @@ tabNav.appendChild(btn)
 })
 
 renderActiveTab()
-
 updateSummary()
-
-},400)
 }
 
 /* ================= SUMMARY ================= */
@@ -837,9 +868,13 @@ XLSX.writeFile(wb,currentProject+"_RAB.xlsx")
 }
 
 /* ================= INIT ================= */
+document.addEventListener("DOMContentLoaded", ()=>{
+
 if(!currentProject && Object.keys(projects).length>0){
-currentProject=Object.keys(projects)[0]
+currentProject = Object.keys(projects)[0]
 }
 
 renderProjects()
 render()
+
+})
