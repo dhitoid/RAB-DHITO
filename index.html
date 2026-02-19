@@ -642,14 +642,6 @@ toggle.innerText = "Lihat Lebih Banyak"
 }
 }
 
-let score = calculateAIScore(projects[projectNameAI])
-let risk = calculateRiskLevel(score)
-
-document.getElementById("aiInsight").innerHTML = `
-<strong>AI Feasibility Score:</strong> ${score}/100 <br>
-<strong>Risk Level:</strong> ${risk}
-`
-
 const enterpriseStructures = {
 
 bengkel:{
@@ -988,6 +980,14 @@ if(score >= 80) return "Rendah"
 if(score >= 60) return "Sedang"
 return "Tinggi"
 }
+
+let score = calculateAIScore(projects[projectNameAI])
+let risk = calculateRiskLevel(score)
+
+document.getElementById("aiInsight").innerHTML = `
+<strong>AI Feasibility Score:</strong> ${score}/100 <br>
+<strong>Risk Level:</strong> ${risk}
+`
 
 /* ================= FORMAT ================= */
 function formatRp(val){
