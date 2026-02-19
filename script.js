@@ -377,7 +377,14 @@ const templateNameMap = {
 "Coffee":"Buka Coffee Shop",
 "Wedding":"Pernikahan Sederhana",
 "Laundry":"Bisnis Laundry",
-"Rumah 36":"Bangun Rumah 36"
+"Rumah 36":"Bangun Rumah 36",
+"Liburan":"Liburan Keluarga",
+"Renovasi":"Renovasi Rumah",
+"Event":"Event Seminar",
+"Kontrakan":"Kontrakan 5 Pintu",
+"Fashion":"UMKM Fashion",
+"Umroh":"Travel Umroh",
+"Startup":"Startup Digital",
 }
 
 /* ================= TEMPLATE GENERATOR ================= */
