@@ -63,12 +63,6 @@ generateAITemplate(name)
 })
 
 /* ================= ENTERPRISE STRUCTURE ================= */
-const templateNameMap = {
-"Coffee":"Buka Coffee Shop",
-"Wedding":"Pernikahan Sederhana",
-"Laundry":"Bisnis Laundry",
-"Rumah 36":"Bangun Rumah 36"
-}
 
 const enterpriseStructures = {
 
@@ -114,83 +108,28 @@ Cadangan:[
 
 const aiTemplates = {
 
-"Liburan Keluarga": {
-kategori:{
-Transportasi:[
-{nama:"Tiket Pesawat",volume:4,harga:1500000},
-{nama:"Transport Lokal",volume:5,harga:300000}
-],
-Akomodasi:[
-{nama:"Hotel 3 Malam",volume:3,harga:750000}
-],
-Konsumsi:[
-{nama:"Makan Harian",volume:4,harga:250000}
-]
-}
-},
-
-"Renovasi Rumah": {
-kategori:{
-Material:[
-{nama:"Semen",volume:50,harga:65000},
-{nama:"Cat Tembok",volume:10,harga:180000}
-],
-Upah:[
-{nama:"Tukang",volume:20,harga:150000}
-]
-}
-},
+/* ================= BISNIS ================= */
 
 "Buka Coffee Shop": {
 kategori:{
 Peralatan:[
-{nama:"Mesin Espresso",volume:1,harga:15000000},
-{nama:"Grinder",volume:1,harga:5000000}
+{nama:"Mesin Espresso",volume:1,harga:18000000},
+{nama:"Grinder Profesional",volume:1,harga:6000000},
+{nama:"Mesin Kasir POS",volume:1,harga:5000000}
 ],
 Interior:[
-{nama:"Meja & Kursi",volume:10,harga:750000}
+{nama:"Renovasi Interior",volume:1,harga:25000000},
+{nama:"Meja & Kursi",volume:12,harga:850000}
 ],
-Operasional:[
-{nama:"Bahan Baku Awal",volume:1,harga:5000000}
-]
-}
-},
-
-"Event Seminar": {
-kategori:{
-Venue:[
-{nama:"Sewa Gedung",volume:1,harga:8000000}
+Operasional Awal:[
+{nama:"Bahan Baku 1 Bulan",volume:1,harga:7000000},
+{nama:"Gaji Barista 1 Bulan",volume:2,harga:3000000}
 ],
-Konsumsi:[
-{nama:"Snack Peserta",volume:100,harga:35000}
+Legalitas:[
+{nama:"NIB & Izin Usaha",volume:1,harga:2000000}
 ],
-Marketing:[
-{nama:"Iklan Sosial Media",volume:1,harga:2000000}
-]
-}
-},
-
-"Pernikahan Sederhana": {
-kategori:{
-Venue:[
-{nama:"Gedung",volume:1,harga:15000000}
-],
-Katering:[
-{nama:"Paket 300 Tamu",volume:300,harga:50000}
-],
-Dokumentasi:[
-{nama:"Foto & Video",volume:1,harga:5000000}
-]
-}
-},
-
-"Kontrakan 5 Pintu": {
-kategori:{
-Material:[
-{nama:"Bata Ringan",volume:1000,harga:1200}
-],
-Upah:[
-{nama:"Tukang",volume:60,harga:150000}
+Cadangan Risiko:[
+{nama:"Contingency Fund (5%)",volume:1,harga:5000000}
 ]
 }
 },
@@ -198,10 +137,18 @@ Upah:[
 "Bisnis Laundry": {
 kategori:{
 Mesin:[
-{nama:"Mesin Cuci",volume:2,harga:4500000}
+{nama:"Mesin Cuci Industrial",volume:2,harga:5500000},
+{nama:"Mesin Pengering",volume:1,harga:6000000}
 ],
-Operasional:[
-{nama:"Deterjen Awal",volume:1,harga:1000000}
+Renovasi:[
+{nama:"Renovasi Tempat",volume:1,harga:15000000}
+],
+Operasional Awal:[
+{nama:"Deterjen & Pewangi",volume:1,harga:2000000},
+{nama:"Gaji Karyawan 1 Bulan",volume:1,harga:2500000}
+],
+Legalitas:[
+{nama:"Izin Usaha",volume:1,harga:1500000}
 ]
 }
 },
@@ -209,29 +156,17 @@ Operasional:[
 "UMKM Fashion": {
 kategori:{
 Produksi:[
-{nama:"Bahan Kain",volume:100,harga:45000}
+{nama:"Bahan Kain",volume:150,harga:50000},
+{nama:"Jasa Jahit",volume:100,harga:40000}
+],
+Branding:[
+{nama:"Desain Logo & Branding",volume:1,harga:3000000}
 ],
 Marketing:[
-{nama:"Iklan Instagram",volume:1,harga:3000000}
-]
-}
-},
-
-"Travel Umroh": {
-kategori:{
-Paket:[
-{nama:"Paket Umroh",volume:1,harga:30000000}
-]
-}
-},
-
-"Bangun Rumah 36": {
-kategori:{
-Material:[
-{nama:"Semen",volume:100,harga:65000}
+{nama:"Iklan Instagram 1 Bulan",volume:1,harga:5000000}
 ],
-Upah:[
-{nama:"Mandor",volume:30,harga:200000}
+Operasional Awal:[
+{nama:"Packing & Label",volume:100,harga:5000}
 ]
 }
 },
@@ -239,34 +174,180 @@ Upah:[
 "Startup Digital": {
 kategori:{
 Development:[
-{nama:"Developer 3 Bulan",volume:3,harga:8000000}
+{nama:"UI/UX Design",volume:1,harga:15000000},
+{nama:"Backend Developer 3 Bulan",volume:3,harga:10000000},
+{nama:"Frontend Developer 3 Bulan",volume:3,harga:8000000}
+],
+Server:[
+{nama:"Cloud Hosting 6 Bulan",volume:6,harga:1000000}
 ],
 Marketing:[
-{nama:"Ads Budget",volume:1,harga:10000000}
+{nama:"Digital Ads Budget",volume:1,harga:20000000}
+],
+Legalitas:[
+{nama:"PT & Legal Setup",volume:1,harga:10000000}
+]
+}
+},
+
+/* ================= PROPERTI ================= */
+
+"Bangun Rumah 36": {
+kategori:{
+Material:[
+{nama:"Semen",volume:120,harga:65000},
+{nama:"Bata Ringan",volume:1500,harga:1200},
+{nama:"Besi Beton",volume:300,harga:15000}
+],
+Upah:[
+{nama:"Mandor",volume:30,harga:200000},
+{nama:"Tukang",volume:60,harga:150000}
+],
+Finishing:[
+{nama:"Cat & Finishing",volume:1,harga:10000000}
+],
+Cadangan Risiko:[
+{nama:"Contingency 5%",volume:1,harga:8000000}
+]
+}
+},
+
+"Renovasi Rumah": {
+kategori:{
+Material:[
+{nama:"Semen",volume:70,harga:65000},
+{nama:"Cat Tembok",volume:20,harga:200000}
+],
+Upah:[
+{nama:"Tukang",volume:25,harga:160000}
+],
+Finishing:[
+{nama:"Lampu & Instalasi",volume:1,harga:5000000}
+]
+}
+},
+
+"Kontrakan 5 Pintu": {
+kategori:{
+Struktur:[
+{nama:"Bata Ringan",volume:2000,harga:1200},
+{nama:"Semen",volume:200,harga:65000}
+],
+Upah:[
+{nama:"Tukang 2 Bulan",volume:60,harga:150000}
+],
+Finishing:[
+{nama:"Keramik & Pintu",volume:1,harga:20000000}
+]
+}
+},
+
+/* ================= EVENT ================= */
+
+"Pernikahan Sederhana": {
+kategori:{
+Venue:[
+{nama:"Gedung",volume:1,harga:20000000}
+],
+Katering:[
+{nama:"Paket 300 Tamu",volume:300,harga:60000}
+],
+Dekorasi:[
+{nama:"Dekorasi Pelaminan",volume:1,harga:10000000}
+],
+Dokumentasi:[
+{nama:"Foto & Video",volume:1,harga:7000000}
+],
+MC & Entertainment:[
+{nama:"MC & Sound System",volume:1,harga:8000000}
+]
+}
+},
+
+"Event Seminar": {
+kategori:{
+Venue:[
+{nama:"Sewa Ballroom",volume:1,harga:12000000}
+],
+Konsumsi:[
+{nama:"Snack 200 Peserta",volume:200,harga:40000}
+],
+Marketing:[
+{nama:"Iklan Digital",volume:1,harga:5000000}
+],
+Operasional:[
+{nama:"Print Kit & ID Card",volume:200,harga:10000}
+]
+}
+},
+
+/* ================= PRIBADI ================= */
+
+"Liburan Keluarga": {
+kategori:{
+Transportasi:[
+{nama:"Tiket Pesawat PP",volume:4,harga:2000000}
+],
+Akomodasi:[
+{nama:"Hotel 4 Malam",volume:4,harga:900000}
+],
+Konsumsi:[
+{nama:"Makan Harian",volume:4,harga:300000}
+],
+Wisata:[
+{nama:"Tiket Tempat Wisata",volume:4,harga:250000}
+]
+}
+},
+
+"Travel Umroh": {
+kategori:{
+Paket Umroh:[
+{nama:"Paket Umroh Reguler",volume:1,harga:32000000}
+],
+Administrasi:[
+{nama:"Paspor & Vaksin",volume:1,harga:2500000}
+],
+Perlengkapan:[
+{nama:"Perlengkapan Umroh",volume:1,harga:1500000}
 ]
 }
 }
 
 }
 
+/* ================= AUTO TEMPLATE MAP ================= */
+
+function generateTemplateNameMap(){
+const map = {}
+
+Object.keys(aiTemplates).forEach(name=>{
+map[name.toLowerCase()] = name
+})
+
+return map
+}
+
+const templateNameMap = generateTemplateNameMap()
+
 /* ================= TEMPLATE GENERATOR ================= */
 
 function generateAITemplate(name){
 
-const realName = templateNameMap[name] || name
+const key = templateNameMap[name.toLowerCase()]
 
-if(!aiTemplates[realName]) {
+if(!key){
 alert("Template tidak ditemukan")
 return
 }
 
-const uniqueName = realName + " - " + Date.now()
+const uniqueName = key + " - " + Date.now()
 
 projects[uniqueName] = {
 diskon:0,
 margin:25,
 ppn:11,
-kategori:JSON.parse(JSON.stringify(aiTemplates[realName].kategori))
+kategori:JSON.parse(JSON.stringify(aiTemplates[key].kategori))
 }
 
 currentProject = uniqueName
