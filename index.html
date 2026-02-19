@@ -307,6 +307,55 @@ background:rgba(255,255,255,.1);
 animation:fadeIn .25s ease-in-out;
 }
 
+/* ===== TAB PRO V2 ===== */
+
+.tab-nav{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-bottom:18px;
+}
+
+.tab-btn{
+display:flex;
+align-items:center;
+gap:8px;
+padding:8px 14px;
+border-radius:12px;
+background:rgba(255,255,255,.04);
+cursor:pointer;
+font-size:13px;
+border:1px solid transparent;
+transition:.25s;
+}
+
+.tab-btn:hover{
+background:rgba(255,255,255,.08);
+}
+
+.tab-btn.active{
+background:rgba(14,165,233,.15);
+border:1px solid #0ea5e9;
+color:#0ea5e9;
+}
+
+.tab-badge{
+background:#0ea5e9;
+color:#fff;
+font-size:11px;
+padding:2px 7px;
+border-radius:999px;
+}
+
+.tab-content{
+animation:slideFade .25s ease;
+}
+
+@keyframes slideFade{
+from{opacity:0;transform:translateX(10px)}
+to{opacity:1;transform:translateX(0)}
+}
+
 @keyframes fadeIn{
 from{opacity:0;transform:translateY(5px)}
 to{opacity:1;transform:translateY(0)}
@@ -532,62 +581,13 @@ cell.innerHTML="Rp "+formatRp(subtotal)
 updateSummary()
 }
 
-
-/* ================= RENDER ================= */
-function render(){
-if(!currentProject) return
-
-kategoriContainer.innerHTML = `
-<div class="shimmer"></div>
-<div class="shimmer"></div>
-`
-
-setTimeout(()=>{
-
+function renderActiveTab(){
 let p = projects[currentProject]
-
-projectName.value = currentProject
-diskon.value = p.diskon
-margin.value = p.margin
-ppn.value = p.ppn
-
-let kategoriKeys = Object.keys(p.kategori)
-
-/* reset activeTab jika sudah tidak ada */
-if(!kategoriKeys.includes(activeTab)){
-activeTab = kategoriKeys[0] || null
-}
-
-/* kalau belum ada tab aktif */
-if(kategoriKeys.length > 0 && !activeTab){
-activeTab = kategoriKeys[0]
-}
-
-/* render wrapper */
-kategoriContainer.innerHTML = `
-<div class="tab-wrapper">
-<div class="tab-nav" id="tabNav"></div>
-<div class="tab-content" id="tabContent"></div>
-</div>
-`
-
-let tabNav = document.getElementById("tabNav")
 let tabContent = document.getElementById("tabContent")
-
-/* render tab button */
-kategoriKeys.forEach(k=>{
-let btn = document.createElement("div")
-btn.className = "tab-btn " + (k === activeTab ? "active" : "")
-btn.innerText = k
-btn.onclick = () => {
-activeTab = k
-render()
+if(!activeTab || !p.kategori[activeTab]){
+tabContent.innerHTML = ""
+return
 }
-tabNav.appendChild(btn)
-})
-
-/* render isi tab aktif */
-if(activeTab && p.kategori[activeTab]){
 
 let k = activeTab
 let html = `
@@ -646,6 +646,65 @@ html+=`
 
 tabContent.innerHTML = html
 }
+
+
+/* ================= RENDER ================= */
+function render(){
+if(!currentProject) return
+
+kategoriContainer.innerHTML = `
+<div class="shimmer"></div>
+<div class="shimmer"></div>
+`
+
+setTimeout(()=>{
+
+let p = projects[currentProject]
+
+projectName.value = currentProject
+diskon.value = p.diskon
+margin.value = p.margin
+ppn.value = p.ppn
+
+let kategoriKeys = Object.keys(p.kategori)
+
+/* reset activeTab jika invalid */
+if(!kategoriKeys.includes(activeTab)){
+activeTab = kategoriKeys[0] || null
+}
+
+/* render tab wrapper */
+kategoriContainer.innerHTML = `
+<div class="tab-wrapper">
+<div class="tab-nav" id="tabNav"></div>
+<div class="tab-content" id="tabContent"></div>
+</div>
+`
+
+let tabNav = document.getElementById("tabNav")
+
+/* render tab button dengan badge */
+kategoriKeys.forEach(k=>{
+let btn = document.createElement("div")
+btn.className = "tab-btn " + (k === activeTab ? "active" : "")
+btn.innerHTML = `
+<span>${k}</span>
+<span class="tab-badge">${p.kategori[k].length}</span>
+`
+
+btn.onclick = () => {
+activeTab = k
+
+document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"))
+btn.classList.add("active")
+
+renderActiveTab()
+}
+
+tabNav.appendChild(btn)
+})
+
+renderActiveTab()
 
 updateSummary()
 
