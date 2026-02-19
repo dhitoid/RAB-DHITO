@@ -61,22 +61,6 @@ generateAITemplate(realTemplate)
 })
 })
 
-document.querySelectorAll(".template-card").forEach(card => {
-card.addEventListener("click", () => {
-
-const name = card.innerText.trim()
-
-if(projects[name]){
-if(!confirm("Project sudah ada. Replace?")) return
-}
-
-generateAITemplate(name)
-
-})
-})
-
-})
-
 /* ================= ENTERPRISE STRUCTURE ================= */
 
 const enterpriseStructures = {
