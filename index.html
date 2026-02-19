@@ -10,85 +10,118 @@
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+}
+
 body{
-background:linear-gradient(135deg,#0f172a,#1e293b);
-color:#fff;
+background:linear-gradient(135deg,#0b1220,#0f172a);
+color:#e5e7eb;
 min-height:100vh;
 }
 
-/* HEADER */
+/* ================= HEADER ================= */
 header{
 display:flex;
 justify-content:space-between;
 align-items:center;
-padding:20px 30px;
-background:rgba(255,255,255,.05);
-backdrop-filter:blur(12px);
-border-bottom:1px solid rgba(255,255,255,.08);
+padding:22px 35px;
+background:rgba(15,23,42,.8);
+backdrop-filter:blur(14px);
+border-bottom:1px solid rgba(255,255,255,.05);
+position:sticky;
+top:0;
+z-index:100;
 }
 
-h1{font-size:20px;font-weight:600}
+h1{
+font-size:18px;
+font-weight:600;
+letter-spacing:.5px;
+color:#fff;
+}
 
-/* LAYOUT */
+/* ================= LAYOUT ================= */
 .wrapper{
 display:flex;
-max-width:1600px;
+max-width:1700px;
 margin:auto;
-padding:25px;
-gap:25px;
+padding:30px;
+gap:30px;
 }
 
-/* SIDEBAR */
+/* ================= SIDEBAR ================= */
 .sidebar{
-width:260px;
-background:rgba(255,255,255,.05);
-border:1px solid rgba(255,255,255,.08);
-border-radius:18px;
-padding:20px;
-height:fit-content;
+width:270px;
+background:#0f172a;
+border:1px solid rgba(255,255,255,.05);
+border-radius:20px;
+padding:22px;
+box-shadow:0 20px 40px rgba(0,0,0,.5);
+}
+
+.sidebar h3{
+font-size:13px;
+text-transform:uppercase;
+letter-spacing:1px;
+color:#64748b;
+margin-bottom:15px;
 }
 
 .project-item{
-padding:10px;
-border-radius:10px;
+padding:12px 14px;
+border-radius:12px;
 margin-bottom:8px;
 cursor:pointer;
-font-size:13px;
-background:rgba(255,255,255,.06);
-transition:.2s;
+font-size:14px;
+background:rgba(255,255,255,.03);
+transition:.25s;
+border:1px solid transparent;
 }
 
 .project-item.active{
-background:#0ea5e9;
+background:rgba(14,165,233,.15);
+border:1px solid #0ea5e9;
+color:#0ea5e9;
 }
 
 .project-item:hover{
-background:rgba(255,255,255,.12);
+background:rgba(255,255,255,.07);
+transform:translateX(3px);
 }
 
-/* MAIN */
+/* ================= MAIN ================= */
 .main{
 flex:1;
 }
 
+/* ================= CARD ================= */
 .card{
-background:rgba(255,255,255,.06);
-border:1px solid rgba(255,255,255,.08);
-border-radius:20px;
-padding:25px;
-margin-bottom:25px;
-box-shadow:0 20px 50px rgba(0,0,0,.4);
+background:#111827;
+border:1px solid rgba(255,255,255,.05);
+border-radius:22px;
+padding:28px;
+margin-bottom:28px;
+box-shadow:0 25px 60px rgba(0,0,0,.6);
+transition:.3s;
 }
 
-/* BUTTON */
+.card:hover{
+transform:translateY(-2px);
+}
+
+/* ================= BUTTON ================= */
 button{
 border:none;
-padding:10px 14px;
-border-radius:10px;
+padding:10px 16px;
+border-radius:12px;
 cursor:pointer;
 font-weight:600;
-transition:.2s;
+font-size:13px;
+transition:.25s;
 }
 
 .btn-primary{background:#0ea5e9;color:#fff}
@@ -96,19 +129,22 @@ transition:.2s;
 .btn-danger{background:#ef4444;color:#fff}
 .btn-warning{background:#f59e0b;color:#000}
 
-button:hover{opacity:.85}
+button:hover{
+transform:translateY(-2px);
+opacity:.9;
+}
 
 /* ================= INPUT ================= */
 input{
 width:100%;
-background:#0f172a;
-border:1px solid rgba(255,255,255,.15);
+background:#0b1220;
+border:1px solid rgba(255,255,255,.08);
 color:#fff;
-padding:10px 12px;
-border-radius:10px;
+padding:12px;
+border-radius:12px;
 outline:none;
 font-size:14px;
-transition:.2s;
+transition:.25s;
 }
 
 input:focus{
@@ -119,147 +155,129 @@ box-shadow:0 0 0 2px rgba(14,165,233,.2);
 /* ================= TABLE ================= */
 .table-wrap{
 overflow-x:auto;
-margin-top:15px;
-border-radius:15px;
-border:1px solid rgba(255,255,255,.08);
+margin-top:20px;
+border-radius:18px;
+border:1px solid rgba(255,255,255,.05);
 }
 
 table{
 width:100%;
 border-collapse:collapse;
-min-width:700px;
+min-width:720px;
 background:#0b1220;
 }
 
 th{
 text-align:left;
-padding:14px;
-font-size:12px;
+padding:16px;
+font-size:11px;
 text-transform:uppercase;
-letter-spacing:.5px;
-background:#111827;
-color:#94a3b8;
-border-bottom:1px solid rgba(255,255,255,.08);
+letter-spacing:1px;
+background:#0f172a;
+color:#64748b;
+border-bottom:1px solid rgba(255,255,255,.05);
 }
 
 td{
-padding:12px;
-border-bottom:1px solid rgba(255,255,255,.05);
+padding:14px;
+border-bottom:1px solid rgba(255,255,255,.04);
 font-size:14px;
 }
 
-/* Zebra rows */
-tr:nth-child(even){
-background:rgba(255,255,255,.02);
-}
-
-/* Hover row */
 tr:hover{
-background:rgba(14,165,233,.08);
-transition:.2s;
+background:rgba(14,165,233,.05);
 }
 
-/* Angka rata kanan */
 td:nth-child(2),
 td:nth-child(3),
 td:nth-child(4){
 text-align:right;
 }
 
-/* Subtotal highlight */
 td:nth-child(4){
-font-weight:600;
+font-weight:700;
 color:#22c55e;
-}
-
-/* Delete button lebih kecil */
-td button{
-padding:6px 10px;
-font-size:12px;
-border-radius:8px;
+font-size:15px;
 }
 
 th:first-child, td:first-child{
-min-width:200px;
+min-width:220px;
 }
 
 td input[type="number"]{
 text-align:right;
 }
 
-/* SUMMARY */
+/* ================= SUMMARY PRO ================= */
 .summary{
-margin-top:20px;
-padding:20px;
-background:rgba(255,255,255,.07);
-border-radius:15px;
-line-height:1.8;
-font-size:14px;
+margin-top:25px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:18px;
 }
 
-.summary strong{
+.summary-box{
+background:#0f172a;
+padding:18px;
+border-radius:16px;
+border:1px solid rgba(255,255,255,.05);
+}
+
+.summary-box small{
+color:#64748b;
+font-size:12px;
+}
+
+.summary-box strong{
+display:block;
+margin-top:6px;
 font-size:18px;
-color:#22c55e;
+font-weight:700;
 }
 
-/* MOBILE */
+.summary-box.total{
+border:1px solid #22c55e;
+}
+
+.summary-box.total strong{
+color:#22c55e;
+font-size:20px;
+}
+
+/* ================= SHIMMER ================= */
+.shimmer{
+height:120px;
+border-radius:16px;
+background:rgba(255,255,255,.05);
+position:relative;
+overflow:hidden;
+margin-bottom:15px;
+}
+
+.shimmer::after{
+content:"";
+position:absolute;
+top:0;
+left:-150%;
+width:150%;
+height:100%;
+background:linear-gradient(
+90deg,
+transparent,
+rgba(255,255,255,.15),
+transparent
+);
+animation:shimmer 1.2s infinite;
+}
+
+@keyframes shimmer{
+100%{left:150%}
+}
+
+/* ================= MOBILE ================= */
 @media(max-width:900px){
 .wrapper{flex-direction:column}
 .sidebar{width:100%}
-}
-
-/* ===== SHIMMER LOADING ===== */
-.shimmer {
-position: relative;
-overflow: hidden;
-background: rgba(255,255,255,.08);
-border-radius: 12px;
-height: 120px;
-margin-bottom: 15px;
-}
-
-.shimmer::after {
-content: "";
-position: absolute;
-top: 0;
-left: -150%;
-height: 100%;
-width: 150%;
-background: linear-gradient(
-90deg,
-transparent,
-rgba(255,255,255,0.2),
-transparent
-);
-animation: shimmer 1.2s infinite;
-}
-
-@keyframes shimmer {
-100% {
-left: 150%;
-}
-}
-
-/* TABLE IMPROVE UI */
-table th {
-font-weight: 600;
-letter-spacing: .5px;
-}
-
-table td input {
-background: rgba(255,255,255,.12);
-border: 1px solid rgba(255,255,255,.2);
-font-weight: 500;
-}
-
-table td input:focus {
-background: rgba(14,165,233,.15);
-border-color: #0ea5e9;
-box-shadow: 0 0 0 2px rgba(14,165,233,.3);
-}
-
-td:last-child button {
-padding: 6px 10px;
 }
 </style>
 </head>
@@ -573,12 +591,32 @@ let grand=afterDisk+ppnVal
 let profit=grand*(p.margin/100)
 
 summary.innerHTML=`
-<div>Subtotal : Rp ${formatRp(subtotal)}</div>
-<div>Diskon : Rp ${formatRp(disk)}</div>
-<div>PPN : Rp ${formatRp(ppnVal)}</div>
-<hr style="margin:10px 0;border:0;border-top:1px solid rgba(255,255,255,.2)">
-<strong>Grand Total : Rp ${formatRp(grand)}</strong>
-<div style="color:#22c55e;margin-top:5px">Estimasi Profit : Rp ${formatRp(profit)}</div>
+<div class="summary-box">
+<small>Subtotal</small>
+<strong>Rp ${formatRp(subtotal)}</strong>
+</div>
+
+<div class="summary-box">
+<small>Diskon</small>
+<strong>Rp ${formatRp(disk)}</strong>
+</div>
+
+<div class="summary-box">
+<small>PPN</small>
+<strong>Rp ${formatRp(ppnVal)}</strong>
+</div>
+
+<div class="summary-box total">
+<small>Grand Total</small>
+<strong>Rp ${formatRp(grand)}</strong>
+</div>
+
+<div class="summary-box">
+<small>Estimasi Profit</small>
+<strong style="color:#22c55e">
+Rp ${formatRp(profit)}
+</strong>
+</div>
 `
 
 renderChart(subtotal,profit)
