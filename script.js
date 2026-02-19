@@ -488,6 +488,7 @@ return
 const uniqueName = realName + " - " + Date.now()
 
 projects[uniqueName] = {
+type: detectProjectType(realName.toLowerCase()), // tambahkan ini
 diskon:0,
 margin:25,
 ppn:11,
@@ -604,6 +605,53 @@ harga:Math.round(budget * item.percent * multiplier)
 return result
 }
 
+/* ================= Generate Universal ================= */
+
+function generateUniversalInsight(project){
+
+const total = Object.values(project.kategori)
+.flat()
+.reduce((sum,i)=>sum + i.volume*i.harga,0)
+
+const type = project.type || "general"
+
+// ================= BUSINESS TYPE =================
+if(["coffee","bengkel","startup","laundry","property"].includes(type)){
+
+const roiData = calculateROI(total, project.margin)
+const bepMonths = calculateBEP(total, project.margin)
+
+return `
+<strong>Business Insight</strong><br><br>
+ROI Tahunan: ${roiData.roiYearly.toFixed(1)}%<br>
+Estimasi BEP: ± ${bepMonths} bulan<br>
+Profit Bulanan: Rp ${formatRp(roiData.monthlyProfit)}
+`
+}
+
+// ================= TRAVEL / EVENT =================
+if(type==="general"){
+
+const cadangan = project.kategori["Cadangan"]
+
+let bufferNote = cadangan
+? "Sudah memiliki dana cadangan."
+: "Disarankan tambah dana darurat 10–15%."
+
+return `
+<strong>Budget Planning Insight</strong><br><br>
+Total Anggaran: Rp ${formatRp(total)}<br>
+${bufferNote}<br>
+Pastikan alokasi konsumsi & transport tidak melebihi 60%.
+`
+}
+
+return `
+<strong>General Financial Insight</strong><br>
+Total Budget: Rp ${formatRp(total)}
+`
+}
+
 /* ================= AI GENERATOR ================= */
 
 function generateFromText(){
@@ -631,6 +679,7 @@ const name =
 " - " + Date.now()
 
 projects[name] = {
+type:type,
 diskon:0,
 margin:calculateSuggestedMargin(type, scale),
 ppn:11,
@@ -1238,5 +1287,10 @@ currentProject = Object.keys(projects)[0]
 
 renderProjects()
 render()
+
+const insightBox = document.getElementById("aiInsight")
+if(currentProject && projects[currentProject]){
+insightBox.innerHTML = generateUniversalInsight(projects[currentProject])
+}
 
 })
