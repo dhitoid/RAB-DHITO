@@ -1389,12 +1389,11 @@ XLSX.writeFile(wb,currentProject+"_RAB.xlsx")
 }
 
 /* ================= INIT ================= */
-renderProjectList()
-if(currentProject) render()
-renderProjects()
 if(!currentProject && Object.keys(projects).length>0){
 currentProject=Object.keys(projects)[0]
 }
+
+renderProjects()
 render()
 
 </script>
