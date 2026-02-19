@@ -371,6 +371,24 @@ backdrop-filter:blur(6px);
 box-shadow:0 10px 25px rgba(0,0,0,.6);
 }
 
+.flash-up{
+animation:flashUp .6s ease;
+}
+
+.flash-down{
+animation:flashDown .6s ease;
+}
+
+@keyframes flashUp{
+0%{color:#22c55e}
+100%{color:inherit}
+}
+
+@keyframes flashDown{
+0%{color:#ef4444}
+100%{color:inherit}
+}
+
 @keyframes slideFade{
 from{opacity:0;transform:translateX(10px)}
 to{opacity:1;transform:translateX(0)}
@@ -462,6 +480,13 @@ let projects = JSON.parse(localStorage.getItem("rab_pro_data") || "{}")
 let currentProject = localStorage.getItem("rab_pro_current") || null
 let activeTab = null
 let chartInstance=null
+let previousTotals = {
+subtotal: 0,
+diskon: 0,
+ppn: 0,
+grand: 0,
+profit: 0
+}
 
 function save(){
 localStorage.setItem("rab_pro_data",JSON.stringify(projects))
@@ -530,7 +555,10 @@ projectList.innerHTML+=`
 })
 }
 
-function animateValue(element, start, end, duration){
+function smartAnimate(element, key, newValue, duration = 600){
+
+let start = previousTotals[key] || 0
+let end = newValue
 let startTime = null
 
 function easeOutCubic(t){
@@ -549,10 +577,22 @@ element.innerText = "Rp " + formatRp(value)
 
 if(progress < 1){
 requestAnimationFrame(animation)
+} else {
+previousTotals[key] = newValue
 }
 }
 
 requestAnimationFrame(animation)
+
+/* Flash effect */
+element.classList.remove("flash-up","flash-down")
+void element.offsetWidth
+
+if(end > start){
+element.classList.add("flash-up")
+} else if(end < start){
+element.classList.add("flash-down")
+}
 }
 
 /* ================= KATEGORI ================= */
@@ -804,11 +844,11 @@ summary.innerHTML=`
 `
 
 /* Animate values */
-animateValue(document.getElementById("sum-subtotal"), 0, subtotal, 500)
-animateValue(document.getElementById("sum-diskon"), 0, disk, 500)
-animateValue(document.getElementById("sum-ppn"), 0, ppnVal, 500)
-animateValue(document.getElementById("sum-grand"), 0, grand, 700)
-animateValue(document.getElementById("sum-profit"), 0, profit, 700)
+smartAnimate(document.getElementById("sum-subtotal"), "subtotal", subtotal)
+smartAnimate(document.getElementById("sum-diskon"), "diskon", disk)
+smartAnimate(document.getElementById("sum-ppn"), "ppn", ppnVal)
+smartAnimate(document.getElementById("sum-grand"), "grand", grand, 700)
+smartAnimate(document.getElementById("sum-profit"), "profit", profit, 700)
 
 renderChart(subtotal,profit)
 save()
