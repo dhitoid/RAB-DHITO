@@ -60,6 +60,7 @@ generateAITemplate(realTemplate)
 
 })
 })
+})
 
 /* ================= ENTERPRISE STRUCTURE ================= */
 
