@@ -330,13 +330,298 @@ function showAIInsight(project) {
 
 
 /* ================= PROJECT MANAGEMENT ================= */
-/* Semua function createProject, deleteProject, renameProject,
-   selectProject, renderProjects, addKategori, deleteKategori,
-   addItem, removeItem, updateItem, updateHarga, updateVolume,
-   updateHargaRealtime, updateSubtotalCell
-   --> COPY PERSIS DARI KODE LAMA KAMU TANPA DIHAPUS
-*/
+function createProject(){
+let name=newProject.value.trim()
+if(!name || projects[name]) return
+projects[name]={
+kategori:{},
+diskon:0,
+margin:20,
+ppn:0
+}
+currentProject=name
+newProject.value=""
+save()
+renderProjects()
+render()
+}
 
+function deleteProject(){
+if(!currentProject) return
+delete projects[currentProject]
+currentProject=null
+save()
+renderProjects()
+render()
+}
+
+function renameProject(){
+let val=projectName.value.trim()
+if(!val || val===currentProject) return
+if(projects[val]) return alert("Nama sudah ada")
+projects[val]=projects[currentProject]
+delete projects[currentProject]
+currentProject=val
+save()
+renderProjects()
+}
+
+function selectProject(p){
+currentProject=p
+save()
+renderProjects()
+render()
+}
+
+function renderProjects(){
+projectList.innerHTML=""
+Object.keys(projects).forEach(p=>{
+projectList.innerHTML+=`
+<div class="project-item ${p===currentProject?"active":""}" onclick="selectProject('${p}')">${p}</div>
+`
+})
+}
+
+function smartAnimate(element, key, newValue, duration = 600){
+
+let start = previousTotals[key] || 0
+let end = newValue
+let startTime = null
+
+function easeOutCubic(t){
+return 1 - Math.pow(1 - t, 3)
+}
+
+function animation(currentTime){
+if(!startTime) startTime = currentTime
+let progress = (currentTime - startTime) / duration
+progress = Math.min(progress, 1)
+
+let eased = easeOutCubic(progress)
+let value = Math.floor(start + (end - start) * eased)
+
+element.innerText = "Rp " + formatRp(value)
+
+if(progress < 1){
+requestAnimationFrame(animation)
+} else {
+previousTotals[key] = newValue
+}
+}
+
+requestAnimationFrame(animation)
+
+/* Flash effect */
+element.classList.remove("flash-up","flash-down")
+void element.offsetWidth
+
+if(end > start){
+element.classList.add("flash-up")
+} else if(end < start){
+element.classList.add("flash-down")
+}
+}
+
+/* ================= KATEGORI ================= */
+function addKategori(){
+let k=newKategori.value.trim()
+if(!k || !currentProject) return
+projects[currentProject].kategori[k]=[]
+newKategori.value=""
+save()
+render()
+}
+
+function deleteKategori(k){
+delete projects[currentProject].kategori[k]
+save()
+render()
+}
+
+/* ================= ITEM ================= */
+function addItem(k){
+projects[currentProject].kategori[k].push({nama:"Item Baru",volume:1,harga:0})
+save()
+render()
+}
+
+function removeItem(k,i){
+projects[currentProject].kategori[k].splice(i,1)
+save()
+render()
+}
+
+function updateItem(k,i,key,val){
+if(key==="volume") projects[currentProject].kategori[k][i][key]=Number(val)||0
+else projects[currentProject].kategori[k][i][key]=val
+updateSummary()
+save()
+}
+
+function updateHarga(k,i,input){
+let number=parseNumber(input.value)
+projects[currentProject].kategori[k][i].harga=number
+input.value=formatRp(number)
+updateSummary()
+save()
+}
+
+function updateVolume(k,i,input){
+let val=Number(input.value)||0
+projects[currentProject].kategori[k][i].volume=val
+updateSubtotalCell(k,i)
+save()
+}
+
+function updateHargaRealtime(k,i,input){
+let number=parseNumber(input.value)
+projects[currentProject].kategori[k][i].harga=number
+input.value=formatRp(number)
+updateSubtotalCell(k,i)
+save()
+}
+
+function updateSubtotalCell(k,i){
+let item=projects[currentProject].kategori[k][i]
+let subtotal=item.volume*item.harga
+
+let cell=document.getElementById(`subtotal-${k}-${i}`)
+if(cell){
+cell.innerHTML="Rp "+formatRp(subtotal)
+}
+
+updateSummary()
+}
+
+function renderActiveTab(){
+let p = projects[currentProject]
+let tabContent = document.getElementById("tabContent")
+if(!activeTab || !p.kategori[activeTab]){
+tabContent.innerHTML = ""
+return
+}
+
+let k = activeTab
+let html = `
+<div class="card">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px">
+<h3 style="font-size:16px">${k}</h3>
+<button class="btn-danger" onclick="deleteKategori('${k}')">Hapus</button>
+</div>
+
+<div class="table-wrap">
+<table>
+<tr>
+<th>Nama</th>
+<th style="width:90px">Volume</th>
+<th style="width:140px">Harga</th>
+<th style="width:160px">Subtotal</th>
+<th style="width:60px"></th>
+</tr>
+`
+
+p.kategori[k].forEach((it,i)=>{
+html+=`
+<tr>
+<td>
+<input value="${it.nama}" 
+oninput="updateItem('${k}',${i},'nama',this.value)">
+</td>
+
+<td>
+<input type="number" value="${it.volume}" 
+oninput="updateVolume('${k}',${i},this)">
+</td>
+
+<td>
+<input value="${formatRp(it.harga)}" 
+oninput="updateHargaRealtime('${k}',${i},this)">
+</td>
+
+<td id="subtotal-${k}-${i}">
+Rp ${formatRp(it.volume*it.harga)}
+</td>
+
+<td>
+<button class="btn-danger" onclick="removeItem('${k}',${i})">X</button>
+</td>
+</tr>
+`
+})
+
+html+=`
+</table>
+<button class="btn-success" style="margin-top:12px" onclick="addItem('${k}')">+ Item</button>
+</div>
+</div>
+`
+
+tabContent.innerHTML = html
+}
+
+
+/* ================= RENDER ================= */
+function render(){
+if(!currentProject) return
+
+kategoriContainer.innerHTML = `
+<div class="shimmer"></div>
+<div class="shimmer"></div>
+`
+
+setTimeout(()=>{
+
+let p = projects[currentProject]
+
+projectName.value = currentProject
+diskon.value = p.diskon
+margin.value = p.margin
+ppn.value = p.ppn
+
+let kategoriKeys = Object.keys(p.kategori)
+
+/* reset activeTab jika invalid */
+if(!kategoriKeys.includes(activeTab)){
+activeTab = kategoriKeys[0] || null
+}
+
+/* render tab wrapper */
+kategoriContainer.innerHTML = `
+<div class="tab-wrapper">
+<div class="tab-nav" id="tabNav"></div>
+<div class="tab-content" id="tabContent"></div>
+</div>
+`
+
+let tabNav = document.getElementById("tabNav")
+
+/* render tab button dengan badge */
+kategoriKeys.forEach(k=>{
+let btn = document.createElement("div")
+btn.className = "tab-btn " + (k === activeTab ? "active" : "")
+btn.innerHTML = `
+<span>${k}</span>
+<span class="tab-badge">${p.kategori[k].length}</span>
+`
+
+btn.onclick = () => {
+activeTab = k
+
+document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"))
+btn.classList.add("active")
+
+renderActiveTab()
+}
+
+tabNav.appendChild(btn)
+})
+
+renderActiveTab()
+
+updateSummary()
+
+},400)
+}
 
 /* ================= SUMMARY ================= */
 
