@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RAB PRO 2026 - Commercial</title>
+<title>RAB PRO 2026 - DTSCRIPTID</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -612,24 +612,34 @@ Lihat Lebih Banyak
 <script>
 
 /* ================= DATA ================= */
+
 let projects = JSON.parse(localStorage.getItem("rab_pro_data") || "{}")
 let currentProject = localStorage.getItem("rab_pro_current") || null
 let activeTab = null
-let chartInstance=null
+let chartInstance = null
+
 let previousTotals = {
-subtotal: 0,
-diskon: 0,
-ppn: 0,
-grand: 0,
-profit: 0
+subtotal:0,
+diskon:0,
+ppn:0,
+grand:0,
+profit:0
 }
 
 let templateExpanded = false
 
-function toggleTemplate(){
+/* ================= SAVE ================= */
 
-let grid = document.getElementById("templateGrid")
-let toggle = document.querySelector(".template-toggle")
+function save(){
+localStorage.setItem("rab_pro_data",JSON.stringify(projects))
+localStorage.setItem("rab_pro_current",currentProject||"")
+}
+
+/* ================= TEMPLATE TOGGLE ================= */
+
+function toggleTemplate(){
+const grid = document.getElementById("templateGrid")
+const toggle = document.querySelector(".template-toggle")
 
 templateExpanded = !templateExpanded
 
@@ -641,6 +651,8 @@ grid.classList.add("collapsed")
 toggle.innerText = "Lihat Lebih Banyak"
 }
 }
+
+/* ================= ENTERPRISE STRUCTURE ================= */
 
 const enterpriseStructures = {
 
@@ -681,6 +693,8 @@ Cadangan:[
 }
 
 }
+
+/* ================= TEMPLATE RAB ================= */
 
 const aiTemplates = {
 
@@ -819,6 +833,8 @@ Marketing:[
 
 }
 
+/* ================= TEMPLATE GENERATOR ================= */
+
 function generateAITemplate(name){
 
 if(!aiTemplates[name]) return
@@ -827,59 +843,72 @@ projects[name] = {
 diskon:0,
 margin:20,
 ppn:11,
-kategori: JSON.parse(JSON.stringify(aiTemplates[name].kategori))
+kategori:JSON.parse(JSON.stringify(aiTemplates[name].kategori))
 }
 
 currentProject = name
 activeTab = null
 
+save()
 render()
-saveData()
+renderProjectList()
 }
 
-function save(){
-localStorage.setItem("rab_pro_data",JSON.stringify(projects))
-localStorage.setItem("rab_pro_current",currentProject||"")
-}
+/* ================= AI TEXT PARSER ================= */
 
 function extractBudget(text){
-let match = text.match(/(\d+)\s*(jt|juta|m)/i)
+const match = text.match(/(\d+)\s*(jt|juta|m)/i)
 if(!match) return null
-
-let num = parseInt(match[1])
-return num * 1000000
+return parseInt(match[1]) * 1000000
 }
 
 function detectProjectType(text){
 text = text.toLowerCase()
 
 if(text.includes("bengkel")) return "bengkel"
-if(text.includes("coffee") || text.includes("cafe")) return "coffee"
+if(text.includes("coffee")||text.includes("cafe")) return "coffee"
 if(text.includes("renovasi")) return "renovasi"
-if(text.includes("rumah")) return "rumah"
-if(text.includes("liburan") || text.includes("travel")) return "liburan"
-if(text.includes("laundry")) return "laundry"
-
-return "usaha"
+if(text.includes("rumah")) return "renovasi"
+return "coffee"
 }
+
+/* ================= DISTRIBUTE ================= */
+
+function distributeBudget(budget, structure){
+let result = {}
+
+Object.keys(structure).forEach(cat=>{
+result[cat] = structure[cat].map(item=>({
+nama:item.nama,
+volume:1,
+harga:Math.round(budget * item.percent)
+}))
+})
+
+return result
+}
+
+/* ================= AI GENERATOR ================= */
 
 function generateFromText(){
 
-let text = document.getElementById("aiPrompt").value
+const text = document.getElementById("aiPrompt").value
 if(!text) return
 
-let budget = extractBudget(text) || 100000000
-let type = detectProjectType(text)
+const budget = extractBudget(text) || 100000000
+const type = detectProjectType(text)
 
-document.getElementById("aiStatus").innerText = "AI Enterprise sedang menganalisa..."
+document.getElementById("aiStatus").innerText =
+"AI Enterprise sedang menganalisa..."
 
 setTimeout(()=>{
 
-let structure = enterpriseStructures[type] || enterpriseStructures["coffee"]
+const structure =
+enterpriseStructures[type] || enterpriseStructures["coffee"]
 
-let kategori = distributeBudget(budget, structure)
+const kategori = distributeBudget(budget, structure)
 
-let projectNameAI = "AI Enterprise - " + Date.now()
+const projectNameAI = "AI Enterprise - " + Date.now()
 
 projects[projectNameAI] = {
 diskon:0,
@@ -891,49 +920,37 @@ kategori:kategori
 currentProject = projectNameAI
 activeTab = null
 
+save()
 render()
-saveData()
+renderProjectList()
 
-calculateBEP(budget, type)
+calculateBEP(budget)
+showAIInsight(projects[projectNameAI])
 
-document.getElementById("aiStatus").innerText = "RAB Enterprise berhasil dibuat."
+document.getElementById("aiStatus").innerText =
+"RAB Enterprise berhasil dibuat."
 
-},900)
+},800)
 }
 
-function distributeBudget(budget, structure){
-
-let result = {}
-
-Object.keys(structure).forEach(cat=>{
-result[cat] = structure[cat].map(item=>{
-return {
-nama:item.nama,
-volume:item.volume || 1,
-harga: Math.round(budget * item.percent)
-}
-})
-})
-
-return result
-}
+/* ================= MARGIN ================= */
 
 function calculateSuggestedMargin(type){
-
 if(type==="coffee") return 35
 if(type==="bengkel") return 30
 if(type==="renovasi") return 25
-
 return 20
 }
 
-function calculateBEP(budget, type){
+/* ================= BEP ================= */
 
-let monthlyProfitEstimate = budget * 0.08
-let bepMonths = Math.ceil(budget / monthlyProfitEstimate)
-
-console.log("Estimasi BEP:", bepMonths, "bulan")
+function calculateBEP(budget){
+const monthlyProfitEstimate = budget * 0.08
+const bepMonths = Math.ceil(budget / monthlyProfitEstimate)
+console.log("Estimasi BEP:",bepMonths,"bulan")
 }
+
+/* ================= AI SCORE ================= */
 
 function calculateAIScore(project){
 
@@ -950,44 +967,35 @@ categoryTotals.push(catTotal)
 total += catTotal
 })
 
-/* Risk Buffer Check */
-if(!project.kategori["Cadangan"]){
-score -= 15
-}
+if(!project.kategori["Cadangan"]) score -= 15
+if(project.margin < 20) score -= 10
 
-/* Margin Check */
-if(project.margin < 20){
-score -= 10
-}
+const maxCat = Math.max(...categoryTotals)
+if(maxCat / total > 0.6) score -= 15
 
-/* Distribution Check */
-let maxCat = Math.max(...categoryTotals)
-if(maxCat / total > 0.6){
-score -= 15
-}
-
-/* Budget realism */
-if(total < 20000000){
-score -= 10
-}
+if(total < 20000000) score -= 10
 
 return Math.max(score,0)
 }
 
 function calculateRiskLevel(score){
-
 if(score >= 80) return "Rendah"
 if(score >= 60) return "Sedang"
 return "Tinggi"
 }
 
-let score = calculateAIScore(projects[projectNameAI])
-let risk = calculateRiskLevel(score)
+/* ================= INSIGHT UI ================= */
+
+function showAIInsight(project){
+
+const score = calculateAIScore(project)
+const risk = calculateRiskLevel(score)
 
 document.getElementById("aiInsight").innerHTML = `
 <strong>AI Feasibility Score:</strong> ${score}/100 <br>
 <strong>Risk Level:</strong> ${risk}
 `
+}
 
 /* ================= FORMAT ================= */
 function formatRp(val){
@@ -1381,6 +1389,8 @@ XLSX.writeFile(wb,currentProject+"_RAB.xlsx")
 }
 
 /* ================= INIT ================= */
+renderProjectList()
+if(currentProject) render()
 renderProjects()
 if(!currentProject && Object.keys(projects).length>0){
 currentProject=Object.keys(projects)[0]
