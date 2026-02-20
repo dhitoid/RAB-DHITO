@@ -501,6 +501,29 @@ margin-top:4px;
 letter-spacing:.5px;
 }
 
+/* ================= WATERMARK ================= */
+
+.watermark{
+position:fixed;
+bottom:20px;
+right:30px;
+font-size:11px;
+letter-spacing:2px;
+color:rgba(255,255,255,.06);
+pointer-events:none;
+user-select:none;
+z-index:1;
+}
+
+.watermark::after{
+content:"ENTERPRISE";
+display:block;
+font-size:9px;
+letter-spacing:3px;
+margin-top:4px;
+opacity:.4;
+}
+
 @keyframes flashUp{
 0%{color:#22c55e}
 100%{color:inherit}
