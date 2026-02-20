@@ -13,6 +13,7 @@ let projects = JSON.parse(localStorage.getItem("rab_pro_data") || "{}")
 let currentProject = localStorage.getItem("rab_pro_current") || null
 let activeTab = null
 let chartInstance = null
+let projectCollapsed = true
 
 let previousTotals = {
 subtotal:0,
@@ -960,25 +961,53 @@ render()
 
 function renderProjects(){
 
-projectList.innerHTML = ""
+  projectList.innerHTML = ""
 
-if(Object.keys(projects).length === 0){
-projectList.innerHTML = `
-<div style="opacity:.6;font-size:13px">
-Belum ada project
-</div>
-`
-return
+  let keys = Object.keys(projects)
+
+  // SEARCH FILTER
+  let search = document.getElementById("projectSearch")?.value?.toLowerCase() || ""
+  if(search){
+    keys = keys.filter(p => p.toLowerCase().includes(search))
+  }
+
+  if(keys.length === 0){
+    projectList.innerHTML = `
+      <div style="opacity:.6;font-size:13px">
+      Tidak ditemukan
+      </div>
+    `
+    document.getElementById("projectToggle").style.display = "none"
+    return
+  }
+
+  // COLLAPSE LOGIC
+  let visibleProjects = keys
+
+  if(projectCollapsed && keys.length > 3){
+    visibleProjects = keys.slice(0,3)
+    document.getElementById("projectToggle").style.display = "block"
+    document.getElementById("projectToggle").innerText = "Lihat Semua"
+  } else if(keys.length > 3){
+    document.getElementById("projectToggle").style.display = "block"
+    document.getElementById("projectToggle").innerText = "Sembunyikan"
+  } else {
+    document.getElementById("projectToggle").style.display = "none"
+  }
+
+  visibleProjects.forEach(p=>{
+    let div = document.createElement("div")
+    div.className = "project-item " + (p===currentProject?"active":"")
+    div.innerText = p
+    div.onclick = ()=>selectProject(p)
+    projectList.appendChild(div)
+  })
+
 }
 
-Object.keys(projects).forEach(p=>{
-let div = document.createElement("div")
-div.className = "project-item " + (p===currentProject?"active":"")
-div.innerText = p
-div.onclick = ()=>selectProject(p)
-projectList.appendChild(div)
-})
-
+function toggleProjectCollapse(){
+  projectCollapsed = !projectCollapsed
+  renderProjects()
 }
 
 function smartAnimate(element, key, newValue, duration = 600){
