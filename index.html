@@ -29,6 +29,21 @@ Enterprise Edition • v2.0.0 • DTSCRIPTID
 <!-- SIDEBAR -->
 <div class="sidebar">
 <h3 style="margin-bottom:10px">Projects</h3>
+<input 
+  type="text" 
+  id="projectSearch" 
+  placeholder="Cari project..." 
+  oninput="renderProjects()"
+  style="margin-bottom:12px"
+>
+
+<div id="projectList"></div>
+
+<div id="projectToggle" 
+     style="margin-top:10px;font-size:12px;opacity:.6;cursor:pointer;display:none"
+     onclick="toggleProjectCollapse()">
+Lihat Semua
+</div>
 <div id="projectList"></div>
 <div class="template-box">
 <div class="template-label">Template RAB</div>
