@@ -30,17 +30,22 @@ document.addEventListener("DOMContentLoaded", function(){
 
   const island = document.getElementById("dynamicIsland");
 
-  window.addEventListener("scroll",()=>{
-    if(window.scrollY > 40){
-      island.style.width = "65%";
-      island.style.padding = "10px 16px";
-      island.style.borderRadius = "40px";
-    }else{
-      island.style.width = "88%";
-      island.style.padding = "14px 18px";
-      island.style.borderRadius = "28px";
-    }
-  });
+window.addEventListener("scroll",()=>{
+  const island = document.getElementById("dynamicIsland")
+  if(!island) return
+
+  if(window.scrollY > 40){
+    island.style.width = "70%"
+    island.style.padding = "10px 16px"
+    island.style.borderRadius = "40px"
+    island.style.transform = "translateX(-50%) scale(.96)"
+  }else{
+    island.style.width = "88%"
+    island.style.padding = "16px 20px"
+    island.style.borderRadius = "32px"
+    island.style.transform = "translateX(-50%) scale(1)"
+  }
+});
 
 });
 
