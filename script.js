@@ -912,19 +912,32 @@ return Number(val.replace(/\D/g,""))||0
 
 /* ================= PROJECT ================= */
 function createProject(){
-let name=newProject.value.trim()
-if(!name || projects[name]) return
-projects[name]={
-kategori:{},
-diskon:0,
-margin:20,
-ppn:0
-}
-currentProject=name
-newProject.value=""
-save()
-renderProjects()
-render()
+  const name = newProject.value.trim()
+  if(!name) return
+
+  if(projects[name]){
+    alert("Project sudah ada")
+    return
+  }
+
+  projects[name] = {
+    kategori:{},
+    diskon:0,
+    margin:0,
+    ppn:0,
+
+    // 🔥 metadata baru
+    createdAt: Date.now(),
+    favorite:false,
+    pinned:false
+  }
+
+  currentProject = name
+  newProject.value = ""
+
+  save()
+  renderProjects()
+  selectProject(name)
 }
 
 function deleteProject(){
@@ -964,13 +977,27 @@ function toggleProjectCollapse(){
   renderProjects()
 }
 
+function toggleFavorite(e,name){
+  e.stopPropagation()
+  projects[name].favorite = !projects[name].favorite
+  save()
+  renderProjects()
+}
+
+function togglePin(e,name){
+  e.stopPropagation()
+  projects[name].pinned = !projects[name].pinned
+  save()
+  renderProjects()
+}
+
 function renderProjects(){
 
   const projectList = document.getElementById("projectList")
   const toggleBtn = document.getElementById("projectToggle")
+  const sortType = document.getElementById("projectSort")?.value || "newest"
 
   if(!projectList) return
-
   projectList.innerHTML = ""
 
   let keys = Object.keys(projects)
@@ -979,6 +1006,37 @@ function renderProjects(){
   if(search){
     keys = keys.filter(p => p.toLowerCase().includes(search))
   }
+
+  // 🔥 Sorting Logic
+  keys.sort((a,b)=>{
+    let A = projects[a]
+    let B = projects[b]
+
+    // fallback kalau project lama belum punya metadata
+    if(!A.createdAt) A.createdAt = Date.now()
+    if(!B.createdAt) B.createdAt = Date.now()
+    if(A.favorite === undefined) A.favorite = false
+    if(B.favorite === undefined) B.favorite = false
+    if(A.pinned === undefined) A.pinned = false
+    if(B.pinned === undefined) B.pinned = false
+
+    // 1️⃣ PINNED PALING ATAS
+    if(A.pinned !== B.pinned){
+      return B.pinned - A.pinned
+    }
+
+    // 2️⃣ FAVORITE
+    if(A.favorite !== B.favorite){
+      return B.favorite - A.favorite
+    }
+
+    // 3️⃣ SORT BY DATE
+    if(sortType === "newest"){
+      return B.createdAt - A.createdAt
+    } else {
+      return A.createdAt - B.createdAt
+    }
+  })
 
   if(keys.length === 0){
     projectList.innerHTML = `
@@ -998,21 +1056,31 @@ function renderProjects(){
       toggleBtn.style.display = "block"
       toggleBtn.innerText = "Lihat Semua"
     }
-  } 
-  else if(keys.length > 3){
+  } else if(keys.length > 3){
     if(toggleBtn){
       toggleBtn.style.display = "block"
       toggleBtn.innerText = "Sembunyikan"
     }
-  } 
-  else {
+  } else {
     if(toggleBtn) toggleBtn.style.display = "none"
   }
 
   visibleProjects.forEach(p=>{
     let div = document.createElement("div")
     div.className = "project-item " + (p===currentProject?"active":"")
-    div.innerText = p
+
+    div.innerHTML = `
+      <span>${p}</span>
+      <div class="project-actions">
+        <span onclick="toggleFavorite(event,'${p}')">
+          ${projects[p].favorite ? "⭐" : "☆"}
+        </span>
+        <span onclick="togglePin(event,'${p}')">
+          ${projects[p].pinned ? "📌" : "📍"}
+        </span>
+      </div>
+    `
+
     div.onclick = ()=>selectProject(p)
     projectList.appendChild(div)
   })
