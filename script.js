@@ -26,17 +26,19 @@ profit:0
 
 let templateExpanded = false
 
-window.addEventListener("scroll",()=>{
-const island = document.querySelector(".dynamic-island")
+const island = document.getElementById("dynamicIsland");
 
-if(window.scrollY > 60){
-  island.style.padding = "10px 22px"
-  island.style.transform = "scale(.95)"
-}else{
-  island.style.padding = "14px 28px"
-  island.style.transform = "scale(1)"
-}
-})
+window.addEventListener("scroll",()=>{
+  if(window.scrollY > 40){
+    island.style.width = "65%";
+    island.style.padding = "10px 16px";
+    island.style.borderRadius = "40px";
+  }else{
+    island.style.width = "88%";
+    island.style.padding = "14px 18px";
+    island.style.borderRadius = "28px";
+  }
+});
 
 /* ================= SAVE ================= */
 
