@@ -115,8 +115,6 @@ transform:translateX(3px);
 
 /* ================= MAIN ================= */
 .main{
-position:relative;
-z-index:1;
 flex:1;
 }
 
