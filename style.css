@@ -791,6 +791,12 @@ font-weight:600;
   opacity:.6;
 }
 
+.island-risk{
+  box-shadow:
+  0 0 30px rgba(239,68,68,.6),
+  0 10px 30px rgba(0,0,0,.4);
+}
+
 @keyframes flashUp{
 0%{color:#22c55e}
 100%{color:inherit}
