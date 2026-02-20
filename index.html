@@ -36,10 +36,18 @@ Enterprise Edition • v2.0.0 • DTSCRIPTID
   oninput="renderProjects()"
   style="margin-bottom:12px"
 >
-<select id="projectSort" onchange="renderProjects()" style="margin-bottom:10px">
-  <option value="newest">Terbaru</option>
-  <option value="oldest">Terlama</option>
-</select>
+<div class="sort-wrapper">
+
+  <div class="sort-button" onclick="toggleSortMenu()">
+    ⬍
+  </div>
+
+  <div class="sort-dropdown" id="sortDropdown">
+    <div onclick="setSort('newest')">Terbaru</div>
+    <div onclick="setSort('oldest')">Terlama</div>
+  </div>
+
+</div>
 <div id="projectList"></div>
 
 <div id="projectToggle" 
