@@ -822,6 +822,26 @@ font-weight:600;
     0 0 40px rgba(239,68,68,.25);
 }
 
+/* ==== ISLAND NOTIFICATION BOUNCE ==== */
+@keyframes islandBounce {
+  0%   { transform: translateX(-50%) scale(1); }
+  30%  { transform: translateX(-50%) scale(1.05); }
+  60%  { transform: translateX(-50%) scale(0.98); }
+  100% { transform: translateX(-50%) scale(1); }
+}
+
+@keyframes islandGlowPulse {
+  0%   { box-shadow: 0 20px 60px rgba(0,0,0,.55); }
+  50%  { box-shadow: 0 20px 60px rgba(0,0,0,.6),
+                      0 0 40px rgba(56,189,248,.35); }
+  100% { box-shadow: 0 20px 60px rgba(0,0,0,.55); }
+}
+
+.island-bounce{
+  animation: islandBounce .6s cubic-bezier(.34,1.56,.64,1),
+             islandGlowPulse .8s ease;
+}
+
 @keyframes flashUp{
 0%{color:#22c55e}
 100%{color:inherit}
