@@ -26,6 +26,18 @@ profit:0
 
 let templateExpanded = false
 
+window.addEventListener("scroll",()=>{
+const island = document.querySelector(".dynamic-island")
+
+if(window.scrollY > 60){
+  island.style.padding = "10px 22px"
+  island.style.transform = "scale(.95)"
+}else{
+  island.style.padding = "14px 28px"
+  island.style.transform = "scale(1)"
+}
+})
+
 /* ================= SAVE ================= */
 
 function save(){
