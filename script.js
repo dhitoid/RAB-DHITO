@@ -14,6 +14,7 @@ let currentProject = localStorage.getItem("rab_pro_current") || null
 let activeTab = null
 let chartInstance = null
 let projectCollapsed = true
+let projectSortType = "newest"
 
 let previousTotals = {
 subtotal:0,
@@ -991,11 +992,31 @@ function togglePin(e,name){
   renderProjects()
 }
 
+function toggleSortMenu(){
+  const menu = document.getElementById("sortDropdown")
+  menu.classList.toggle("show")
+}
+
+function setSort(type){
+  projectSortType = type
+  renderProjects()
+
+  document.getElementById("sortDropdown").classList.remove("show")
+}
+
+// auto close if click outside
+document.addEventListener("click", function(e){
+  const wrapper = document.querySelector(".sort-wrapper")
+  if(!wrapper.contains(e.target)){
+    document.getElementById("sortDropdown")?.classList.remove("show")
+  }
+})
+
 function renderProjects(){
 
   const projectList = document.getElementById("projectList")
   const toggleBtn = document.getElementById("projectToggle")
-  const sortType = document.getElementById("projectSort")?.value || "newest"
+  const sortType = projectSortType
 
   if(!projectList) return
   projectList.innerHTML = ""
