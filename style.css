@@ -506,6 +506,10 @@ max-height:280px;
 background:transparent;
 }
 
+.card canvas{
+width:100% !important;
+}
+
 .enterprise-badge{
 font-size:12px;
 opacity:.7;
