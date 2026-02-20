@@ -557,20 +557,29 @@ transform:scale(1.1);
 .sort-wrapper{
 position:relative;
 display:flex;
-justify-content:flex-end;
-margin-bottom:10px;
+align-items:center;
+justify-content:space-between;
+margin-bottom:12px;
+gap:8px;
+}
+
+.sort-label{
+font-size:12px;
+opacity:.6;
+letter-spacing:.3px;
+white-space:nowrap;
 }
 
 .sort-button{
-width:32px;
-height:32px;
-border-radius:12px;
+width:30px;
+height:30px;
+border-radius:10px;
 display:flex;
 align-items:center;
 justify-content:center;
 cursor:pointer;
 
-background:rgba(255,255,255,.15);
+background:rgba(255,255,255,.12);
 backdrop-filter:blur(12px);
 -webkit-backdrop-filter:blur(12px);
 
