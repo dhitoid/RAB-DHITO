@@ -7,6 +7,12 @@ const APP_EDITION = "Enterprise Edition"
 const APP_VERSION = "v2.0.0"
 const APP_BRAND = "DTSCRIPTID"
 
+window.addEventListener("scroll",()=>{
+const header = document.querySelector(".liquid-v2")
+const y = window.scrollY * 0.1
+header.style.transform = `translateY(${y}px)`
+})
+
 /* ================= DATA ================= */
 
 let projects = JSON.parse(localStorage.getItem("rab_pro_data") || "{}")
