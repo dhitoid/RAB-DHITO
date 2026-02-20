@@ -631,6 +631,11 @@ transition:.2s;
 background:rgba(255,255,255,.2);
 }
 
+.active-sort{
+background:rgba(255,255,255,.25);
+font-weight:600;
+}
+
 @keyframes flashUp{
 0%{color:#22c55e}
 100%{color:inherit}
