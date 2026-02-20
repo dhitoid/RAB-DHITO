@@ -633,7 +633,7 @@ transform:scale(1.1);
 
 .sort-wrapper{
 position:relative;
-z-index:200;
+z-index:1000;
 display:flex;
 align-items:center;
 justify-content:space-between;
@@ -671,9 +671,9 @@ background:rgba(255,255,255,.25);
 
 .sort-dropdown{
 position:absolute;
-z-index:999;
 top:42px;
 right:0;
+
 width:140px;
 border-radius:16px;
 padding:8px;
@@ -683,13 +683,14 @@ backdrop-filter:blur(20px);
 -webkit-backdrop-filter:blur(20px);
 
 border:1px solid rgba(255,255,255,.2);
-box-shadow:0 10px 30px rgba(0,0,0,.15);
+box-shadow:0 20px 60px rgba(0,0,0,.5);
 
 opacity:0;
 transform:translateY(-5px) scale(.98);
 pointer-events:none;
 transition:.25s ease;
-z-index:100;
+
+z-index:1000; 
 }
 
 .sort-dropdown.show{
