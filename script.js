@@ -1002,15 +1002,17 @@ function setSort(type){
   renderProjects()
 
   document.getElementById("sortDropdown").classList.remove("show")
-}
 
-// auto close if click outside
-document.addEventListener("click", function(e){
-  const wrapper = document.querySelector(".sort-wrapper")
-  if(!wrapper.contains(e.target)){
-    document.getElementById("sortDropdown")?.classList.remove("show")
+  // highlight active
+  document.getElementById("sortNewest")?.classList.remove("active-sort")
+  document.getElementById("sortOldest")?.classList.remove("active-sort")
+
+  if(type === "newest"){
+    document.getElementById("sortNewest")?.classList.add("active-sort")
+  } else {
+    document.getElementById("sortOldest")?.classList.add("active-sort")
   }
-})
+}
 
 function renderProjects(){
 
