@@ -1301,6 +1301,16 @@ insightBox.innerHTML = content
 insightBox.classList.remove("ai-fade-out")
 insightBox.classList.add("ai-fade-in")
 
+// ===== SMART KPI UPDATE =====
+document.getElementById("kpiTotal").innerText = formatRupiah(total);
+document.getElementById("kpiReal").innerText = formatRupiah(totalReal || 0);
+
+let diff = total - (totalReal || 0);
+document.getElementById("kpiDiff").innerText = formatRupiah(diff);
+
+let marginPercent = total ? ((diff / total) * 100).toFixed(1) : 0;
+document.getElementById("kpiMargin").innerText = marginPercent + "%";
+
 },150)
 
 }
