@@ -499,7 +499,6 @@ type: detectProjectType(realName.toLowerCase()), // tambahkan ini
 diskon:0,
 margin:25,
 ppn:11,
-history:[],
 kategori:JSON.parse(JSON.stringify(aiTemplates[realName].kategori))
 }
 
@@ -719,7 +718,6 @@ type:type,
 diskon:0,
 margin:calculateSuggestedMargin(type, scale),
 ppn:11,
-history:[],
 kategori:kategori
 }
 
@@ -920,8 +918,7 @@ projects[name]={
 kategori:{},
 diskon:0,
 margin:20,
-ppn:0,
-history:[]
+ppn:0
 }
 currentProject=name
 newProject.value=""
@@ -1284,7 +1281,6 @@ smartAnimate(document.getElementById("sum-grand"), "grand", grand, 700)
 smartAnimate(document.getElementById("sum-profit"), "profit", profit, 700)
 
 renderChart(subtotal,profit)
-renderHistoryChart()
 const insightBox = document.getElementById("aiInsight")
 
 if(insightBox){
@@ -1308,78 +1304,7 @@ insightBox.classList.add("ai-fade-in")
 },150)
 
 }
-saveSnapshot(currentProject, subtotal, grand, profit)
-}
-
-/* ================= Snapshot ================= */
-
-function saveSnapshot(projectName, subtotal, grand, profit){
-
-const project = projects[projectName]
-if(!project) return
-if(!project.history) project.history = []
-
-const last = project.history[project.history.length - 1]
-
-if(last && 
-last.subtotal === subtotal &&
-last.grand === grand &&
-last.profit === profit){
-return
-}
-
-project.history.push({
-date: Date.now(),
-subtotal,
-grand,
-profit
-})
-
-if(project.history.length > 50){
-project.history.shift()
-}
-
 save()
-}
-
-/* ================= Render History Chart ================= */
-
-function renderHistoryChart(){
-
-const canvas = document.getElementById("historyChart")
-if(!canvas || !currentProject) return
-if(typeof Chart === "undefined") return
-
-if(historyChartInstance){
-historyChartInstance.destroy()
-}
-
-const history = projects[currentProject].history || []
-
-const labels = history.map(h=>{
-const d = new Date(h.date)
-return d.getHours()+":"+d.getMinutes()
-})
-
-const profits = history.map(h=>h.profit)
-
-historyChartInstance = new Chart(canvas,{
-type:"line",
-data:{
-labels,
-datasets:[{
-label:"Profit",
-data:profits,
-tension:0.4,
-fill:true
-}]
-},
-options:{
-responsive:true,
-maintainAspectRatio:false
-}
-})
-
 }
 
 /* ================= CHART ================= */
