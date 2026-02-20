@@ -56,6 +56,74 @@ function updateProjectCount(){
   }
 }
 
+function updateGlobalDashboard(){
+
+  const statsEl = document.getElementById("islandStats")
+  if(!statsEl) return
+
+  const keys = Object.keys(projects)
+
+  if(keys.length === 0){
+    statsEl.innerText = "No Projects"
+    return
+  }
+
+  let totalPortfolio = 0
+  let totalProfit = 0
+
+  keys.forEach(name=>{
+    const p = projects[name]
+    if(!p.kategori) return
+
+    let subtotal = 0
+    Object.values(p.kategori).forEach(arr=>{
+      arr.forEach(it=>{
+        subtotal += it.volume * it.harga
+      })
+    })
+
+    const margin = p.margin || 0
+    const profit = subtotal * (margin/100)
+
+    totalPortfolio += subtotal
+    totalProfit += profit
+  })
+
+  statsEl.innerText =
+    `${keys.length} Projects • Rp ${formatRp(totalPortfolio)} Portfolio • Rp ${formatRp(totalProfit)} Profit`
+}
+
+function updateIslandWarning(){
+
+  const island = document.getElementById("dynamicIsland")
+  if(!island) return
+
+  let riskCount = 0
+
+  Object.values(projects).forEach(p=>{
+
+    if(!p.kategori) return
+
+    let subtotal = 0
+    Object.values(p.kategori).forEach(arr=>{
+      arr.forEach(it=>{
+        subtotal += it.volume * it.harga
+      })
+    })
+
+    if(p.margin > 50) riskCount++
+    if(!p.kategori["Cadangan"]) riskCount++
+    if(subtotal < 10000000) riskCount++
+
+  })
+
+  island.classList.remove("island-risk")
+
+  if(riskCount > 0){
+    island.classList.add("island-risk")
+  }
+}
+
 function updateIslandStatus(){
   const island = document.getElementById("dynamicIsland")
   if(!island) return
@@ -1067,6 +1135,8 @@ function setSort(type){
 function renderProjects(){
 
   updateProjectCount()
+  updateGlobalDashboard()
+  updateIslandWarning()
   updateIslandStatus()
   
   const projectList = document.getElementById("projectList")
@@ -1157,7 +1227,30 @@ function renderProjects(){
       </div>
     `
 
-    div.onclick = ()=>selectProject(p)
+    let startX = 0
+
+div.addEventListener("touchstart",(e)=>{
+  startX = e.touches[0].clientX
+})
+
+div.addEventListener("touchend",(e)=>{
+  let endX = e.changedTouches[0].clientX
+  let diff = endX - startX
+
+  if(diff > 80){
+    projects[p].favorite = !projects[p].favorite
+    save()
+    renderProjects()
+  }
+
+  if(diff < -80){
+    projects[p].pinned = !projects[p].pinned
+    save()
+    renderProjects()
+  }
+})
+
+div.onclick = ()=>selectProject(p)
     projectList.appendChild(div)
   })
 }
