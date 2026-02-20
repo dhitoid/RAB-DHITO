@@ -1312,18 +1312,92 @@ chartInstance.destroy()
 chartInstance = null
 }
 
-chartInstance = new Chart(canvas,{
+const ctx = canvas.getContext("2d")
+
+/* ===== Gradient Modern ===== */
+const gradBiaya = ctx.createLinearGradient(0,0,0,300)
+gradBiaya.addColorStop(0,"#6366f1")
+gradBiaya.addColorStop(1,"#4f46e5")
+
+const gradProfit = ctx.createLinearGradient(0,0,0,300)
+gradProfit.addColorStop(0,"#22c55e")
+gradProfit.addColorStop(1,"#16a34a")
+
+/* ===== Center Text Plugin ===== */
+const centerTextPlugin = {
+id:"centerText",
+beforeDraw(chart){
+const {width} = chart
+const {height} = chart
+const ctx = chart.ctx
+ctx.restore()
+
+const grand = total + profit
+const percent = grand > 0 ? ((profit/grand)*100).toFixed(1) : 0
+
+ctx.font = "600 16px Inter, sans-serif"
+ctx.fillStyle = "#111"
+ctx.textAlign = "center"
+ctx.fillText("TOTAL", width/2, height/2 - 10)
+
+ctx.font = "700 18px Inter, sans-serif"
+ctx.fillStyle = "#22c55e"
+ctx.fillText(percent + "%", width/2, height/2 + 15)
+
+ctx.save()
+}
+}
+
+chartInstance = new Chart(ctx,{
 type:"doughnut",
 data:{
 labels:["Biaya","Profit"],
 datasets:[{
-data:[total,profit]
+data:[total,profit],
+backgroundColor:[gradBiaya,gradProfit],
+borderWidth:0,
+hoverOffset:8
 }]
 },
 options:{
 responsive:true,
-maintainAspectRatio:false
+maintainAspectRatio:false,
+cutout:"68%",
+animation:{
+animateRotate:true,
+duration:900,
+easing:"easeOutQuart"
+},
+plugins:{
+legend:{
+position:"bottom",
+labels:{
+usePointStyle:true,
+pointStyle:"circle",
+padding:20,
+font:{
+family:"Inter",
+size:12,
+weight:"600"
 }
+}
+},
+tooltip:{
+backgroundColor:"#111827",
+titleColor:"#fff",
+bodyColor:"#fff",
+padding:12,
+cornerRadius:10,
+displayColors:false,
+callbacks:{
+label:function(context){
+return context.label + ": Rp " + context.raw.toLocaleString("id-ID")
+}
+}
+}
+}
+},
+plugins:[centerTextPlugin]
 })
 
 }
