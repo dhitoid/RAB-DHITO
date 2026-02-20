@@ -1284,7 +1284,6 @@ smartAnimate(document.getElementById("sum-grand"), "grand", grand, 700)
 smartAnimate(document.getElementById("sum-profit"), "profit", profit, 700)
 
 renderChart(subtotal,profit)
-saveSnapshot(currentProject, subtotal, grand, profit)
 renderHistoryChart()
 const insightBox = document.getElementById("aiInsight")
 
@@ -1310,6 +1309,7 @@ insightBox.classList.add("ai-fade-in")
 
 }
 save()
+saveSnapshot(currentProject, subtotal, grand, profit)
 }
 
 /* ================= Snapshot ================= */
