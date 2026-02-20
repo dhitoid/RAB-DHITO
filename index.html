@@ -36,7 +36,10 @@ Enterprise Edition • v2.0.0 • DTSCRIPTID
   oninput="renderProjects()"
   style="margin-bottom:12px"
 >
-
+<select id="projectSort" onchange="renderProjects()" style="margin-bottom:10px">
+  <option value="newest">Terbaru</option>
+  <option value="oldest">Terlama</option>
+</select>
 <div id="projectList"></div>
 
 <div id="projectToggle" 
