@@ -13,7 +13,6 @@ let projects = JSON.parse(localStorage.getItem("rab_pro_data") || "{}")
 let currentProject = localStorage.getItem("rab_pro_current") || null
 let activeTab = null
 let chartInstance = null
-let historyChartInstance = null
 
 let previousTotals = {
 subtotal:0,
