@@ -1308,7 +1308,6 @@ insightBox.classList.add("ai-fade-in")
 },150)
 
 }
-save()
 saveSnapshot(currentProject, subtotal, grand, profit)
 }
 
@@ -1318,8 +1317,16 @@ function saveSnapshot(projectName, subtotal, grand, profit){
 
 const project = projects[projectName]
 if(!project) return
-
 if(!project.history) project.history = []
+
+const last = project.history[project.history.length - 1]
+
+if(last && 
+last.subtotal === subtotal &&
+last.grand === grand &&
+last.profit === profit){
+return
+}
 
 project.history.push({
 date: Date.now(),
@@ -1328,7 +1335,6 @@ grand,
 profit
 })
 
-// Batasi max 50 snapshot biar tidak berat
 if(project.history.length > 50){
 project.history.shift()
 }
