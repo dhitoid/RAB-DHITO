@@ -490,20 +490,18 @@ transition: all 0.2s ease;
 }
 
 .card{
-background:linear-gradient(145deg,#0f172a,#1e293b);
+background:linear-gradient(145deg,#ffffff,#f3f4f6);
 border-radius:20px;
 padding:20px;
 box-shadow:
-0 20px 40px rgba(0,0,0,.4),
-inset 0 1px 0 rgba(255,255,255,.05);
+0 10px 25px rgba(0,0,0,.06),
+inset 0 1px 0 rgba(255,255,255,.6);
 height:320px;
 position:relative;
-color:#e2e8f0;
 }
 
 canvas{
 max-height:280px;
-background:transparent;
 }
 
 .enterprise-badge{
