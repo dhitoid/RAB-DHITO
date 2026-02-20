@@ -966,11 +966,15 @@ function toggleProjectCollapse(){
 
 function renderProjects(){
 
+  const projectList = document.getElementById("projectList")
+  const toggleBtn = document.getElementById("projectToggle")
+
+  if(!projectList) return
+
   projectList.innerHTML = ""
 
   let keys = Object.keys(projects)
 
-  // SEARCH FILTER
   let search = document.getElementById("projectSearch")?.value?.toLowerCase() || ""
   if(search){
     keys = keys.filter(p => p.toLowerCase().includes(search))
@@ -982,22 +986,27 @@ function renderProjects(){
       Tidak ditemukan
       </div>
     `
-    document.getElementById("projectToggle").style.display = "none"
+    if(toggleBtn) toggleBtn.style.display = "none"
     return
   }
 
-  // COLLAPSE LOGIC
   let visibleProjects = keys
 
   if(projectCollapsed && keys.length > 3){
     visibleProjects = keys.slice(0,3)
-    document.getElementById("projectToggle").style.display = "block"
-    document.getElementById("projectToggle").innerText = "Lihat Semua"
-  } else if(keys.length > 3){
-    document.getElementById("projectToggle").style.display = "block"
-    document.getElementById("projectToggle").innerText = "Sembunyikan"
-  } else {
-    document.getElementById("projectToggle").style.display = "none"
+    if(toggleBtn){
+      toggleBtn.style.display = "block"
+      toggleBtn.innerText = "Lihat Semua"
+    }
+  } 
+  else if(keys.length > 3){
+    if(toggleBtn){
+      toggleBtn.style.display = "block"
+      toggleBtn.innerText = "Sembunyikan"
+    }
+  } 
+  else {
+    if(toggleBtn) toggleBtn.style.display = "none"
   }
 
   visibleProjects.forEach(p=>{
@@ -1007,7 +1016,6 @@ function renderProjects(){
     div.onclick = ()=>selectProject(p)
     projectList.appendChild(div)
   })
-
 }
 
 function smartAnimate(element, key, newValue, duration = 600){
