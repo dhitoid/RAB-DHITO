@@ -124,9 +124,10 @@ function updateIslandWarning(){
 
   island.classList.remove("island-risk")
 
-  if(riskCount > 0){
-    island.classList.add("island-risk")
-  }
+ if(riskCount > 0){
+   island.classList.add("island-risk")
+   triggerIslandBounce()
+ }
 }
 
 function updateIslandStatus(){
@@ -147,6 +148,24 @@ function updateIslandStatus(){
   } else if(hasFavorite){
     island.classList.add("island-favorite")
   }
+}
+
+function triggerIslandBounce(){
+
+  const island = document.getElementById("dynamicIsland")
+  if(!island) return
+
+  island.classList.remove("island-bounce")
+
+  // Force reflow supaya animasi bisa dipicu ulang
+  void island.offsetWidth
+
+  island.classList.add("island-bounce")
+
+  setTimeout(()=>{
+    island.classList.remove("island-bounce")
+  },800)
+
 }
 
 /* ================= SAVE ================= */
@@ -1062,6 +1081,7 @@ function createProject(){
   save()
   renderProjects()
   selectProject(name)
+  triggerIslandBounce()
 }
 
 function deleteProject(){
