@@ -528,6 +528,32 @@ opacity:.4;
 transition:.25s;
 }
 
+.project-item{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:8px 10px;
+border-radius:10px;
+cursor:pointer;
+transition:.2s;
+}
+
+.project-item:hover{
+background:rgba(0,0,0,.05);
+}
+
+.project-actions span{
+margin-left:8px;
+cursor:pointer;
+opacity:.7;
+transition:.2s;
+}
+
+.project-actions span:hover{
+opacity:1;
+transform:scale(1.1);
+}
+
 @keyframes flashUp{
 0%{color:#22c55e}
 100%{color:inherit}
