@@ -44,6 +44,7 @@ color:#fff;
 
 /* ================= LAYOUT ================= */
 .wrapper{
+overflow:visible;
 display:flex;
 max-width:1700px;
 margin:auto;
@@ -114,6 +115,8 @@ transform:translateX(3px);
 
 /* ================= MAIN ================= */
 .main{
+position:relative;
+z-index:1;
 flex:1;
 }
 
