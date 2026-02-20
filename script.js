@@ -959,6 +959,11 @@ renderProjects()
 render()
 }
 
+function toggleProjectCollapse(){
+  projectCollapsed = !projectCollapsed
+  renderProjects()
+}
+
 function renderProjects(){
 
   projectList.innerHTML = ""
@@ -1003,11 +1008,6 @@ function renderProjects(){
     projectList.appendChild(div)
   })
 
-}
-
-function toggleProjectCollapse(){
-  projectCollapsed = !projectCollapsed
-  renderProjects()
 }
 
 function smartAnimate(element, key, newValue, duration = 600){
