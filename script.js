@@ -1226,6 +1226,7 @@ updateSummary()
 }
 
 /* ================= SUMMARY ================= */
+
 function updateSummary(){
 if(!currentProject) return
 let p=projects[currentProject]
