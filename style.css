@@ -15,7 +15,7 @@ background:
 radial-gradient(circle at 20% 10%, rgba(14,165,233,.15), transparent 40%),
 radial-gradient(circle at 80% 90%, rgba(34,197,94,.12), transparent 40%),
 linear-gradient(135deg,#0b1220,#0f172a);
-
+padding-top:120px; /* ruang untuk island */
 color:#e5e7eb;
 min-height:100vh;
 overflow-x:hidden;
@@ -720,73 +720,63 @@ background:rgba(255,255,255,.25);
 font-weight:600;
 }
 
-/* ================= DYNAMIC ISLAND HEADER ================= */
-
-.island-wrap{
-position:sticky;
-top:20px;
-z-index:200;
-display:flex;
-justify-content:center;
-pointer-events:none; /* biar island aja yg bisa di klik */
-}
-
+/* ==== DYNAMIC ISLAND ==== */
 .dynamic-island{
-pointer-events:auto;
+  position:fixed;
+  top:18px;
+  left:50%;
+  transform:translateX(-50%);
+  width:88%;
+  max-width:420px;
+  z-index:9999;
 
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:30px;
+  background:rgba(10,20,40,0.75);
+  backdrop-filter:blur(25px);
+  -webkit-backdrop-filter:blur(25px);
 
-padding:14px 28px;
-min-width:340px;
-max-width:800px;
-width:fit-content;
+  border-radius:28px;
+  padding:14px 18px;
 
-border-radius:999px;
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.3),
+    inset 0 1px rgba(255,255,255,0.08);
 
-background:rgba(15,23,42,.75);
-backdrop-filter:blur(30px);
--webkit-backdrop-filter:blur(30px);
-
-border:1px solid rgba(255,255,255,.08);
-
-box-shadow:
-0 20px 60px rgba(0,0,0,.6),
-inset 0 1px 0 rgba(255,255,255,.08);
-
-transition:.35s cubic-bezier(.2,.8,.2,1);
+  transition:all .4s cubic-bezier(.4,0,.2,1);
 }
 
-/* Hover subtle grow */
-.dynamic-island:hover{
-transform:translateY(-2px) scale(1.02);
+/* Konten */
+.island-content{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
 
-/* Left */
-.island-left h1{
-font-size:15px;
-font-weight:600;
-letter-spacing:.6px;
+.island-title{
+  font-weight:600;
+  font-size:15px;
+  letter-spacing:.5px;
 }
 
-/* Center badge */
-.enterprise-badge{
-font-size:11px;
-letter-spacing:1px;
-padding:6px 12px;
-border-radius:999px;
-
-background:linear-gradient(135deg,#0ea5e9,#7c3aed);
-color:#fff;
+.island-sub{
+  font-size:11px;
+  opacity:.6;
+  margin-top:2px;
 }
 
-/* Right button */
-.island-right button{
-padding:8px 16px;
-border-radius:999px;
-font-size:12px;
+.island-btn{
+  background:linear-gradient(135deg,#1da1f2,#38bdf8);
+  border:none;
+  padding:8px 18px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:600;
+  color:white;
+  cursor:pointer;
+  transition:.25s;
+}
+
+.island-btn:active{
+  transform:scale(.95);
 }
 
 @keyframes flashUp{
