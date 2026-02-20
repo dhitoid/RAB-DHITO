@@ -26,19 +26,55 @@ profit:0
 
 let templateExpanded = false
 
-const island = document.getElementById("dynamicIsland");
+document.addEventListener("DOMContentLoaded", function(){
 
-window.addEventListener("scroll",()=>{
-  if(window.scrollY > 40){
-    island.style.width = "65%";
-    island.style.padding = "10px 16px";
-    island.style.borderRadius = "40px";
-  }else{
-    island.style.width = "88%";
-    island.style.padding = "14px 18px";
-    island.style.borderRadius = "28px";
-  }
+  const island = document.getElementById("dynamicIsland");
+
+  window.addEventListener("scroll",()=>{
+    if(window.scrollY > 40){
+      island.style.width = "65%";
+      island.style.padding = "10px 16px";
+      island.style.borderRadius = "40px";
+    }else{
+      island.style.width = "88%";
+      island.style.padding = "14px 18px";
+      island.style.borderRadius = "28px";
+    }
+  });
+
 });
+
+function updateProjectCount(){
+  const count = Object.keys(projects).length;
+  const el = document.getElementById("projectCount");
+  if(!el) return;
+
+  if(count === 0){
+    el.textContent = "No";
+  } else {
+    el.textContent = count;
+  }
+}
+
+function updateIslandStatus(){
+  const island = document.getElementById("dynamicIsland")
+  if(!island) return
+
+  const values = Object.values(projects)
+
+  const hasPinned = values.some(p=>p.pinned)
+  const hasFavorite = values.some(p=>p.favorite)
+
+  island.classList.remove("island-pinned","island-favorite","island-empty")
+
+  if(values.length === 0){
+    island.classList.add("island-empty")
+  } else if(hasPinned){
+    island.classList.add("island-pinned")
+  } else if(hasFavorite){
+    island.classList.add("island-favorite")
+  }
+}
 
 /* ================= SAVE ================= */
 
@@ -1030,6 +1066,9 @@ function setSort(type){
 
 function renderProjects(){
 
+  updateProjectCount()
+  updateIslandStatus()
+  
   const projectList = document.getElementById("projectList")
   const toggleBtn = document.getElementById("projectToggle")
   const sortType = projectSortType
