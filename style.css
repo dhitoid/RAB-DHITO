@@ -554,6 +554,74 @@ opacity:1;
 transform:scale(1.1);
 }
 
+.sort-wrapper{
+position:relative;
+display:flex;
+justify-content:flex-end;
+margin-bottom:10px;
+}
+
+.sort-button{
+width:32px;
+height:32px;
+border-radius:12px;
+display:flex;
+align-items:center;
+justify-content:center;
+cursor:pointer;
+
+background:rgba(255,255,255,.15);
+backdrop-filter:blur(12px);
+-webkit-backdrop-filter:blur(12px);
+
+border:1px solid rgba(255,255,255,.2);
+transition:.25s;
+}
+
+.sort-button:hover{
+background:rgba(255,255,255,.25);
+}
+
+.sort-dropdown{
+position:absolute;
+top:42px;
+right:0;
+width:140px;
+border-radius:16px;
+padding:8px;
+
+background:rgba(255,255,255,.12);
+backdrop-filter:blur(20px);
+-webkit-backdrop-filter:blur(20px);
+
+border:1px solid rgba(255,255,255,.2);
+box-shadow:0 10px 30px rgba(0,0,0,.15);
+
+opacity:0;
+transform:translateY(-5px) scale(.98);
+pointer-events:none;
+transition:.25s ease;
+z-index:100;
+}
+
+.sort-dropdown.show{
+opacity:1;
+transform:translateY(0) scale(1);
+pointer-events:auto;
+}
+
+.sort-dropdown div{
+padding:10px 12px;
+border-radius:12px;
+cursor:pointer;
+font-size:13px;
+transition:.2s;
+}
+
+.sort-dropdown div:hover{
+background:rgba(255,255,255,.2);
+}
+
 @keyframes flashUp{
 0%{color:#22c55e}
 100%{color:inherit}
